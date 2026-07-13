@@ -52,6 +52,12 @@ body{
 }
 .topbar h1 span{display:block;font-weight:400;color:var(--muted);font-size:11.5px}
 .actions{display:flex;gap:8px;align-items:center;margin-left:auto}
+.sync-pill{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;color:var(--muted);background:var(--idle-soft);border:1px solid var(--line);padding:6px 9px;border-radius:99px;white-space:nowrap;transition:.2s}
+.sync-pill:before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 0 3px rgba(132,150,172,.12)}
+.sync-pill[data-state="saving"],.sync-pill[data-state="connecting"]{color:var(--base);background:var(--base-soft);border-color:#CFE0FB}
+.sync-pill[data-state="synced"]{color:var(--done);background:var(--done-soft);border-color:#C7EBDD}
+.sync-pill[data-state="offline"]{color:var(--doing);background:var(--doing-soft);border-color:#F4DDB9}
+.sync-pill[data-state="error"]{color:var(--komex);background:var(--komex-soft);border-color:#F4C5C8}
 .btn{
   font-family:inherit;font-size:12.5px;font-weight:600;
   padding:9px 13px;border-radius:8px;border:1px solid var(--line);
@@ -207,16 +213,18 @@ td[data-label]:before{display:none}
 .pill-ms{font-size:9px;font-weight:800;letter-spacing:.07em;color:#fff;background:var(--komex);padding:2px 6px;border-radius:4px;margin-left:7px;vertical-align:1.5px;white-space:nowrap}
 .linkico{color:var(--base);margin-left:6px;opacity:.72;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:5px;vertical-align:-5px}
 .linkico:hover{opacity:1;background:var(--base-soft)}
-.row-edit-btn{
-  border:0;background:transparent;color:var(--muted);cursor:pointer;width:26px;height:26px;border-radius:6px;
+.cell-edit-wrap{display:flex;align-items:flex-start;gap:7px;min-width:0;width:100%}
+.cell-edit-content{min-width:0;flex:1}
+.cell-edit-btn{
+  border:0;background:transparent;color:var(--muted);cursor:pointer;width:25px;height:25px;border-radius:6px;
   display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;opacity:0;transform:translateX(-2px);transition:.15s;
 }
-.row-edit-btn:hover{color:var(--base);background:var(--base-soft)}
-.row-edit-btn:focus-visible{outline:2px solid var(--base);outline-offset:1px;opacity:1}
-tr[data-edit-key]:hover .row-edit-btn,tr[data-edit-key]:focus-within .row-edit-btn{opacity:1;transform:none}
-body:not(.editing) tr[data-edit-key]{cursor:pointer}
-body:not(.editing) tr[data-edit-key]:hover{background:#F7FAFF}
-body.editing .row-edit-btn{display:none}
+.cell-edit-btn:hover{color:var(--base);background:var(--base-soft)}
+.cell-edit-btn:focus-visible{outline:2px solid var(--base);outline-offset:1px;opacity:1}
+td.cell-editable:hover .cell-edit-btn,td.cell-editable:focus-within .cell-edit-btn,.tw:hover>.cell-edit-btn,.tw:focus-within>.cell-edit-btn{opacity:1;transform:none}
+td.cell-editable:hover{background:#F7FAFF}
+.cell-edit-btn.issue-edit:hover{color:var(--komex);background:var(--komex-soft)}
+.cell-edit-btn.response-edit:hover{color:var(--done);background:var(--done-soft)}
 
 .owner{font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px;white-space:nowrap;display:inline-block}
 .o-base{background:var(--base-soft);color:var(--base-deep)}
@@ -324,30 +332,82 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
 .issue-name{font-weight:700;color:var(--ink);line-height:1.4}
 .issue-desc{color:var(--komex);font-weight:600;line-height:1.45}
 .issue-status{font-size:10px;font-weight:800;color:var(--komex);background:var(--komex-soft);padding:4px 7px;border-radius:99px;white-space:nowrap}
-.phase-summary{display:flex;flex-direction:column;gap:10px}
-.phase-sum-row{display:grid;grid-template-columns:minmax(120px,1fr) 120px 42px;gap:10px;align-items:center}
-.phase-sum-name{font-size:11.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.phase-sum-bar{height:6px;background:var(--line2);border-radius:99px;overflow:hidden}
-.phase-sum-bar i{display:block;height:100%;background:var(--base);border-radius:99px}
-.phase-sum-row.done .phase-sum-bar i{background:var(--done)}
-.phase-sum-pct{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;text-align:right;color:var(--muted)}
+.phase-chart-wrap{min-width:0}
+.phase-chart{display:grid;grid-template-columns:34px minmax(0,1fr);min-height:252px}
+.phase-chart-y{position:relative;height:205px;margin-top:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:9px}
+.phase-chart-y span{position:absolute;right:7px;transform:translateY(50%)}
+.phase-chart-y .y100{top:-4px}.phase-chart-y .y75{top:47px}.phase-chart-y .y50{top:98px}.phase-chart-y .y25{top:149px}.phase-chart-y .y0{bottom:-4px}
+.phase-chart-plot{position:relative;height:215px;display:grid;grid-template-columns:repeat(6,minmax(42px,1fr));gap:10px;align-items:end;padding:10px 8px 0;border-left:1px solid var(--line);border-bottom:1px solid var(--line)}
+.phase-chart-grid{position:absolute;left:0;right:0;border-top:1px dashed var(--line2);pointer-events:none}
+.phase-chart-grid.g100{top:10px}.phase-chart-grid.g75{top:61px}.phase-chart-grid.g50{top:112px}.phase-chart-grid.g25{top:163px}
+.phase-bar-btn{position:relative;z-index:1;height:100%;border:0;background:transparent;padding:0 3px 0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;cursor:pointer;font:inherit;color:var(--ink2);min-width:0;border-radius:8px 8px 0 0}
+.phase-bar-btn:hover{background:rgba(22,104,227,.045)}
+.phase-bar-btn:focus-visible{outline:2px solid var(--base);outline-offset:2px}
+.phase-bar-value{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:800;color:var(--ink2);margin-bottom:5px}
+.phase-bar-track{height:168px;width:min(42px,70%);border-radius:8px 8px 2px 2px;background:var(--line2);display:flex;align-items:flex-end;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(122,140,163,.08)}
+.phase-bar-fill{display:block;width:100%;height:var(--h,0%);min-height:2px;background:linear-gradient(180deg,#5D9AF1,var(--base));border-radius:8px 8px 2px 2px;transition:height .65s cubic-bezier(.2,.7,.2,1)}
+.phase-bar-btn.done .phase-bar-fill{background:linear-gradient(180deg,#48C89D,var(--done))}
+.phase-bar-btn.active .phase-bar-track{box-shadow:0 0 0 3px var(--base-soft),inset 0 0 0 1px rgba(22,104,227,.15)}
+.phase-bar-label{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:800;margin-top:7px;color:var(--muted)}
+.phase-bar-btn.active .phase-bar-label{color:var(--base)}
+.phase-chart-legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 12px;margin-top:15px}
+.phase-chart-key{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:7px;align-items:center;font-size:10.5px;color:var(--muted);min-width:0}
+.phase-chart-key i{width:8px;height:8px;border-radius:3px;background:var(--line)}
+.phase-chart-key.active i{background:var(--base)}.phase-chart-key.done i{background:var(--done)}
+.phase-chart-key span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.phase-chart-key b{font-family:'JetBrains Mono',monospace;color:var(--ink2);font-size:10px}
 
 /* issues in detailed plan */
-.issue-text{font-size:11.5px;color:var(--ink2);line-height:1.45;max-width:260px;display:inline-block}
-.issue-text.open{color:var(--komex);font-weight:600}
-.issue-empty{color:#C8D2DE}
-.issue-state{font-size:10.5px;font-weight:800;padding:4px 7px;border-radius:99px;white-space:nowrap}
-.issue-state.open{color:var(--komex);background:var(--komex-soft)}
-.issue-state.done{color:var(--done);background:var(--done-soft)}
-.issue-state.na{color:var(--muted);background:var(--idle-soft);font-weight:600}
-input.ed.issue-in{width:100%;min-width:180px}
-.issue-check{align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--ink2);white-space:nowrap}
-.issue-check input{accent-color:var(--done);width:15px;height:15px}
+.issue-stack,.response-stack{display:flex;flex-direction:column;gap:6px;min-width:0}
+.issue-chip,.response-chip{border:1px solid var(--line2);border-radius:8px;padding:7px 8px;background:#FCFDFF;line-height:1.42;min-width:0}
+.issue-chip.open{border-color:#F5C5C8;background:#FFF8F8}
+.issue-chip-head,.response-chip-head{display:flex;align-items:center;gap:6px;justify-content:space-between;margin-bottom:3px}
+.issue-index{font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:800;color:var(--base);background:var(--base-soft);padding:2px 5px;border-radius:4px}
+.issue-author{font-size:9.5px;font-weight:700;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px}
+.issue-body,.response-body{font-size:11px;color:var(--ink2);word-break:break-word}
+.issue-chip.open .issue-body{color:var(--komex);font-weight:600}
+.response-chip.pending{border-style:dashed;background:#FBFCFE}.response-chip.pending .response-body{color:var(--muted);font-style:italic}
+.issue-more{font-size:9.5px;color:var(--base);font-weight:700;padding-left:2px}
+.issue-empty{color:#C8D2DE;font-size:11.5px}
+
+
+
+/* ---------- PHASE 1 · CURRENT SITUATION / NEXT ACTION ---------- */
+.exec-overview-card{margin-top:16px;padding:0;overflow:hidden}
+.exec-overview-card>.exec-card-head{padding:18px 20px 14px;margin:0}
+.overview-layout{display:grid;grid-template-columns:minmax(0,4fr) minmax(220px,1fr);border-top:1px solid var(--line2);min-height:270px}
+.next-action-panel{
+  position:relative;overflow:hidden;padding:28px 30px;
+  background:linear-gradient(135deg,#F8FBFF 0%,#EEF5FF 52%,#F8FBFF 100%);
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+}
+.next-action-panel:after{content:'';position:absolute;width:260px;height:260px;border-radius:50%;right:-100px;top:-120px;background:rgba(22,104,227,.07);pointer-events:none}
+.next-action-kicker{position:relative;z-index:1;display:flex;align-items:center;gap:8px;font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--base);margin-bottom:12px}
+.next-action-kicker:before{content:'';width:9px;height:9px;border-radius:3px;background:var(--base);box-shadow:0 0 0 5px rgba(22,104,227,.10)}
+.next-action-title{position:relative;z-index:1;margin:0;max-width:900px;font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1.28;color:var(--ink)}
+.next-action-context{position:relative;z-index:1;margin-top:10px;color:var(--ink2);font-size:12.5px;line-height:1.6;max-width:850px}
+.next-action-meta{position:relative;z-index:1;display:flex;align-items:center;gap:7px 12px;flex-wrap:wrap;margin-top:16px;color:var(--muted);font-size:11px}
+.next-action-seq{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--base-deep);background:#fff;border:1px solid rgba(22,104,227,.18);padding:5px 8px;border-radius:7px}
+.next-action-meta .st{font-size:10.5px;padding:4px 8px}
+.next-action-open{position:relative;z-index:1;margin-top:18px;border:0;border-radius:9px;background:var(--ink);color:#fff;font:inherit;font-size:11.5px;font-weight:800;padding:9px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.next-action-open:hover{background:var(--base)}
+.next-action-open:focus-visible{outline:2px solid var(--base);outline-offset:3px}
+.overview-status-panel{padding:22px 20px;border-left:1px solid var(--line2);background:#fff;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.overview-status-panel .health-line{margin-bottom:14px}
+.overview-status-panel .exec-phase{font-size:14px;margin-bottom:7px}
+.overview-status-panel .exec-narrative{font-size:11.5px;line-height:1.55}
+.overview-status-panel .exec-metrics{grid-template-columns:1fr;margin-top:14px;gap:7px}
+.overview-status-panel .exec-mini{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 9px}
+.overview-status-panel .exec-mini span{font-size:8.8px}
+.overview-status-panel .exec-mini b{font-size:15px;margin:0}
+.next-action-complete{background:linear-gradient(135deg,#F3FBF7,#E7F7EF)}
+.next-action-complete .next-action-kicker{color:var(--done)}
+.next-action-complete .next-action-kicker:before{background:var(--done);box-shadow:0 0 0 5px rgba(14,159,110,.10)}
+
 
 /* ---------- QUICK TASK EDITOR ---------- */
 .task-editor-backdrop{position:fixed;inset:0;z-index:120;background:rgba(10,26,47,.42);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:18px}
 .task-editor-backdrop[hidden]{display:none!important}
-.task-editor{width:min(560px,100%);max-height:min(720px,calc(100vh - 36px));overflow:auto;background:var(--surface);border:1px solid rgba(255,255,255,.7);border-radius:16px;box-shadow:0 24px 70px rgba(10,26,47,.28)}
+.task-editor{width:min(780px,100%);max-height:min(720px,calc(100vh - 36px));overflow:auto;background:var(--surface);border:1px solid rgba(255,255,255,.7);border-radius:16px;box-shadow:0 24px 70px rgba(10,26,47,.28)}
 .task-editor-head{display:flex;align-items:flex-start;gap:12px;padding:18px 18px 14px;border-bottom:1px solid var(--line)}
 .task-editor-head-main{min-width:0;flex:1}
 .task-editor-kicker{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--base);margin-bottom:5px}
@@ -371,6 +431,24 @@ input.ed.issue-in{width:100%;min-width:180px}
 .quick-toggle b{display:block;font-size:12.5px}
 .quick-toggle span{display:block;font-size:10.5px;color:var(--muted);margin-top:2px;line-height:1.45}
 .quick-toggle.disabled{opacity:.55;cursor:not-allowed}
+.quick-issues-section{border-top:1px solid var(--line2);padding-top:16px}
+.quick-issues-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px}
+.quick-issues-head .quick-label{font-size:11px;font-weight:800;color:var(--ink2);margin-bottom:4px}
+.quick-add-issue{flex:0 0 auto}
+.quick-issues-list{display:flex;flex-direction:column;gap:10px}
+.quick-issues-empty{border:1px dashed var(--line);border-radius:10px;background:#FBFCFE;padding:18px;text-align:center;color:var(--muted);font-size:11.5px}
+.quick-issue-card{border:1px solid var(--line);border-radius:12px;background:#FAFCFE;overflow:hidden}
+.quick-issue-card-head{display:flex;align-items:center;gap:8px;padding:9px 11px;border-bottom:1px solid var(--line2);background:#fff}
+.quick-issue-number{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:800;color:var(--base);background:var(--base-soft);padding:3px 6px;border-radius:5px}
+.quick-issue-title{font-size:11.5px;font-weight:800;color:var(--ink2);flex:1}
+.quick-remove-issue{border:0;background:transparent;color:var(--muted);cursor:pointer;width:26px;height:26px;border-radius:6px;font-size:18px;line-height:1}
+.quick-remove-issue:hover{background:var(--komex-soft);color:var(--komex)}
+.quick-issue-grid{display:grid;grid-template-columns:minmax(150px,.38fr) minmax(0,1fr);gap:11px;padding:12px}
+.quick-issue-grid .wide{grid-column:1/-1}
+.quick-mini-label{display:block;font-size:9.5px;font-weight:800;letter-spacing:.03em;color:var(--muted);margin-bottom:5px;text-transform:uppercase}
+.quick-issue-card .quick-input,.quick-issue-card .quick-textarea{background:#fff}
+.quick-issue-card .quick-textarea{min-height:76px}
+.quick-issue-card.invalid{border-color:var(--komex);box-shadow:0 0 0 3px rgba(224,31,38,.07)}
 .task-editor-foot{display:flex;justify-content:flex-end;gap:9px;padding:14px 18px 18px;border-top:1px solid var(--line)}
 .task-editor-foot .btn{padding:9px 14px}
 .task-editor-foot .btn-primary{background:var(--base);border-color:var(--base);color:#fff}
@@ -383,13 +461,19 @@ body.modal-open{overflow:hidden}
 .quick-savebar button:hover{background:var(--base-soft);color:var(--base-deep)}
 .quick-savebar .dismiss{width:28px;height:28px;padding:0;border-radius:7px;background:rgba(255,255,255,.12);color:#fff;font-size:17px}
 .quick-savebar .dismiss:hover{background:rgba(255,255,255,.2);color:#fff}
+.response-editor-list{display:flex;flex-direction:column;gap:10px}
+.response-editor-card{border:1px solid var(--line);border-radius:11px;background:#FCFDFF;padding:12px}
+.response-editor-head{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.response-editor-context{font-size:11.5px;line-height:1.55;color:var(--ink2);background:#fff;border:1px solid var(--line2);border-radius:8px;padding:9px;margin-bottom:9px}
+.response-editor-context b{color:var(--ink)}
+.response-editor-empty{border:1px dashed var(--line);border-radius:10px;background:#FBFCFE;padding:20px;text-align:center;color:var(--muted);font-size:11.5px}
 
 /* ============ TABLET ============ */
 @media(max-width:1180px){
   .kpis{grid-template-columns:repeat(3,1fr)}
   .kpi.k-next{grid-column:span 2}
   th.col-note,td.col-note,th.col-start,td.col-start{display:none}
-  .exec-grid,.exec-grid-main{grid-template-columns:1fr}
+  .exec-grid{grid-template-columns:1fr}
 }
 @media(max-width:980px){
   .seg{padding-right:12px}
@@ -466,15 +550,27 @@ body.modal-open{overflow:hidden}
   .chips{flex-wrap:nowrap}
   .mcount{display:block;font-size:11.5px;color:var(--muted);font-family:'JetBrains Mono',monospace;padding:0 2px 10px}
 
-  .exec-grid,.exec-grid-main{grid-template-columns:1fr;gap:10px}
+  .exec-grid{grid-template-columns:1fr;gap:10px}
   .exec-card{padding:14px}
+  .exec-overview-card{padding:0}
+  .exec-overview-card>.exec-card-head{padding:14px 14px 12px}
+  .overview-layout{grid-template-columns:1fr;min-height:0}
+  .next-action-panel{padding:22px 18px;min-height:240px}
+  .next-action-title{font-size:21px}
+  .overview-status-panel{border-left:0;border-top:1px solid var(--line2);padding:16px 18px}
+  .overview-status-panel .exec-metrics{grid-template-columns:repeat(3,1fr)}
+  .overview-status-panel .exec-mini{display:block;padding:8px}
+  .overview-status-panel .exec-mini b{margin-top:3px}
   .exec-metrics{grid-template-columns:1fr 1fr 1fr}
   .issue-table,.issue-table tbody,.issue-table tr,.issue-table td{display:block;width:100%}
   .issue-table thead{display:none}
   .issue-table tr{border:1px solid var(--line2);border-radius:9px;padding:10px;margin-bottom:8px;background:#FCFDFF}
   .issue-table td{border:0!important;padding:2px 0}
   .issue-table td:last-child{padding-top:7px}
-  .phase-sum-row{grid-template-columns:minmax(90px,1fr) 90px 38px}
+  .phase-chart{grid-template-columns:28px minmax(0,1fr);min-height:230px}
+  .phase-chart-plot{gap:5px;padding-left:4px;padding-right:4px}
+  .phase-bar-track{width:min(30px,72%)}
+  .phase-chart-legend{grid-template-columns:1fr}
 
   .phase{margin-bottom:20px;scroll-margin-top:120px}
   .phase-head{gap:8px;padding-bottom:8px}
@@ -521,11 +617,15 @@ body.modal-open{overflow:hidden}
   .editbar{padding:9px 14px;font-size:11.5px}
   .editbar > span:first-child{flex:1 1 100%}
   .editbar button{flex:1}
-  .row-edit-btn{opacity:.8;transform:none;width:28px;height:28px}
+  .cell-edit-btn{opacity:.82;transform:none;width:28px;height:28px}
   .task-editor-backdrop{padding:0;align-items:flex-end}
   .task-editor{width:100%;max-height:88vh;border-radius:16px 16px 0 0}
   .task-editor-head{padding:16px 14px 12px}
   .task-editor-body{padding:14px;gap:14px}
+  .quick-issues-head{flex-direction:column}
+  .quick-add-issue{width:100%;justify-content:center}
+  .quick-issue-grid{grid-template-columns:1fr}
+  .quick-issue-grid .wide{grid-column:auto}
   .task-editor-foot{padding:12px 14px calc(14px + env(safe-area-inset-bottom));position:sticky;bottom:0;background:var(--surface)}
   .task-editor-foot .btn{flex:1;justify-content:center}
   .quick-savebar{bottom:10px;align-items:stretch;flex-wrap:wrap;padding:10px 10px 10px 12px}
@@ -678,6 +778,7 @@ body.modal-open{overflow:hidden}
       <span>Kế hoạch triển khai &amp; theo dõi tiến độ thực thi</span>
     </h1>
     <div class="actions">
+      <span class="sync-pill" id="syncStatus" data-state="connecting" title="Trạng thái đồng bộ Firebase">Đang kết nối</span>
       <button class="btn" id="btnPrint">In / Lưu PDF</button>
       <button class="btn" id="btnCsv"><span class="lb-full">Xuất CSV</span><span class="lb-short">CSV</span></button>
       <button class="btn" id="btnEdit"><span class="dot"></span><span class="lb-full">Chế độ cập nhật</span><span class="lb-short">Cập nhật</span></button>
@@ -695,7 +796,7 @@ body.modal-open{overflow:hidden}
 <div class="view-nav">
   <div class="wrap">
     <nav class="view-tabs" aria-label="Chế độ xem dự án">
-      <button class="view-tab active" type="button" data-view="executive"><span class="tab-dot"></span>Báo cáo lãnh đạo</button>
+      <button class="view-tab active" type="button" data-view="executive"><span class="tab-dot"></span>Báo cáo tổng quan</button>
       <button class="view-tab" type="button" data-view="plan"><span class="tab-dot"></span>Kế hoạch chi tiết</button>
     </nav>
   </div>
@@ -707,7 +808,7 @@ body.modal-open{overflow:hidden}
       <div>
         <div class="exec-headline"><span class="exec-badge">Dành cho Ban lãnh đạo</span></div>
         <h2>Báo cáo điều hành dự án <em>Base × Komex</em></h2>
-        <p class="sub">Tập trung vào tiến độ, rủi ro, vướng mắc chưa xử lý và các điểm cần can thiệp — không yêu cầu theo dõi từng đầu việc chi tiết.</p>
+        <p class="sub">Tập trung vào tiến độ, công việc tiếp theo, các vấn đề / thắc mắc cần phản hồi và những điểm cần can thiệp.</p>
       </div>
       <div class="stamp">
         Cập nhật lần cuối
@@ -720,7 +821,7 @@ body.modal-open{overflow:hidden}
       <div class="kpi k-done"><div class="lab">Đã hoàn thành</div><div class="val" id="kDone">0</div><div class="hint">đầu việc</div></div>
       <div class="kpi k-doing"><div class="lab">Đang thực hiện</div><div class="val" id="kDoing">0</div><div class="hint">đầu việc</div></div>
       <div class="kpi k-late"><div class="lab">Quá hạn</div><div class="val" id="kLate">0</div><div class="hint" id="kLateHint">cần xử lý ngay</div></div>
-      <div class="kpi k-issue"><div class="lab">Vướng mắc mở</div><div class="val" id="kIssues">0</div><div class="hint" id="kIssuesHint">chưa được xử lý</div></div>
+      <div class="kpi k-issue"><div class="lab">Cần phản hồi</div><div class="val" id="kIssues">0</div><div class="hint" id="kIssuesHint">vấn đề / thắc mắc</div></div>
       <div class="kpi k-next"><div class="lab">Cột mốc kế tiếp</div><div class="val" id="kNext">—</div><div class="hint" id="kNextHint"></div></div>
     </div>
 
@@ -737,25 +838,16 @@ body.modal-open{overflow:hidden}
       <div class="track" id="track"></div>
     </div>
 
-    <div class="exec-grid exec-grid-main">
-      <section class="exec-card">
-        <div class="exec-card-head">
-          <div><h3>Tình hình hiện tại của dự án</h3><p>Kết luận điều hành được tổng hợp tự động từ dữ liệu thực thi.</p></div>
-        </div>
-        <div id="execSummary"></div>
-      </section>
-      <section class="exec-card">
-        <div class="exec-card-head">
-          <div><h3>Trọng tâm đang thực hiện</h3><p>Các đầu việc cần theo dõi ở cấp điều hành.</p></div>
-          <span class="exec-count" id="focusCount">0 việc</span>
-        </div>
-        <div class="exec-list" id="focusList"></div>
-      </section>
-    </div>
+    <section class="exec-card exec-overview-card">
+      <div class="exec-card-head">
+        <div><h3>Tình hình hiện tại của dự án</h3><p>Ưu tiên hiển thị rõ đầu việc tiếp theo cần hoàn thành; thông tin sức khoẻ dự án được cô đọng ở bên phải.</p></div>
+      </div>
+      <div id="execSummary"></div>
+    </section>
 
     <section class="exec-card" style="margin-top:14px">
       <div class="exec-card-head">
-        <div><h3>Vướng mắc chưa được giải quyết</h3><p>Tự động tổng hợp từ cột “Vấn đề phát sinh” của từng công việc.</p></div>
+        <div><h3>Các vấn đề / thắc mắc cần phản hồi</h3><p>Tự động tổng hợp những nội dung chưa có hướng xử lý từ team Base.</p></div>
         <span class="exec-count" id="issueCount">0 vấn đề</span>
       </div>
       <div id="issueList"></div>
@@ -771,9 +863,9 @@ body.modal-open{overflow:hidden}
       </section>
       <section class="exec-card">
         <div class="exec-card-head">
-          <div><h3>Tiến độ theo giai đoạn</h3><p>So sánh nhanh mức độ hoàn thành giữa các phase.</p></div>
+          <div><h3>Tiến độ theo giai đoạn</h3><p>Biểu đồ trực quan tỷ lệ hoàn thành của từng phase.</p></div>
         </div>
-        <div class="phase-summary" id="phaseSummary"></div>
+        <div class="phase-chart-wrap" id="phaseSummary"></div>
       </section>
     </div>
   </section>
@@ -813,31 +905,46 @@ body.modal-open{overflow:hidden}
   <section class="task-editor" role="dialog" aria-modal="true" aria-labelledby="taskEditorTitle">
     <header class="task-editor-head">
       <div class="task-editor-head-main">
-        <div class="task-editor-kicker">Chỉnh sửa nhanh công việc</div>
+        <div class="task-editor-kicker" id="taskEditorKicker">Chỉnh sửa công việc</div>
         <h3 id="taskEditorTitle">—</h3>
         <div class="task-editor-meta" id="taskEditorMeta">—</div>
       </div>
       <button class="icon-close" id="taskEditorClose" type="button" aria-label="Đóng">×</button>
     </header>
     <div class="task-editor-body">
-      <div class="quick-field">
-        <label for="quickLink">Link đính kèm</label>
-        <input class="quick-input" id="quickLink" type="url" inputmode="url" placeholder="https://...">
-        <div class="quick-help">Mũi tên ↗ cạnh tên công việc sẽ luôn mở trực tiếp trang đích của link này.</div>
-        <div class="quick-error" id="quickLinkError">Link chưa hợp lệ. Vui lòng nhập địa chỉ bắt đầu bằng http:// hoặc https://.</div>
-        <div class="quick-link-actions">
-          <button class="btn" id="quickOpenLink" type="button">Mở link hiện tại ↗</button>
-          <button class="btn" id="quickClearLink" type="button">Xoá link</button>
+      <section id="quickLinkSection" hidden>
+        <div class="quick-field">
+          <label for="quickLink">Link đính kèm</label>
+          <input class="quick-input" id="quickLink" type="url" inputmode="url" placeholder="https://...">
+          <div class="quick-help">Biểu tượng ↗ cạnh tên công việc mở trực tiếp trang đích. Nội dung tại các cột khác không bị thay đổi trong cửa sổ này.</div>
+          <div class="quick-error" id="quickLinkError">Link chưa hợp lệ. Vui lòng nhập địa chỉ bắt đầu bằng http:// hoặc https://.</div>
+          <div class="quick-link-actions">
+            <button class="btn" id="quickOpenLink" type="button">Mở link hiện tại ↗</button>
+            <button class="btn" id="quickClearLink" type="button">Xoá link</button>
+          </div>
         </div>
-      </div>
-      <div class="quick-field">
-        <label for="quickIssue">Vấn đề phát sinh</label>
-        <textarea class="quick-textarea" id="quickIssue" placeholder="Ghi nhận vướng mắc, nguyên nhân hoặc nội dung cần phối hợp xử lý..."></textarea>
-      </div>
-      <label class="quick-toggle" id="quickResolvedWrap">
-        <input id="quickResolved" type="checkbox">
-        <span><b>Đã xử lý vấn đề</b><span>Chỉ bật khi vấn đề phát sinh đã được giải quyết xong.</span></span>
-      </label>
+      </section>
+
+      <section class="quick-issues-section" id="quickIssuesSection" aria-labelledby="quickIssuesLabel" hidden>
+        <div class="quick-issues-head">
+          <div>
+            <div class="quick-label" id="quickIssuesLabel">Các vấn đề / thắc mắc phát sinh</div>
+            <div class="quick-help">Chỉ chỉnh sửa người để lại và nội dung vấn đề/thắc mắc. Phản hồi của team Base được cập nhật riêng tại cột “Hướng xử lý”.</div>
+          </div>
+          <button class="btn quick-add-issue" id="quickAddIssue" type="button">+ Thêm vấn đề / thắc mắc</button>
+        </div>
+        <div class="quick-issues-list" id="quickIssuesList"></div>
+        <div class="quick-issues-empty" id="quickIssuesEmpty">Chưa có vấn đề hoặc thắc mắc nào được ghi nhận.</div>
+      </section>
+
+      <section id="quickResponsesSection" hidden>
+        <div class="quick-field">
+          <div class="quick-label">Hướng xử lý / phản hồi từ team Base</div>
+          <div class="quick-help">Mỗi phản hồi được gắn đúng với vấn đề/thắc mắc tương ứng. Nội dung câu hỏi và người để lại chỉ được xem, không chỉnh sửa tại đây.</div>
+        </div>
+        <div class="response-editor-list" id="quickResponsesList"></div>
+        <div class="response-editor-empty" id="quickResponsesEmpty" hidden>Chưa có vấn đề/thắc mắc để ghi nhận hướng xử lý.</div>
+      </section>
     </div>
     <footer class="task-editor-foot">
       <button class="btn" id="taskEditorCancel" type="button">Huỷ</button>
@@ -847,10 +954,91 @@ body.modal-open{overflow:hidden}
 </div>
 
 <div class="quick-savebar" id="quickSavebar" hidden>
-  <span>Thay đổi đã được cập nhật trong phiên này. Tải file HTML mới để lưu vĩnh viễn và thay thế link đang chia sẻ.</span>
-  <button id="btnQuickDownload" type="button">Tải bản HTML đã cập nhật</button>
+  <span>Thay đổi đang được đồng bộ lên Firebase. File HTML tải xuống chỉ dùng làm bản sao dự phòng.</span>
+  <button id="btnQuickDownload" type="button">Tải bản sao HTML</button>
   <button class="dismiss" id="quickSaveDismiss" type="button" aria-label="Ẩn thông báo">×</button>
 </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, onSnapshot, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAXS6jEKBYe9RnEsZ_cIHS-hVSTHVFqwk8",
+    authDomain: "base-x-komex-master-plan.firebaseapp.com",
+    projectId: "base-x-komex-master-plan",
+    storageBucket: "base-x-komex-master-plan.firebasestorage.app",
+    messagingSenderId: "531813739450",
+    appId: "1:531813739450:web:23f3516c6b6c825c5ecb83"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const planRef = doc(db, "masterPlans", "base-komex-masterplan");
+  const deviceKey = "komex-masterplan-device-id";
+  let deviceId = localStorage.getItem(deviceKey);
+  if (!deviceId) {
+    deviceId = "device_" + Math.random().toString(36).slice(2, 10) + "_" + Date.now().toString(36);
+    localStorage.setItem(deviceKey, deviceId);
+  }
+
+  function emit(name, detail) {
+    window.dispatchEvent(new CustomEvent(name, { detail }));
+  }
+  function cleanPlan(plan) {
+    return JSON.parse(JSON.stringify(plan));
+  }
+
+  window.KOMEX_FIREBASE = {
+    async savePlan(plan) {
+      emit("komex-sync-state", { state: "saving", text: "Đang đồng bộ" });
+      await setDoc(planRef, {
+        plan: cleanPlan(plan),
+        updatedAt: serverTimestamp(),
+        updatedBy: deviceId,
+        source: location.hostname || "local-file",
+        schemaVersion: 3
+      }, { merge: true });
+      emit("komex-sync-state", { state: "synced", text: "Đã đồng bộ" });
+    },
+    async seedIfEmpty(plan) {
+      const snap = await getDoc(planRef);
+      if (!snap.exists()) {
+        await this.savePlan(plan);
+      }
+    }
+  };
+
+  emit("komex-sync-ready", { deviceId });
+
+  onSnapshot(planRef, { includeMetadataChanges: true }, (snapshot) => {
+    if (!snapshot.exists()) {
+      emit("komex-sync-empty", {});
+      return;
+    }
+    const payload = snapshot.data();
+    if (payload && payload.plan) {
+      emit("komex-remote-plan", {
+        plan: payload.plan,
+        fromCache: snapshot.metadata.fromCache,
+        hasPendingWrites: snapshot.metadata.hasPendingWrites,
+        updatedBy: payload.updatedBy || ""
+      });
+    }
+    if (!snapshot.metadata.hasPendingWrites) {
+      emit("komex-sync-state", {
+        state: navigator.onLine ? "synced" : "offline",
+        text: navigator.onLine ? "Đã đồng bộ" : "Ngoại tuyến"
+      });
+    }
+  }, (error) => {
+    console.error("Firebase sync error:", error);
+    emit("komex-sync-state", { state: "error", text: "Lỗi đồng bộ", error: error.message || String(error) });
+  });
+
+  window.addEventListener("online", () => emit("komex-sync-state", { state: "connecting", text: "Đang kết nối" }));
+  window.addEventListener("offline", () => emit("komex-sync-state", { state: "offline", text: "Ngoại tuyến" }));
+</script>
 
 <script>
 (function(){
@@ -947,16 +1135,82 @@ body.modal-open{overflow:hidden}
     });});
     return a;
   }
+  function orderedActionItems(){
+    var a=[];
+    data.phases.forEach(function(p,pi){
+      p.tasks.forEach(function(t,ti){
+        a.push({item:t,key:pi+"."+ti,phase:p,parent:null,isSub:false});
+      });
+    });
+    return a;
+  }
+  function nextActionItem(){
+    var list=orderedActionItems();
+    for(var i=0;i<list.length;i++){
+      if(taskStatus(list[i].item)!=="done"){
+        list[i].position=i+1;
+        list[i].total=list.length;
+        list[i].pendingSub=(list[i].item.subs||[]).filter(function(s){return s.status!=="done";})[0]||null;
+        return list[i];
+      }
+    }
+    return {item:null,key:"",phase:data.phases[data.phases.length-1],parent:null,isSub:false,pendingSub:null,position:list.length,total:list.length};
+  }
+  function revealActionItem(k){
+    var parts=String(k||"").split(".");
+    if(parts.length===3) open[parts[0]+"."+parts[1]]=true;
+    if(parts.length===2){
+      var t=itemByKey(k);
+      if(t && t.subs && t.subs.length) open[k]=true;
+    }
+    setView("plan",true);
+    renderList();
+    setTimeout(function(){
+      var row=document.querySelector('tr[data-edit-key="'+k+'"]');
+      if(row){
+        row.scrollIntoView({behavior:"smooth",block:"center"});
+        if(row.animate) row.animate([{backgroundColor:"#E7F0FE"},{backgroundColor:"transparent"}],{duration:1200,easing:"ease-out"});
+      }
+    },60);
+  }
+
+  function issueId(){ return "is_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8); }
+  function itemIssues(item){ return Array.isArray(item.issues)?item.issues:[]; }
+  function normalizeIssueData(){
+    allItems().forEach(function(item){
+      if(!Array.isArray(item.issues)){
+        item.issues=[];
+        if(String(item.issue||"").trim()){
+          item.issues.push({id:issueId(),author:"",content:String(item.issue).trim(),response:item.issueResolved?"Đã xử lý":""});
+        }
+      }
+      item.issues=item.issues.map(function(it){
+        return {id:it.id||issueId(),author:String(it.author||"").trim(),content:String(it.content||"").trim(),response:String(it.response||"").trim()};
+      }).filter(function(it){ return it.content || it.author || it.response; });
+      delete item.issue;
+      delete item.issueResolved;
+    });
+  }
+  function allIssueEntries(){
+    var a=[];
+    flatItems().forEach(function(x){
+      itemIssues(x.item).forEach(function(issue,ii){
+        a.push({item:x.item,key:x.key,phase:x.phase,parent:x.parent,isSub:x.isSub,issue:issue,issueIndex:ii});
+      });
+    });
+    return a;
+  }
   function openIssues(){
-    return flatItems().filter(function(x){
-      return String(x.item.issue||"").trim() && !x.item.issueResolved;
+    return allIssueEntries().filter(function(x){
+      return String(x.issue.content||"").trim() && !String(x.issue.response||"").trim();
     }).sort(function(a,b){
       var ao=overdue(a.item)?0:1, bo=overdue(b.item)?0:1;
       if(ao!==bo) return ao-bo;
       if((a.item.due||"9999")!==(b.item.due||"9999")) return (a.item.due||"9999")<(b.item.due||"9999")?-1:1;
-      return 0;
+      return a.issueIndex-b.issueIndex;
     });
   }
+  normalizeIssueData();
   function currentPhase(){
     var active=null;
     data.phases.some(function(p){
@@ -975,7 +1229,8 @@ body.modal-open{overflow:hidden}
   function match(item){
     if(filters.q){
       var q=filters.q.toLowerCase();
-      if((item.name||"").toLowerCase().indexOf(q)<0 && (item.note||"").toLowerCase().indexOf(q)<0) return false;
+      var issueSearch=itemIssues(item).map(function(i){return [i.author,i.content,i.response].join(" ");}).join(" ").toLowerCase();
+      if((item.name||"").toLowerCase().indexOf(q)<0 && (item.note||"").toLowerCase().indexOf(q)<0 && issueSearch.indexOf(q)<0) return false;
     }
     if(filters.owner!=="all" && item.owner!==filters.owner) return false;
     if(filters.status!=="all"){
@@ -1006,7 +1261,7 @@ body.modal-open{overflow:hidden}
     document.getElementById("kLateHint").textContent = late? "cần xử lý ngay":"không có việc trễ";
     var issueN=openIssues().length;
     document.getElementById("kIssues").textContent = issueN;
-    document.getElementById("kIssuesHint").textContent = issueN? "chưa được xử lý":"không có vướng mắc mở";
+    document.getElementById("kIssuesHint").textContent = issueN? "chưa có hướng xử lý":"không có nội dung chờ phản hồi";
 
     var next=null;
     data.phases.forEach(function(p){ p.tasks.forEach(function(t){
@@ -1085,54 +1340,68 @@ body.modal-open{overflow:hidden}
     if(issues.length || late) { healthClass="health-watch"; healthLabel="Cần chú ý"; }
     if(blocked || late>=3 || issues.length>=3) { healthClass="health-risk"; healthLabel="Có rủi ro"; }
 
+    var next=nextActionItem();
     var summary=document.getElementById("execSummary");
     if(summary){
+      var nextHtml="";
+      if(next.item){
+        var nextStatus=next.item.status || "idle";
+        var context=[];
+        if(next.pendingSub) context.push("Bước cần thực hiện trước: <b>"+esc(next.pendingSub.name)+"</b>");
+        if(next.item.note) context.push(esc(next.item.note));
+        nextHtml=
+          '<section class="next-action-panel">'+
+            '<div class="next-action-kicker">Công việc tiếp theo cần làm</div>'+
+            '<h4 class="next-action-title">'+esc(next.item.name)+'</h4>'+
+            (context.length?'<div class="next-action-context">'+context.join(' · ')+'</div>':'')+
+            '<div class="next-action-meta">'+
+              '<span class="next-action-seq">BƯỚC '+next.position+' / '+next.total+'</span>'+
+              '<span>'+esc(next.phase.no+' · '+next.phase.name)+'</span>'+
+              '<span>'+esc(next.item.owner||"Chưa phân công")+'</span>'+
+              '<span class="st '+STATUS[nextStatus].cls+'">'+STATUS[nextStatus].label+'</span>'+
+              '<span class="date'+(overdue(next.item)?' od':'')+'">'+(next.item.due?'Hạn '+fmt(next.item.due):'Chưa có thời hạn')+'</span>'+
+            '</div>'+
+            '<button class="next-action-open" id="nextActionBtn" type="button">Xem trong kế hoạch chi tiết <span aria-hidden="true">→</span></button>'+
+          '</section>';
+      } else {
+        nextHtml=
+          '<section class="next-action-panel next-action-complete">'+
+            '<div class="next-action-kicker">Công việc tiếp theo cần làm</div>'+
+            '<h4 class="next-action-title">Tất cả đầu việc trong kế hoạch đã hoàn thành</h4>'+
+            '<div class="next-action-context">Dự án không còn đầu việc mở trong danh sách triển khai hiện tại.</div>'+
+            '<div class="next-action-meta"><span class="next-action-seq">'+next.total+' / '+next.total+' HOÀN THÀNH</span></div>'+
+          '</section>';
+      }
       summary.innerHTML=
-        '<div class="health-line"><span class="health-pill '+healthClass+'">'+healthLabel+'</span></div>'+ 
-        '<div class="exec-phase">'+esc(cp.no+" · "+cp.name)+'</div>'+ 
-        '<p class="exec-narrative">Dự án đang ở mức <b>'+phaseProgress(cp)+'%</b> trong giai đoạn hiện tại. '+
-          (issues.length? 'Có <b>'+issues.length+' vướng mắc</b> chưa được xử lý. ' : 'Không ghi nhận vướng mắc mở. ')+
-          (late? 'Có <b>'+late+' đầu việc quá hạn</b> cần can thiệp.' : 'Không có đầu việc quá hạn.')+
-        '</p>'+ 
-        '<div class="exec-metrics">'+
-          '<div class="exec-mini"><span>Đã hoàn thành</span><b>'+done+'/'+total+'</b></div>'+ 
-          '<div class="exec-mini"><span>Đang mở</span><b>'+openWork+'</b></div>'+ 
-          '<div class="exec-mini"><span>Đang vướng</span><b>'+blocked+'</b></div>'+ 
+        '<div class="overview-layout">'+nextHtml+
+          '<aside class="overview-status-panel">'+
+            '<div class="health-line"><span class="health-pill '+healthClass+'">'+healthLabel+'</span></div>'+ 
+            '<div class="exec-phase">'+esc(cp.no+" · "+cp.name)+'</div>'+ 
+            '<p class="exec-narrative">Giai đoạn hiện tại đạt <b>'+phaseProgress(cp)+'%</b>. '+
+              (issues.length? 'Có <b>'+issues.length+' vấn đề / thắc mắc</b> đang chờ phản hồi. ' : 'Không có nội dung chờ phản hồi. ')+
+              (late? 'Có <b>'+late+' việc quá hạn</b>.' : 'Không có việc quá hạn.')+
+            '</p>'+ 
+            '<div class="exec-metrics">'+
+              '<div class="exec-mini"><span>Đã hoàn thành</span><b>'+done+'/'+total+'</b></div>'+ 
+              '<div class="exec-mini"><span>Đang mở</span><b>'+openWork+'</b></div>'+ 
+              '<div class="exec-mini"><span>Đang vướng</span><b>'+blocked+'</b></div>'+ 
+            '</div>'+ 
+          '</aside>'+ 
         '</div>';
+      var nextBtn=document.getElementById("nextActionBtn");
+      if(nextBtn) nextBtn.addEventListener("click",function(){ revealActionItem(next.key); });
     }
-
-    var focus=items.filter(function(x){
-      var st=x.item.subs?taskStatus(x.item):x.item.status;
-      return st==="doing" || st==="block";
-    }).sort(function(a,b){
-      var as=(a.item.status==="block"?0:1), bs=(b.item.status==="block"?0:1);
-      if(as!==bs) return as-bs;
-      return (a.item.due||"9999")<(b.item.due||"9999")?-1:1;
-    });
-    if(!focus.length){
-      focus=items.filter(function(x){ return (x.item.subs?taskStatus(x.item):x.item.status)!=="done"; })
-        .sort(function(a,b){return (a.item.due||"9999")<(b.item.due||"9999")?-1:1;});
-    }
-    var focusTop=focus.slice(0,5), focusEl=document.getElementById("focusList");
-    document.getElementById("focusCount").textContent=focus.length+" việc";
-    focusEl.innerHTML=focusTop.length?focusTop.map(function(x){
-      var st=x.item.subs?taskStatus(x.item):x.item.status;
-      return '<div class="exec-row"><div class="exec-row-main"><div class="exec-row-title">'+esc(x.item.name)+'</div>'+ 
-        '<div class="exec-row-meta"><span>'+esc(x.phase.no)+'</span><span>'+esc(x.item.owner||"Chưa phân công")+'</span><span class="st '+STATUS[st].cls+'">'+STATUS[st].label+'</span></div></div>'+ 
-        '<span class="date'+(overdue(x.item)?' od':'')+'">'+(x.item.due?fmt(x.item.due):'Chưa có hạn')+'</span>'+ 
-        (x.item.note?'<div class="exec-row-note">'+esc(x.item.note)+'</div>':'')+'</div>';
-    }).join(""):'<div class="exec-empty">Chưa có đầu việc nào cần theo dõi ở cấp điều hành.</div>';
 
     var issueList=document.getElementById("issueList");
-    document.getElementById("issueCount").textContent=issues.length+" vấn đề";
+    document.getElementById("issueCount").textContent=issues.length+" nội dung";
     if(!issues.length){
-      issueList.innerHTML='<div class="exec-empty">Không có vấn đề phát sinh nào đang ở trạng thái chưa được giải quyết.</div>';
+      issueList.innerHTML='<div class="exec-empty">Không có vấn đề hoặc thắc mắc nào đang chờ team Base phản hồi.</div>';
     } else {
-      issueList.innerHTML='<table class="issue-table"><thead><tr><th>Giai đoạn</th><th>Công việc</th><th>Vấn đề phát sinh</th><th>Đầu mối / Hạn</th><th>Trạng thái</th></tr></thead><tbody>'+issues.slice(0,8).map(function(x){
-        return '<tr><td>'+esc(x.phase.no)+'</td><td class="issue-name">'+esc(x.item.name)+'</td><td class="issue-desc">'+esc(x.item.issue)+'</td>'+ 
+      issueList.innerHTML='<table class="issue-table"><thead><tr><th>Giai đoạn</th><th>Công việc</th><th>Người để lại</th><th>Vấn đề / thắc mắc</th><th>Đầu mối / Hạn</th><th>Hướng xử lý</th></tr></thead><tbody>'+issues.slice(0,8).map(function(x){
+        return '<tr><td>'+esc(x.phase.no)+'</td><td class="issue-name">'+esc(x.item.name)+'</td><td>'+esc(x.issue.author||"Chưa ghi nhận")+'</td><td class="issue-desc">'+esc(x.issue.content)+'</td>'+ 
           '<td>'+esc(x.item.owner||"—")+'<br><span class="date'+(overdue(x.item)?' od':'')+'">'+(x.item.due?fmt(x.item.due):'Chưa có hạn')+'</span></td>'+ 
-          '<td><span class="issue-status">Chưa xử lý</span></td></tr>';
-      }).join("")+'</tbody></table>'+(issues.length>8?'<div class="exec-row-note" style="margin-top:10px">Còn '+(issues.length-8)+' vấn đề khác trong kế hoạch chi tiết.</div>':'');
+          '<td><span class="issue-status">Chờ phản hồi</span></td></tr>';
+      }).join("")+'</tbody></table>'+(issues.length>8?'<div class="exec-row-note" style="margin-top:10px">Còn '+(issues.length-8)+' nội dung khác trong kế hoạch chi tiết.</div>':'');
     }
 
     var attention=items.filter(function(x){
@@ -1151,10 +1420,27 @@ body.modal-open{overflow:hidden}
       return '<div class="exec-row"><div class="exec-row-main"><div class="exec-row-title">'+esc(x.item.name)+'</div><div class="exec-row-meta"><span>'+esc(x.phase.no)+'</span><span>'+esc(x.item.owner||"—")+'</span></div></div><span class="date'+(d!==null&&d<0?' od':'')+'">'+label+'</span></div>';
     }).join(""):'<div class="exec-empty">Không có việc quá hạn hoặc đến hạn trong 7 ngày tới.</div>';
 
-    document.getElementById("phaseSummary").innerHTML=data.phases.map(function(p){
-      var pct=phaseProgress(p);
-      return '<div class="phase-sum-row'+(pct>=100?' done':'')+'"><span class="phase-sum-name">'+esc(p.no+' · '+p.name)+'</span><span class="phase-sum-bar"><i style="width:'+pct+'%"></i></span><span class="phase-sum-pct">'+pct+'%</span></div>';
-    }).join("");
+    var chartEl=document.getElementById("phaseSummary");
+    chartEl.innerHTML=
+      '<div class="phase-chart" role="img" aria-label="Biểu đồ tiến độ theo giai đoạn">'+
+        '<div class="phase-chart-y"><span class="y100">100</span><span class="y75">75</span><span class="y50">50</span><span class="y25">25</span><span class="y0">0</span></div>'+
+        '<div class="phase-chart-plot"><i class="phase-chart-grid g100"></i><i class="phase-chart-grid g75"></i><i class="phase-chart-grid g50"></i><i class="phase-chart-grid g25"></i>'+
+          data.phases.map(function(p,idx){
+            var pct=phaseProgress(p), active=p.id===cp.id;
+            return '<button type="button" class="phase-bar-btn'+(pct>=100?' done':'')+(active?' active':'')+'" data-chart-phase="'+esc(p.id)+'" aria-label="'+esc(p.no+' '+p.name+': '+pct+'%')+'">'+
+              '<span class="phase-bar-value">'+pct+'%</span><span class="phase-bar-track"><i class="phase-bar-fill" style="--h:'+pct+'%"></i></span><span class="phase-bar-label">P'+idx+'</span></button>';
+          }).join('')+
+        '</div></div>'+
+      '<div class="phase-chart-legend">'+data.phases.map(function(p){
+        var pct=phaseProgress(p), active=p.id===cp.id;
+        return '<div class="phase-chart-key'+(pct>=100?' done':'')+(active?' active':'')+'"><i></i><span>'+esc(p.no+' · '+p.name)+'</span><b>'+pct+'%</b></div>';
+      }).join('')+'</div>';
+    chartEl.querySelectorAll('[data-chart-phase]').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        setView('plan',true);
+        setTimeout(function(){ var el=document.getElementById(btn.getAttribute('data-chart-phase')); if(el) el.scrollIntoView({block:'start'}); },40);
+      });
+    });
   }
 
   /* ---------- CHIPS ---------- */
@@ -1217,23 +1503,36 @@ body.modal-open{overflow:hidden}
   }
 
 
-  function rowEditButton(key){
-    return '<button class="row-edit-btn" type="button" data-row-edit="'+key+'" aria-label="Chỉnh sửa link và vấn đề phát sinh" title="Chỉnh sửa link và vấn đề phát sinh">'+
-      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4Z"/></svg>'+
+  function cellEditButton(key,mode,label){
+    var extra=mode==="issues"?" issue-edit":(mode==="responses"?" response-edit":"");
+    return '<button class="cell-edit-btn'+extra+'" type="button" data-cell-edit="'+key+'" data-edit-mode="'+mode+'" aria-label="'+esc(label)+'" title="'+esc(label)+'">'+
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4Z"/></svg>'+ 
     '</button>';
   }
 
   function issueCell(item,key){
-    var txt=String(item.issue||"").trim();
-    var resolved=!!item.issueResolved;
-    var ro=txt?'<span class="ro issue-text '+(resolved?'':'open')+'">'+esc(txt)+'</span>':'<span class="ro issue-empty">—</span>';
-    return ro+'<input class="ed issue-in" type="text" value="'+esc(item.issue||"")+'" placeholder="Ghi nhận vấn đề phát sinh…" data-k="'+key+'" data-f="issue" aria-label="Vấn đề phát sinh">';
+    var issues=itemIssues(item);
+    var body='<span class="issue-empty">—</span>';
+    if(issues.length){
+      var shown=issues.slice(0,2).map(function(it,idx){
+        var pending=!String(it.response||"").trim();
+        return '<div class="issue-chip'+(pending?' open':'')+'"><div class="issue-chip-head"><span class="issue-index">#'+(idx+1)+'</span><span class="issue-author">'+esc(it.author||"Chưa ghi tên")+'</span></div><div class="issue-body">'+esc(it.content||"—")+'</div></div>';
+      }).join('');
+      body='<div class="issue-stack">'+shown+(issues.length>2?'<span class="issue-more">+'+(issues.length-2)+' nội dung khác</span>':'')+'</div>';
+    }
+    return '<div class="cell-edit-wrap"><div class="cell-edit-content">'+body+'</div>'+cellEditButton(key,"issues","Chỉnh sửa các vấn đề / thắc mắc")+'</div>';
   }
-  function issueResolvedCell(item,key){
-    var txt=String(item.issue||"").trim();
-    var resolved=!!item.issueResolved;
-    var ro=!txt?'<span class="ro issue-state na">Không phát sinh</span>':(resolved?'<span class="ro issue-state done">Đã xử lý</span>':'<span class="ro issue-state open">Chưa xử lý</span>');
-    return ro+'<label class="ed issue-check"><input type="checkbox" data-k="'+key+'" data-f="issueResolved" '+(resolved?'checked':'')+' '+(!txt?'disabled':'')+'><span>Đã xử lý</span></label>';
+  function issueResponseCell(item,key){
+    var issues=itemIssues(item);
+    var body='<span class="issue-empty">—</span>';
+    if(issues.length){
+      var shown=issues.slice(0,2).map(function(it,idx){
+        var response=String(it.response||"").trim();
+        return '<div class="response-chip'+(response?'':' pending')+'"><div class="response-chip-head"><span class="issue-index">#'+(idx+1)+'</span></div><div class="response-body">'+(response?esc(response):'Chưa có hướng xử lý')+'</div></div>';
+      }).join('');
+      body='<div class="response-stack">'+shown+(issues.length>2?'<span class="issue-more">+'+(issues.length-2)+' phản hồi khác</span>':'')+'</div>';
+    }
+    return '<div class="cell-edit-wrap"><div class="cell-edit-content">'+body+'</div>'+cellEditButton(key,"responses","Chỉnh sửa hướng xử lý")+'</div>';
   }
 
   /* ---------- LIST ---------- */
@@ -1271,15 +1570,15 @@ body.modal-open{overflow:hidden}
           '<th style="width:105px">Thời hạn</th>'+
           '<th style="width:130px">Trạng thái</th>'+
           '<th class="col-note">Kết quả / cập nhật</th>'+
-          '<th style="width:18%">Vấn đề phát sinh</th>'+
-          '<th style="width:110px">Đã xử lý</th>'+
+          '<th style="width:20%">Các vấn đề / thắc mắc phát sinh</th>'+
+          '<th style="width:18%">Hướng xử lý</th>'+
         '</tr></thead><tbody>';
 
       rows.forEach(function(r){
         var t=r.t, k=r.key, hasSubs=t.subs && t.subs.length;
         var isOpen = open[k]!==undefined ? open[k] : !!filtering;
         shown++;
-        html+='<tr class="task'+(overdue(t)?" late":"")+'" data-edit-key="'+k+'" title="Nhấn để chỉnh sửa link và vấn đề phát sinh">'+
+        html+='<tr class="task'+(overdue(t)?" late":"")+'" data-edit-key="'+k+'">'+
           '<td class="col-name"><span class="tw">'+
             (hasSubs
               ? '<button class="caret'+(isOpen?" open":"")+'" data-toggle="'+k+'" aria-label="Mở/đóng việc con"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>'
@@ -1287,28 +1586,28 @@ body.modal-open{overflow:hidden}
             '<span class="tname">'+esc(t.name)+
               (t.milestone? '<span class="pill-ms">'+esc(t.milestone)+'</span>':'')+
               (t.link? ' <a class="linkico" href="'+esc(t.link)+'" target="_blank" rel="noopener" aria-label="Mở link công việc" title="Mở link đính kèm">↗</a>':'')+
-            '</span>'+rowEditButton(k)+'</span></td>'+
+            '</span>'+cellEditButton(k,"link","Chỉnh sửa link đính kèm")+'</span></td>'+
           '<td class="col-owner">'+ownerCell(t,k)+'</td>'+
           '<td class="col-start">'+dateCell(t,k,"start")+'</td>'+
           '<td class="col-due" data-label="Hạn">'+dateCell(t,k,"due")+'</td>'+
           '<td class="col-status">'+statusCell(t,k)+'</td>'+
           '<td class="col-note">'+noteCell(t,k)+'</td>'+
-          '<td class="col-issue">'+issueCell(t,k)+'</td>'+
-          '<td class="col-resolved">'+issueResolvedCell(t,k)+'</td>'+
+          '<td class="col-issue cell-editable">'+issueCell(t,k)+'</td>'+
+          '<td class="col-resolved cell-editable">'+issueResponseCell(t,k)+'</td>'+
         '</tr>';
 
         r.subs.forEach(function(x){
           if(!r.tOk && !x.ok) return;
           shown++;
-          html+='<tr class="sub'+(isOpen?"":" hidden")+(overdue(x.s)?" late":"")+'" data-parent="'+k+'" data-edit-key="'+x.key+'" title="Nhấn để chỉnh sửa link và vấn đề phát sinh">'+
-            '<td class="col-name"><span class="tw"><span class="sname">'+esc(x.s.name)+(x.s.link? ' <a class="linkico" href="'+esc(x.s.link)+'" target="_blank" rel="noopener" aria-label="Mở link công việc" title="Mở link đính kèm">↗</a>':'')+'</span>'+rowEditButton(x.key)+'</span></td>'+
+          html+='<tr class="sub'+(isOpen?"":" hidden")+(overdue(x.s)?" late":"")+'" data-parent="'+k+'" data-edit-key="'+x.key+'">'+
+            '<td class="col-name"><span class="tw"><span class="sname">'+esc(x.s.name)+(x.s.link? ' <a class="linkico" href="'+esc(x.s.link)+'" target="_blank" rel="noopener" aria-label="Mở link công việc" title="Mở link đính kèm">↗</a>':'')+'</span>'+cellEditButton(x.key,"link","Chỉnh sửa link đính kèm")+'</span></td>'+
             '<td class="col-owner">'+ownerCell(x.s,x.key)+'</td>'+
             '<td class="col-start">'+dateCell(x.s,x.key,"start")+'</td>'+
             '<td class="col-due" data-label="Hạn">'+dateCell(x.s,x.key,"due")+'</td>'+
             '<td class="col-status">'+statusCell(x.s,x.key)+'</td>'+
             '<td class="col-note">'+noteCell(x.s,x.key)+'</td>'+
-            '<td class="col-issue">'+issueCell(x.s,x.key)+'</td>'+
-            '<td class="col-resolved">'+issueResolvedCell(x.s,x.key)+'</td>'+
+            '<td class="col-issue cell-editable">'+issueCell(x.s,x.key)+'</td>'+
+            '<td class="col-resolved cell-editable">'+issueResponseCell(x.s,x.key)+'</td>'+
           '</tr>';
         });
       });
@@ -1334,15 +1633,24 @@ body.modal-open{overflow:hidden}
     return p.length===3 ? t.subs[+p[2]] : t;
   }
   var quickEditKey=null;
+  var quickEditMode="link";
   var quickDirty=false;
+  var pendingRemotePlan=null;
+  var lastPlanFingerprint=JSON.stringify(data);
+  var syncTimer=null;
   var taskEditorBackdrop=document.getElementById("taskEditorBackdrop");
   var quickLink=document.getElementById("quickLink");
-  var quickIssue=document.getElementById("quickIssue");
-  var quickResolved=document.getElementById("quickResolved");
-  var quickResolvedWrap=document.getElementById("quickResolvedWrap");
+  var quickLinkSection=document.getElementById("quickLinkSection");
+  var quickIssuesSection=document.getElementById("quickIssuesSection");
+  var quickResponsesSection=document.getElementById("quickResponsesSection");
+  var quickIssuesList=document.getElementById("quickIssuesList");
+  var quickIssuesEmpty=document.getElementById("quickIssuesEmpty");
+  var quickResponsesList=document.getElementById("quickResponsesList");
+  var quickResponsesEmpty=document.getElementById("quickResponsesEmpty");
   var quickLinkError=document.getElementById("quickLinkError");
   var quickOpenLink=document.getElementById("quickOpenLink");
   var quickSavebar=document.getElementById("quickSavebar");
+  var syncStatus=document.getElementById("syncStatus");
 
   function phaseByKey(k){
     var p=String(k).split(".");
@@ -1358,64 +1666,220 @@ body.modal-open{overflow:hidden}
       return u.href;
     }catch(e){ return null; }
   }
-  function syncQuickResolved(){
-    var hasIssue=!!String(quickIssue.value||"").trim();
-    quickResolved.disabled=!hasIssue;
-    if(!hasIssue) quickResolved.checked=false;
-    quickResolvedWrap.classList.toggle("disabled",!hasIssue);
+  function syncQuickIssuesEmpty(){ quickIssuesEmpty.hidden=quickIssuesList.children.length>0; }
+  function addQuickIssue(issue){
+    issue=issue||{id:issueId(),author:"",content:"",response:""};
+    var card=document.createElement("article");
+    card.className="quick-issue-card";
+    card.setAttribute("data-issue-id",issue.id||issueId());
+    card.setAttribute("data-existing-response",issue.response||"");
+    card.innerHTML='<div class="quick-issue-card-head"><span class="quick-issue-number">#'+(quickIssuesList.children.length+1)+'</span><span class="quick-issue-title">Vấn đề / thắc mắc</span><button type="button" class="quick-remove-issue" aria-label="Xoá nội dung này">×</button></div>'+ 
+      '<div class="quick-issue-grid"><div><label class="quick-mini-label">Người để lại</label><input class="quick-input" data-issue-field="author" type="text" value="'+esc(issue.author||"")+'" placeholder="Ví dụ: Mr. Hào"></div>'+ 
+      '<div><label class="quick-mini-label">Nội dung vấn đề / thắc mắc</label><textarea class="quick-textarea" data-issue-field="content" placeholder="Mô tả rõ nội dung cần team Base phản hồi...">'+esc(issue.content||"")+'</textarea></div></div>';
+    quickIssuesList.appendChild(card);
+    renumberQuickIssues();
+    syncQuickIssuesEmpty();
+  }
+  function renumberQuickIssues(){
+    quickIssuesList.querySelectorAll('.quick-issue-card').forEach(function(card,idx){ card.querySelector('.quick-issue-number').textContent='#'+(idx+1); });
+  }
+  function renderQuickIssues(item){
+    quickIssuesList.innerHTML='';
+    itemIssues(item).forEach(function(issue){ addQuickIssue(issue); });
+    syncQuickIssuesEmpty();
+  }
+  function collectQuickIssues(){
+    var result=[], invalid=null;
+    quickIssuesList.querySelectorAll('.quick-issue-card').forEach(function(card){
+      card.classList.remove('invalid');
+      var content=String(card.querySelector('[data-issue-field="content"]').value||'').trim();
+      var author=String(card.querySelector('[data-issue-field="author"]').value||'').trim();
+      var response=String(card.getAttribute('data-existing-response')||'').trim();
+      if(!content && !author) return;
+      if(!content && !invalid){ invalid=card; card.classList.add('invalid'); return; }
+      result.push({id:card.getAttribute('data-issue-id')||issueId(),author:author,content:content,response:response});
+    });
+    if(invalid){ invalid.querySelector('[data-issue-field="content"]').focus(); return null; }
+    return result;
+  }
+  function renderQuickResponses(item){
+    quickResponsesList.innerHTML='';
+    var issues=itemIssues(item);
+    quickResponsesEmpty.hidden=issues.length>0;
+    issues.forEach(function(issue,idx){
+      var card=document.createElement('article');
+      card.className='response-editor-card';
+      card.setAttribute('data-issue-id',issue.id||issueId());
+      card.innerHTML='<div class="response-editor-head"><span class="issue-index">#'+(idx+1)+'</span><span class="issue-author">'+esc(issue.author||'Chưa ghi tên')+'</span></div>'+ 
+        '<div class="response-editor-context"><b>Vấn đề / thắc mắc:</b> '+esc(issue.content||'—')+'</div>'+ 
+        '<label class="quick-mini-label">Hướng xử lý / phản hồi</label><textarea class="quick-textarea" data-response-field placeholder="Ghi nhận phương án, câu trả lời hoặc bước xử lý tiếp theo...">'+esc(issue.response||'')+'</textarea>';
+      quickResponsesList.appendChild(card);
+    });
+  }
+  function collectQuickResponses(item){
+    var responses={};
+    quickResponsesList.querySelectorAll('.response-editor-card').forEach(function(card){
+      responses[card.getAttribute('data-issue-id')]=String(card.querySelector('[data-response-field]').value||'').trim();
+    });
+    return itemIssues(item).map(function(issue){
+      return {id:issue.id||issueId(),author:issue.author||'',content:issue.content||'',response:Object.prototype.hasOwnProperty.call(responses,issue.id)?responses[issue.id]:(issue.response||'')};
+    });
   }
   function syncQuickLinkActions(){
     var v=normalizeLink(quickLink.value);
     quickOpenLink.disabled=!v;
   }
-  function openTaskEditor(k){
+  function editorLabels(mode){
+    if(mode==="issues") return {kicker:"Các vấn đề / thắc mắc phát sinh",save:"Lưu vấn đề / thắc mắc"};
+    if(mode==="responses") return {kicker:"Hướng xử lý",save:"Lưu hướng xử lý"};
+    return {kicker:"Link đính kèm",save:"Lưu link"};
+  }
+  function openTaskEditor(k,mode){
     var item=itemByKey(k), phase=phaseByKey(k);
     if(!item) return;
     quickEditKey=k;
+    quickEditMode=mode||"link";
+    var labels=editorLabels(quickEditMode);
+    document.getElementById("taskEditorKicker").textContent=labels.kicker;
+    document.getElementById("taskEditorSave").textContent=labels.save;
     document.getElementById("taskEditorTitle").textContent=item.name||"Công việc";
     document.getElementById("taskEditorMeta").textContent=(phase?phase.no+" · ":"")+(item.owner||"Chưa phân công")+(item.due?" · Hạn "+fmt(item.due):"");
-    quickLink.value=item.link||"";
-    quickIssue.value=item.issue||"";
-    quickResolved.checked=!!item.issueResolved;
-    quickLink.classList.remove("bad");
-    quickLinkError.classList.remove("show");
-    syncQuickResolved();
-    syncQuickLinkActions();
+    quickLinkSection.hidden=quickEditMode!=="link";
+    quickIssuesSection.hidden=quickEditMode!=="issues";
+    quickResponsesSection.hidden=quickEditMode!=="responses";
+    if(quickEditMode==="link"){
+      quickLink.value=item.link||"";
+      quickLink.classList.remove("bad");
+      quickLinkError.classList.remove("show");
+      syncQuickLinkActions();
+    }else if(quickEditMode==="issues"){
+      renderQuickIssues(item);
+    }else{
+      renderQuickResponses(item);
+    }
     taskEditorBackdrop.hidden=false;
     document.body.classList.add("modal-open");
-    setTimeout(function(){ quickLink.focus(); quickLink.select(); },30);
+    setTimeout(function(){
+      var focusEl=quickEditMode==="link"?quickLink:(quickEditMode==="issues"?quickIssuesList.querySelector('input,textarea'):quickResponsesList.querySelector('textarea'));
+      if(focusEl){ focusEl.focus(); if(focusEl===quickLink) focusEl.select(); }
+    },30);
+  }
+  function applyPendingRemote(){
+    if(!pendingRemotePlan) return;
+    var incoming=pendingRemotePlan;
+    pendingRemotePlan=null;
+    applyRemotePlan(incoming);
   }
   function closeTaskEditor(){
     taskEditorBackdrop.hidden=true;
     document.body.classList.remove("modal-open");
     quickEditKey=null;
+    setTimeout(applyPendingRemote,0);
+  }
+  function setSyncState(state,text,detail){
+    if(!syncStatus) return;
+    syncStatus.dataset.state=state||"connecting";
+    syncStatus.textContent=text||"Đang kết nối";
+    syncStatus.title=detail||("Trạng thái đồng bộ Firebase: "+syncStatus.textContent);
+    if(state==="synced") quickSavebar.hidden=true;
+  }
+  function requestRealtimeSave(){
+    clearTimeout(syncTimer);
+    syncTimer=setTimeout(function(){
+      var snapshot=JSON.parse(JSON.stringify(data));
+      lastPlanFingerprint=JSON.stringify(snapshot);
+      if(window.KOMEX_FIREBASE && window.KOMEX_FIREBASE.savePlan){
+        window.KOMEX_FIREBASE.savePlan(snapshot).catch(function(err){
+          console.error(err);
+          setSyncState("error","Lỗi đồng bộ",err.message||String(err));
+          quickSavebar.hidden=false;
+        });
+      }else{
+        window.__KOMEX_PENDING_PLAN=snapshot;
+        setSyncState(navigator.onLine?"connecting":"offline",navigator.onLine?"Đang kết nối":"Ngoại tuyến");
+      }
+    },220);
   }
   function markQuickDirty(){
     quickDirty=true;
     quickSavebar.hidden=false;
+    requestRealtimeSave();
   }
+  function applyRemotePlan(incoming){
+    if(!incoming || !Array.isArray(incoming.phases)) return;
+    var fingerprint=JSON.stringify(incoming);
+    if(fingerprint===lastPlanFingerprint) return;
+    data=JSON.parse(fingerprint);
+    normalizeIssueData();
+    lastPlanFingerprint=JSON.stringify(data);
+    lu.value=data.lastUpdate||"";
+    document.getElementById("plan-data").textContent=JSON.stringify(data,null,2);
+    refresh(true);
+  }
+
+  window.addEventListener("komex-sync-ready",function(){
+    setSyncState("connecting","Đang kết nối");
+    if(window.KOMEX_FIREBASE){
+      window.KOMEX_FIREBASE.seedIfEmpty(JSON.parse(JSON.stringify(data))).catch(function(err){ setSyncState("error","Lỗi đồng bộ",err.message||String(err)); });
+      if(window.__KOMEX_PENDING_PLAN){
+        var pending=window.__KOMEX_PENDING_PLAN;
+        window.__KOMEX_PENDING_PLAN=null;
+        window.KOMEX_FIREBASE.savePlan(pending).catch(function(err){ setSyncState("error","Lỗi đồng bộ",err.message||String(err)); });
+      }
+    }
+  });
+  window.addEventListener("komex-sync-state",function(e){
+    var d=e.detail||{};
+    setSyncState(d.state||"connecting",d.text||"Đang kết nối",d.error||"");
+  });
+  window.addEventListener("komex-remote-plan",function(e){
+    var d=e.detail||{};
+    if(!d.plan) return;
+    if(!taskEditorBackdrop.hidden){
+      pendingRemotePlan=d.plan;
+      setSyncState("saving","Có dữ liệu mới","Dữ liệu từ thiết bị khác sẽ được áp dụng sau khi đóng cửa sổ chỉnh sửa.");
+      return;
+    }
+    applyRemotePlan(d.plan);
+  });
+  window.addEventListener("komex-sync-empty",function(){
+    if(window.KOMEX_FIREBASE) window.KOMEX_FIREBASE.seedIfEmpty(JSON.parse(JSON.stringify(data))).catch(function(err){ setSyncState("error","Lỗi đồng bộ",err.message||String(err)); });
+  });
 
   document.getElementById("taskEditorClose").addEventListener("click",closeTaskEditor);
   document.getElementById("taskEditorCancel").addEventListener("click",closeTaskEditor);
   taskEditorBackdrop.addEventListener("click",function(e){ if(e.target===taskEditorBackdrop) closeTaskEditor(); });
   document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !taskEditorBackdrop.hidden) closeTaskEditor(); });
-  quickIssue.addEventListener("input",syncQuickResolved);
+  document.getElementById("quickAddIssue").addEventListener("click",function(){ addQuickIssue(); var cards=quickIssuesList.querySelectorAll('.quick-issue-card'); if(cards.length) cards[cards.length-1].querySelector('[data-issue-field="author"]').focus(); });
+  quickIssuesList.addEventListener("click",function(e){
+    var remove=e.target.closest('.quick-remove-issue');
+    if(!remove) return;
+    remove.closest('.quick-issue-card').remove();
+    renumberQuickIssues();
+    syncQuickIssuesEmpty();
+  });
   quickLink.addEventListener("input",function(){ quickLink.classList.remove("bad"); quickLinkError.classList.remove("show"); syncQuickLinkActions(); });
   quickOpenLink.addEventListener("click",function(){ var v=normalizeLink(quickLink.value); if(v) window.open(v,"_blank","noopener"); });
   document.getElementById("quickClearLink").addEventListener("click",function(){ quickLink.value=""; syncQuickLinkActions(); quickLink.focus(); });
   document.getElementById("taskEditorSave").addEventListener("click",function(){
     if(!quickEditKey) return;
-    var normalized=normalizeLink(quickLink.value);
-    if(normalized===null){
-      quickLink.classList.add("bad");
-      quickLinkError.classList.add("show");
-      quickLink.focus();
-      return;
-    }
     var item=itemByKey(quickEditKey);
-    item.link=normalized;
-    item.issue=String(quickIssue.value||"").trim();
-    item.issueResolved=item.issue?!!quickResolved.checked:false;
+    if(quickEditMode==="link"){
+      var normalized=normalizeLink(quickLink.value);
+      if(normalized===null){
+        quickLink.classList.add("bad");
+        quickLinkError.classList.add("show");
+        quickLink.focus();
+        return;
+      }
+      item.link=normalized;
+    }else if(quickEditMode==="issues"){
+      var issues=collectQuickIssues();
+      if(issues===null) return;
+      item.issues=issues;
+    }else{
+      item.issues=collectQuickResponses(item);
+    }
     closeTaskEditor();
     markQuickDirty();
     refresh(true);
@@ -1423,17 +1887,10 @@ body.modal-open{overflow:hidden}
   document.getElementById("quickSaveDismiss").addEventListener("click",function(){ quickSavebar.hidden=true; });
 
   function bindRows(){
-    document.querySelectorAll("[data-row-edit]").forEach(function(btn){
+    document.querySelectorAll("[data-cell-edit]").forEach(function(btn){
       btn.addEventListener("click",function(e){
         e.preventDefault(); e.stopPropagation();
-        openTaskEditor(btn.getAttribute("data-row-edit"));
-      });
-    });
-    document.querySelectorAll("tr[data-edit-key]").forEach(function(tr){
-      tr.addEventListener("click",function(e){
-        if(editing) return;
-        if(e.target.closest("a,button,input,select,textarea,label")) return;
-        openTaskEditor(tr.getAttribute("data-edit-key"));
+        openTaskEditor(btn.getAttribute("data-cell-edit"),btn.getAttribute("data-edit-mode")||"link");
       });
     });
     document.querySelectorAll("a.linkico").forEach(function(a){
@@ -1465,25 +1922,19 @@ body.modal-open{overflow:hidden}
         var f=el.getAttribute("data-f");
         if(item[f]===iso) return;
         item[f]=iso;
+        markQuickDirty();
         refresh(true);
       });
       el.addEventListener("keydown", function(e){ if(e.key==="Enter") el.blur(); });
     });
 
-    // ô chọn, kết quả cập nhật và vấn đề phát sinh
-    document.querySelectorAll("select.ed[data-k], input.note-in[data-k], input.issue-in[data-k]").forEach(function(el){
+    // ô chọn và kết quả cập nhật
+    document.querySelectorAll("select.ed[data-k], input.note-in[data-k]").forEach(function(el){
       el.addEventListener("change", function(){
         var item=itemByKey(el.getAttribute("data-k"));
         var f=el.getAttribute("data-f");
         item[f] = el.value;
-        if(f==="issue" && !String(el.value||"").trim()) item.issueResolved=false;
-        refresh(true);
-      });
-    });
-    document.querySelectorAll('input[type="checkbox"][data-f="issueResolved"]').forEach(function(el){
-      el.addEventListener("change", function(){
-        var item=itemByKey(el.getAttribute("data-k"));
-        item.issueResolved=!!el.checked;
+        markQuickDirty();
         refresh(true);
       });
     });
@@ -1524,18 +1975,21 @@ body.modal-open{overflow:hidden}
 
   var lu=document.getElementById("lastUpdate");
   lu.addEventListener("input", function(){ autoSlash(lu); });
-  lu.addEventListener("blur", function(){ data.lastUpdate = lu.value; });
+  lu.addEventListener("blur", function(){ if(data.lastUpdate!==lu.value){ data.lastUpdate = lu.value; markQuickDirty(); } });
 
   document.getElementById("btnPrint").addEventListener("click", function(){ window.print(); });
 
   document.getElementById("btnCsv").addEventListener("click", function(){
-    var rows=[["Phase","Loại","Công việc","Đầu mối","Bắt đầu","Thời hạn","Trạng thái","Kết quả / cập nhật","Vấn đề phát sinh","Đã xử lý"]];
+    var rows=[["Phase","Loại","Công việc","Đầu mối","Bắt đầu","Thời hạn","Trạng thái","Kết quả / cập nhật","Người để lại","Vấn đề / thắc mắc","Hướng xử lý"]];
+    function pushCsvItem(p,type,item,statusLabel){
+      var issues=itemIssues(item);
+      if(!issues.length){ rows.push([p.no+": "+p.name,type,item.name,item.owner,fmt(item.start),fmt(item.due),statusLabel,item.note||"","","",""]); return; }
+      issues.forEach(function(issue){ rows.push([p.no+": "+p.name,type,item.name,item.owner,fmt(item.start),fmt(item.due),statusLabel,item.note||"",issue.author||"",issue.content||"",issue.response||""]); });
+    }
     data.phases.forEach(function(p){
       p.tasks.forEach(function(t){
-        rows.push([p.no+": "+p.name,"Task",t.name,t.owner,fmt(t.start),fmt(t.due),STATUS[taskStatus(t)].label,t.note||"",t.issue||"",t.issue? (t.issueResolved?"Có":"Chưa") : ""]);
-        (t.subs||[]).forEach(function(s){
-          rows.push([p.no+": "+p.name,"Subtask",s.name,s.owner,fmt(s.start),fmt(s.due),STATUS[s.status].label,s.note||"",s.issue||"",s.issue? (s.issueResolved?"Có":"Chưa") : ""]);
-        });
+        pushCsvItem(p,"Task",t,STATUS[taskStatus(t)].label);
+        (t.subs||[]).forEach(function(s){ pushCsvItem(p,"Subtask",s,STATUS[s.status].label); });
       });
     });
     var csv="\ufeff"+rows.map(function(r){
