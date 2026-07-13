@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Master Plan · Dự án chuyển đổi số Komex × Base.vn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --ink:#0A1A2F; --ink2:#33475F; --muted:#7A8CA3;
+  --line:#E3E9F2; --line2:#EEF2F8;
+  --canvas:#F2F5FA; --surface:#FFFFFF;
+  --base:#1668E3; --base-deep:#0F3D8C; --base-soft:#E7F0FE;
+  --komex:#E01F26; --komex-soft:#FDECEC;
+  --done:#0E9F6E; --done-soft:#E4F6EF;
+  --doing:#E08700; --doing-soft:#FDF1DF;
+  --hold:#7C5CD6; --hold-soft:#F0EBFC;
+  --idle:#8496AC; --idle-soft:#EDF1F6;
+  --r:10px;
+  --shadow:0 1px 2px rgba(10,26,47,.05), 0 8px 24px -12px rgba(10,26,47,.18);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:150px}
+body{
+  margin:0; background:var(--canvas); color:var(--ink);
+  font-family:'Be Vietnam Pro',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:14px; line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+.wrap{max-width:1440px;margin:0 auto;padding:0 24px}
+
+/* ---------- TOP BAR ---------- */
+.topbar{
+  position:sticky; top:0; z-index:50;
+  background:rgba(255,255,255,.92); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{display:flex;align-items:center;gap:20px;padding:14px 24px;max-width:1440px;margin:0 auto;flex-wrap:wrap}
+.lockup{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.lockup b{font-weight:800;letter-spacing:-.02em;font-size:15px}
+.lockup .x{color:var(--muted);font-weight:400}
+.lockup .base{color:var(--base)}
+.lockup .komex{color:var(--komex)}
+.topbar h1{
+  margin:0;font-size:13px;font-weight:600;color:var(--ink2);
+  padding-left:20px;border-left:1px solid var(--line);flex:1;min-width:200px;
+}
+.topbar h1 span{display:block;font-weight:400;color:var(--muted);font-size:11.5px}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{
+  font-family:inherit;font-size:12.5px;font-weight:600;
+  padding:8px 13px;border-radius:8px;border:1px solid var(--line);
+  background:var(--surface);color:var(--ink2);cursor:pointer;
+  transition:.15s; display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+}
+.btn:hover{border-color:var(--base);color:var(--base);background:var(--base-soft)}
+.btn:focus-visible{outline:2px solid var(--base);outline-offset:2px}
+.btn-primary{background:var(--base);border-color:var(--base);color:#fff}
+.btn-primary:hover{background:var(--base-deep);border-color:var(--base-deep);color:#fff}
+.btn.on{background:var(--komex);border-color:var(--komex);color:#fff}
+.btn.on:hover{background:#B8161C;border-color:#B8161C;color:#fff}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+/* ---------- HERO ---------- */
+.hero{padding:34px 0 8px}
+.hero-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:26px}
+.hero h2{
+  margin:0;font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1.15;
+}
+.hero h2 em{font-style:normal;color:var(--base)}
+.hero .sub{margin:6px 0 0;color:var(--muted);font-size:13px;max-width:640px}
+.stamp{
+  font-size:11.5px;color:var(--muted);text-align:right;
+  border-right:2px solid var(--base);padding-right:12px;
+}
+.stamp b{display:block;color:var(--ink);font-size:13px;font-weight:700}
+#lastUpdate{border:none;background:transparent;font:inherit;color:inherit;text-align:right;padding:0;width:110px}
+body.editing #lastUpdate{border-bottom:1px dashed var(--base);cursor:text}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:26px}
+.kpi{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px;position:relative;overflow:hidden;
+}
+.kpi:before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--line)}
+.kpi.k-main:before{background:var(--base)}
+.kpi.k-done:before{background:var(--done)}
+.kpi.k-doing:before{background:var(--doing)}
+.kpi.k-late:before{background:var(--komex)}
+.kpi.k-next:before{background:var(--ink)}
+.kpi .lab{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.kpi .val{font-size:27px;font-weight:800;letter-spacing:-.03em;margin-top:4px;line-height:1.1}
+.kpi .val small{font-size:14px;font-weight:600;color:var(--muted)}
+.kpi .hint{font-size:11.5px;color:var(--muted);margin-top:2px}
+.kpi.k-next .val{font-size:15px;font-weight:700;letter-spacing:0;line-height:1.35;margin-top:6px}
+
+/* ---------- PHASE RAIL (signature) ---------- */
+.rail{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:26px 28px 20px;box-shadow:var(--shadow);margin-bottom:8px;
+}
+.rail-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}
+.rail-top h3{margin:0;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+.rail-legend{display:flex;gap:14px;font-size:11px;color:var(--muted);flex-wrap:wrap}
+.rail-legend i{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:4px}
+.track{display:flex;align-items:flex-start;gap:0;position:relative}
+.seg{flex:1;position:relative;padding-top:34px;cursor:pointer;background:none;border:0;font:inherit;text-align:left;color:inherit}
+.seg:focus-visible{outline:2px solid var(--base);outline-offset:4px;border-radius:6px}
+.seg .bar{
+  position:absolute;top:14px;left:0;right:0;height:6px;background:var(--line2);
+  border-radius:99px;overflow:hidden;
+}
+.seg:first-child .bar{border-radius:99px}
+.seg .fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--base),#4A8CF0);border-radius:99px;width:0;transition:width .9s cubic-bezier(.2,.7,.2,1)}
+.seg .fill.full{background:linear-gradient(90deg,var(--done),#3FBF93)}
+.seg .knob{
+  position:absolute;top:8px;left:-1px;width:18px;height:18px;border-radius:50%;
+  background:var(--surface);border:2px solid var(--line);z-index:2;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:800;color:var(--muted);
+}
+.seg.active .knob{border-color:var(--base);color:var(--base);box-shadow:0 0 0 4px var(--base-soft)}
+.seg.complete .knob{background:var(--done);border-color:var(--done);color:#fff}
+.seg .pname{font-size:12.5px;font-weight:700;letter-spacing:-.01em;margin-bottom:1px;padding-right:12px}
+.seg .pwin{font-size:11px;color:var(--muted)}
+.seg .ppct{font-size:11px;font-weight:700;color:var(--base);margin-top:3px}
+.seg.complete .ppct{color:var(--done)}
+.seg:hover .pname{color:var(--base)}
+.seg.active .pname:after{content:'ĐANG CHẠY';margin-left:7px;font-size:8.5px;font-weight:800;letter-spacing:.08em;color:var(--base);background:var(--base-soft);padding:2px 5px;border-radius:4px;vertical-align:1px}
+.seg .flag{
+  position:absolute;top:-13px;left:-3px;font-size:9.5px;font-weight:800;letter-spacing:.05em;
+  color:var(--komex);white-space:nowrap;
+}
+.seg .flag:after{content:'';display:block;width:1px;height:8px;background:var(--komex);margin-left:5px;margin-top:1px}
+
+/* ---------- CONTROLS ---------- */
+.controls{
+  position:sticky;top:60px;z-index:40;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  padding:12px 0 12px;margin-top:22px;
+  background:linear-gradient(var(--canvas) 78%, rgba(242,245,250,0));
+}
+.search{
+  flex:1;min-width:220px;max-width:340px;position:relative;
+}
+.search input{
+  width:100%;padding:9px 12px 9px 32px;border:1px solid var(--line);border-radius:8px;
+  font:inherit;font-size:13px;background:var(--surface);color:var(--ink);
+}
+.search input:focus{outline:none;border-color:var(--base);box-shadow:0 0 0 3px var(--base-soft)}
+.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{
+  font-family:inherit;font-size:12px;font-weight:600;padding:7px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink2);cursor:pointer;transition:.15s;
+  display:inline-flex;align-items:center;gap:5px;
+}
+.chip:hover{border-color:var(--base);color:var(--base)}
+.chip:focus-visible{outline:2px solid var(--base);outline-offset:2px}
+.chip.sel{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip.sel:hover{background:var(--ink);color:#fff}
+.chip .n{font-size:10.5px;opacity:.65;font-weight:700}
+.filler{flex:1}
+.count{font-size:12px;color:var(--muted);white-space:nowrap}
+
+/* ---------- PHASE BLOCKS ---------- */
+main{padding-bottom:60px}
+.phase{margin-bottom:26px;scroll-margin-top:150px}
+.phase-head{
+  display:flex;align-items:center;gap:12px;padding:0 4px 10px;flex-wrap:wrap;
+}
+.phase-no{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  background:var(--ink);color:#fff;padding:3px 7px;border-radius:5px;letter-spacing:.02em;
+}
+.phase-head h3{margin:0;font-size:17px;font-weight:800;letter-spacing:-.02em}
+.phase-win{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.phase-prog{display:flex;align-items:center;gap:8px;margin-left:auto}
+.phase-prog .mini{width:110px;height:5px;background:var(--line2);border-radius:99px;overflow:hidden}
+.phase-prog .mini i{display:block;height:100%;background:var(--base);border-radius:99px;transition:width .6s}
+.phase-prog .mini i.full{background:var(--done)}
+.phase-prog b{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse}
+thead th{
+  font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  text-align:left;padding:11px 14px;background:#FAFCFE;border-bottom:1px solid var(--line);white-space:nowrap;
+}
+tbody td{padding:11px 14px;border-bottom:1px solid var(--line2);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tr.task:hover, tr.sub:hover{background:#FAFCFE}
+tr.sub{background:#FCFDFF}
+tr.sub td{padding-top:8px;padding-bottom:8px}
+tr.late td:first-child{box-shadow:inset 3px 0 0 var(--komex)}
+tr.hidden{display:none}
+
+.tw{display:flex;align-items:center;gap:9px}
+.caret{
+  border:0;background:none;cursor:pointer;padding:0;width:16px;height:16px;flex-shrink:0;
+  color:var(--muted);display:flex;align-items:center;justify-content:center;transition:.15s;border-radius:3px;
+}
+.caret:hover{color:var(--base);background:var(--base-soft)}
+.caret:focus-visible{outline:2px solid var(--base);outline-offset:1px}
+.caret svg{transition:transform .18s}
+.caret.open svg{transform:rotate(90deg)}
+.caret.ghost{visibility:hidden;cursor:default}
+.tname{font-size:13.5px;font-weight:600;letter-spacing:-.005em}
+.sname{font-size:13px;font-weight:400;color:var(--ink2);padding-left:25px;position:relative}
+.sname:before{content:'';position:absolute;left:9px;top:9px;width:8px;height:1px;background:var(--line)}
+.pill-ms{
+  font-size:9px;font-weight:800;letter-spacing:.07em;color:#fff;background:var(--komex);
+  padding:2px 6px;border-radius:4px;margin-left:7px;vertical-align:1.5px;white-space:nowrap;
+}
+.linkico{color:var(--base);margin-left:6px;opacity:.7}
+.linkico:hover{opacity:1}
+
+.owner{
+  font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px;white-space:nowrap;display:inline-block;
+}
+.o-base{background:var(--base-soft);color:var(--base-deep)}
+.o-komex{background:var(--komex-soft);color:#A8171D}
+.o-both{background:#EEF2F8;color:var(--ink2)}
+.o-none{color:var(--muted);font-weight:400}
+
+.date{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink2);white-space:nowrap}
+.date.empty{color:#C3CDDA}
+.date.od{color:var(--komex);font-weight:700}
+
+.st{
+  font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:99px;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:5px;
+}
+.st:before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.st-idle{background:var(--idle-soft);color:#5C6E85}
+.st-doing{background:var(--doing-soft);color:var(--doing)}
+.st-done{background:var(--done-soft);color:var(--done)}
+.st-hold{background:var(--hold-soft);color:var(--hold)}
+.st-block{background:var(--komex-soft);color:var(--komex)}
+
+.pbar{display:flex;align-items:center;gap:8px;min-width:98px}
+.pbar .rail2{flex:1;height:5px;background:var(--line2);border-radius:99px;overflow:hidden}
+.pbar .rail2 i{display:block;height:100%;background:var(--base);border-radius:99px;transition:width .4s}
+.pbar .rail2 i.full{background:var(--done)}
+.pbar b{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;width:32px;text-align:right;color:var(--ink2)}
+.note{font-size:12px;color:var(--muted);max-width:260px}
+.note:empty:before{content:'—';color:#C8D2DE}
+
+/* editable fields */
+.ed{display:none}
+body.editing .ed{display:inline-flex}
+body.editing .ro{display:none}
+select.ed, input.ed{
+  font:inherit;font-size:12px;padding:5px 7px;border:1px solid var(--line);border-radius:6px;
+  background:var(--surface);color:var(--ink);max-width:100%;
+}
+select.ed:focus,input.ed:focus{outline:none;border-color:var(--base);box-shadow:0 0 0 3px var(--base-soft)}
+input.ed.date-in{width:132px;font-family:'JetBrains Mono',monospace}
+input.ed.note-in{width:100%;min-width:150px}
+input.ed.pct-in{width:64px;font-family:'JetBrains Mono',monospace}
+.rollup{font-size:10.5px;color:var(--muted);font-style:italic}
+
+.editbar{
+  display:none;position:sticky;top:60px;z-index:45;
+  background:var(--komex);color:#fff;padding:9px 24px;font-size:12.5px;font-weight:600;
+  align-items:center;gap:14px;flex-wrap:wrap;
+}
+body.editing .editbar{display:flex}
+.editbar .sp{flex:1}
+.editbar button{
+  font:inherit;font-size:12px;font-weight:700;background:#fff;color:var(--komex);
+  border:0;padding:6px 11px;border-radius:6px;cursor:pointer;
+}
+.editbar button:hover{background:#FFE9EA}
+body.editing .controls{top:100px}
+body.editing html{scroll-padding-top:190px}
+
+footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);font-size:12px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.empty-state{padding:44px;text-align:center;color:var(--muted);font-size:13px}
+
+@media(max-width:1100px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .kpi.k-next{grid-column:span 2}
+  .track{flex-direction:column;gap:2px}
+  .seg{width:100%;padding-top:0;padding-left:28px;padding-bottom:14px}
+  .seg .bar{top:auto;bottom:0;left:8px;right:auto;width:2px;height:100%;top:20px}
+  .seg .fill{width:100%!important;height:var(--h,0%);top:0;bottom:auto}
+  .seg .knob{top:0;left:0}
+  .seg .flag{position:static;margin-bottom:2px}
+  .seg .flag:after{display:none}
+  th.col-note,td.col-note,th.col-start,td.col-start{display:none}
+}
+@media(max-width:760px){
+  .wrap{padding:0 14px}
+  .topbar-in{padding:12px 14px}
+  .topbar h1{display:none}
+  .hero h2{font-size:23px}
+  th.col-owner,td.col-owner,th.col-prog,td.col-prog{display:none}
+  .controls{position:static}
+}
+@media print{
+  .topbar,.controls,.editbar,.actions{display:none!important}
+  body{background:#fff}
+  .card,.rail{box-shadow:none;break-inside:avoid}
+  .phase{break-inside:avoid}
+}
+@media(prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- =============== DỮ LIỆU KẾ HOẠCH =============== -->
+<!-- Base cập nhật trạng thái bằng nút "Chế độ cập nhật" trên giao diện,
+     sau đó bấm "Tải bản đã cập nhật" để lấy file HTML mới và thay thế link đang chia sẻ. -->
+<script id="plan-data" type="application/json">
+{
+  "project": "Dự án chuyển đổi số Komex Digital × Base.vn",
+  "lastUpdate": "13/07/2026",
+  "phases": [
+    {
+      "id": "p0", "no": "PHASE 0", "name": "Công tác chuẩn bị",
+      "window": "09/07 – 19/07/2026",
+      "tasks": [
+        {"name":"Xác nhận phương án và kế hoạch triển khai Base","owner":"Komex","start":"","due":"","status":"doing","progress":60,"note":"Chốt phạm vi giải pháp & số lượng nhân sự sử dụng","link":"https://account.base.com.vn/company","subs":[]},
+        {"name":"Thủ tục hợp đồng - thanh toán","owner":"Base & Komex","start":"","due":"2026-07-18","status":"doing","progress":40,"note":"","link":"https://account.base.com.vn/company","subs":[]},
+        {"name":"Base mở hệ thống cho Komex","owner":"Base","start":"","due":"2026-07-19","status":"idle","progress":0,"note":"Phụ thuộc thủ tục hợp đồng - thanh toán","link":"","subs":[
+          {"name":"Tổng hợp thông tin tài khoản sử dụng Base","owner":"Base & Komex","start":"","due":"2026-07-18","status":"doing","progress":30,"note":"Komex gửi danh sách nhân sự theo mẫu"}
+        ]},
+        {"name":"Kick-off khởi động dự án","owner":"Base & Komex","start":"2026-07-20","due":"2026-07-20","status":"idle","progress":0,"note":"Cột mốc hai bên chính thức khởi động dự án","link":"https://account.base.com.vn/company","milestone":"KICK-OFF","subs":[
+          {"name":"Khởi tạo tài khoản trên Base Account cho toàn bộ nhân sự","owner":"Base & Komex","start":"2026-07-20","due":"2026-07-20","status":"idle","progress":0,"note":""},
+          {"name":"Phân loại thành viên theo các nhóm","owner":"Base & Komex","start":"2026-07-20","due":"2026-07-20","status":"idle","progress":0,"note":""},
+          {"name":"Thiết lập vai trò quản lý với các thành viên","owner":"Base & Komex","start":"2026-07-20","due":"2026-07-20","status":"idle","progress":0,"note":""}
+        ]}
+      ]
+    },
+    {
+      "id":"p1","no":"PHASE 1","name":"Quy trình nội bộ, đề xuất - phê duyệt",
+      "window":"20/07 – 02/08/2026",
+      "tasks":[
+        {"name":"Quy trình khiếu nại trả hàng - hoàn tiền — Base Service","owner":"Base & Komex","start":"2026-07-20","due":"2026-08-02","status":"idle","progress":0,"note":"Ưu tiên số 1 của giai đoạn thiết lập","link":"","subs":[
+          {"name":"Thiết lập khung quy trình","owner":"Base & Komex","start":"","due":"2026-07-23","status":"idle","progress":0,"note":""},
+          {"name":"Thiết lập trường tuỳ chỉnh","owner":"Base & Komex","start":"","due":"2026-07-25","status":"idle","progress":0,"note":""},
+          {"name":"Kiểm tra & chạy thử luồng quy trình lần 1","owner":"Base & Komex","start":"","due":"2026-07-28","status":"idle","progress":0,"note":""},
+          {"name":"Đấu nối dữ liệu với Shopee thông qua API","owner":"Base","start":"","due":"2026-07-30","status":"idle","progress":0,"note":"Komex cấp quyền truy cập Shopee Open Platform"},
+          {"name":"Đấu nối dữ liệu với Tiktok thông qua API","owner":"Base","start":"","due":"2026-07-30","status":"idle","progress":0,"note":"Komex cấp quyền TikTok Shop Partner API"},
+          {"name":"Kiểm tra & chạy thử luồng quy trình lần 2","owner":"Base & Komex","start":"","due":"2026-08-02","status":"idle","progress":0,"note":""}
+        ]},
+        {"name":"Quy trình bảo hành sản phẩm — Base Service","owner":"Base & Komex","start":"2026-07-20","due":"2026-08-02","status":"idle","progress":0,"note":"","link":"","subs":[
+          {"name":"Thiết lập khung quy trình","owner":"Base & Komex","start":"","due":"2026-07-24","status":"idle","progress":0,"note":""},
+          {"name":"Thiết lập trường tuỳ chỉnh","owner":"Base & Komex","start":"","due":"2026-07-26","status":"idle","progress":0,"note":""},
+          {"name":"Chạy thử luồng quy trình","owner":"Base & Komex","start":"","due":"2026-07-29","status":"idle","progress":0,"note":""},
+          {"name":"Đấu nối dữ liệu với Shopee thông qua API","owner":"Base","start":"","due":"2026-07-30","status":"idle","progress":0,"note":""},
+          {"name":"Đấu nối dữ liệu với Tiktok thông qua API","owner":"Base","start":"","due":"2026-07-30","status":"idle","progress":0,"note":""},
+          {"name":"Kiểm tra & chạy thử luồng quy trình lần 2","owner":"Base & Komex","start":"","due":"2026-08-02","status":"idle","progress":0,"note":""}
+        ]},
+        {"name":"Xây dựng Dashboard khiếu nại — Data Service","owner":"Base & Komex","start":"2026-07-27","due":"2026-08-02","status":"idle","progress":0,"note":"Phụ thuộc dữ liệu đấu nối Shopee & TikTok","link":"","subs":[]},
+        {"name":"Quy trình mua hàng — Base Service","owner":"Base & Komex","start":"2026-07-27","due":"2026-08-02","status":"idle","progress":0,"note":"","link":"","subs":[
+          {"name":"Thiết lập khung quy trình","owner":"Base & Komex","start":"","due":"2026-07-29","status":"idle","progress":0,"note":""},
+          {"name":"Thiết lập trường tuỳ chỉnh","owner":"Base & Komex","start":"","due":"2026-07-31","status":"idle","progress":0,"note":""},
+          {"name":"Kiểm tra & chạy thử quy trình","owner":"Base & Komex","start":"","due":"2026-08-02","status":"idle","progress":0,"note":""}
+        ]},
+        {"name":"Thiết lập các quy trình đề xuất trong nội bộ — Base Service","owner":"Base & Komex","start":"2026-07-27","due":"2026-08-02","status":"idle","progress":0,"note":"Tạm ứng - hoàn ứng, đề nghị thanh toán, đề xuất nội bộ khác","link":"","subs":[]}
+      ]
+    },
+    {
+      "id":"p2","no":"PHASE 2","name":"Công việc hàng ngày & truyền thông nội bộ",
+      "window":"03/08 – 09/08/2026",
+      "tasks":[
+        {"name":"Base Wework — Giao việc Top-down","owner":"Base & Komex","start":"2026-08-03","due":"2026-08-09","status":"idle","progress":0,"note":"Bao gồm checklist vận hành phiên livestream","link":"","subs":[]},
+        {"name":"Base Office — Quy định, chính sách","owner":"Base & Komex","start":"2026-08-03","due":"2026-08-09","status":"idle","progress":0,"note":"","link":"","subs":[]},
+        {"name":"Base Square — Tri thức nội bộ","owner":"Base & Komex","start":"2026-08-03","due":"2026-08-09","status":"idle","progress":0,"note":"","link":"","subs":[]},
+        {"name":"Base Inside — Truyền thông nội bộ","owner":"Base & Komex","start":"2026-08-03","due":"2026-08-09","status":"idle","progress":0,"note":"","link":"","subs":[]}
+      ]
+    },
+    {
+      "id":"p3","no":"PHASE 3","name":"Base HRM+",
+      "window":"10/08 – 16/08/2026",
+      "tasks":[
+        {"name":"Base HRM — Thiết lập chính sách, hồ sơ nhân sự","owner":"Base & Komex","start":"2026-08-10","due":"2026-08-16","status":"idle","progress":0,"note":"Komex chuẩn bị file hồ sơ nhân sự theo mẫu","link":"","subs":[]},
+        {"name":"Base Checkin — Thiết lập chấm công","owner":"Base & Komex","start":"2026-08-10","due":"2026-08-16","status":"idle","progress":0,"note":"Cần IP máy chấm công đang sử dụng","link":"","subs":[]},
+        {"name":"Base Schedule — Thiết lập bảng công","owner":"Base & Komex","start":"2026-08-10","due":"2026-08-16","status":"idle","progress":0,"note":"Gồm ca đặc thù của ekip livestream","link":"","subs":[]},
+        {"name":"Base Timeoff — Thiết lập nghỉ phép","owner":"Base & Komex","start":"2026-08-10","due":"2026-08-16","status":"idle","progress":0,"note":"","link":"","subs":[]},
+        {"name":"Base Payroll — Thiết lập bảng lương","owner":"Base & Komex","start":"2026-08-10","due":"2026-08-16","status":"idle","progress":0,"note":"Đối chiếu với bảng lương thủ công tháng gần nhất","link":"","subs":[]}
+      ]
+    },
+    {
+      "id":"p4","no":"PHASE 4","name":"Đào tạo & Go-live",
+      "window":"24/08 – 31/08/2026",
+      "tasks":[
+        {"name":"Đào tạo toàn bộ nhân sự Komex (Buổi 1)","owner":"Base & Komex","start":"2026-08-24","due":"2026-08-26","status":"idle","progress":0,"note":"Trọng tâm: Base Service — khiếu nại, đề xuất - phê duyệt","link":"","subs":[
+          {"name":"Chỉnh sửa thông tin cá nhân trên Base Account","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""},
+          {"name":"Sử dụng Base Service để theo dõi - xử lý các khiếu nại trả hàng - hoàn tiền, khiếu nại bảo hành đa sàn","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""},
+          {"name":"Sử dụng Base Service để theo dõi các công việc đề xuất - phê duyệt nội bộ","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""},
+          {"name":"Sử dụng Base Service để theo dõi - xử lý các công việc phối hợp liên phòng ban","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""}
+        ]},
+        {"name":"Đào tạo toàn bộ nhân sự Komex (Buổi 2)","owner":"Base & Komex","start":"2026-08-27","due":"2026-08-30","status":"idle","progress":0,"note":"Trọng tâm: Wework, Office, Square, Inside, HRM+","link":"","subs":[
+          {"name":"Theo dõi - xử lý công việc trên Base Wework","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""},
+          {"name":"Theo dõi, tìm kiếm quy định, chính sách trên Base Office","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""},
+          {"name":"Tìm kiếm - xử lý bài đăng tri thức trên Base Square","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""},
+          {"name":"Theo dõi - cập nhật tin tức nội bộ trên Base Inside","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""},
+          {"name":"Theo dõi - tạo mới các đơn nghỉ phép trên Base Timeoff","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""},
+          {"name":"Theo dõi - thao tác chấm công cá nhân","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""}
+        ]},
+        {"name":"Go-live dự án","owner":"Base & Komex","start":"2026-08-31","due":"2026-08-31","status":"idle","progress":0,"note":"Toàn bộ nhân sự Komex chính thức sử dụng Base hàng ngày","link":"","milestone":"GO-LIVE","subs":[
+          {"name":"Tổng kết các nội dung đã triển khai trong dự án","owner":"Base & Komex","start":"","due":"2026-08-31","status":"idle","progress":0,"note":""},
+          {"name":"Thông báo về việc chính thức chuyển đổi sử dụng công cụ làm việc hàng ngày","owner":"Komex","start":"","due":"2026-08-31","status":"idle","progress":0,"note":""},
+          {"name":"Xây dựng các chính sách, quy định, quy chế thưởng - phạt về việc sử dụng, và/hoặc phản hồi về các vấn đề trong quá trình sử dụng phần mềm Base","owner":"Komex","start":"","due":"2026-08-31","status":"idle","progress":0,"note":""}
+        ]}
+      ]
+    },
+    {
+      "id":"p5","no":"PHASE 5","name":"Hyper care",
+      "window":"Từ 31/08/2026",
+      "tasks":[
+        {"name":"Báo cáo tình hình sử dụng (tháng 9/2026)","owner":"Base","start":"","due":"2026-09-30","status":"idle","progress":0,"note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 10/2026)","owner":"Base","start":"","due":"2026-10-31","status":"idle","progress":0,"note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 11/2026) & trao đổi về phương án tái ký sớm nhận ưu đãi","owner":"Base & Komex","start":"","due":"2026-11-30","status":"idle","progress":0,"note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 12/2026)","owner":"Base","start":"","due":"2026-12-31","status":"idle","progress":0,"note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 1/2027)","owner":"Base","start":"","due":"2027-01-31","status":"idle","progress":0,"note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 2/2027) & trao đổi về phương án nâng cấp/mở rộng hệ thống","owner":"Base & Komex","start":"","due":"2027-02-28","status":"idle","progress":0,"note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 3/2027)","owner":"Base","start":"","due":"2027-03-31","status":"idle","progress":0,"note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 4/2027)","owner":"Base","start":"","due":"2027-04-30","status":"idle","progress":0,"note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 5/2027) & trao đổi về phương án xây dựng dashboard toàn diện","owner":"Base & Komex","start":"","due":"2027-05-31","status":"idle","progress":0,"note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 6/2027)","owner":"Base","start":"","due":"2027-06-30","status":"idle","progress":0,"note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 7/2027)","owner":"Base","start":"","due":"2027-07-31","status":"idle","progress":0,"note":"","link":"","subs":[]}
+      ]
+    }
+  ]
+}
+</script>
+
+<!-- =============== GIAO DIỆN =============== -->
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="lockup">
+      <b class="komex">KOMEX</b><span class="x">×</span><b class="base">BASE.VN</b>
+    </div>
+    <h1>Master Plan · Dự án chuyển đổi số
+      <span>Kế hoạch triển khai &amp; theo dõi tiến độ thực thi</span>
+    </h1>
+    <div class="actions">
+      <button class="btn" id="btnPrint">In / Lưu PDF</button>
+      <button class="btn" id="btnCsv">Xuất CSV</button>
+      <button class="btn" id="btnEdit"><span class="dot"></span>Chế độ cập nhật</button>
+    </div>
+  </div>
+</header>
+
+<div class="editbar">
+  <span>⬤ Đang ở chế độ cập nhật — chỉnh sửa trực tiếp trên bảng, sau đó tải bản mới về để thay thế link đang chia sẻ.</span>
+  <span class="sp"></span>
+  <button id="btnSave">Tải bản đã cập nhật (.html)</button>
+  <button id="btnExit">Thoát chế độ cập nhật</button>
+</div>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="hero-head">
+      <div>
+        <h2>Kế hoạch triển khai <em>Base</em> tại Komex Digital</h2>
+        <p class="sub">Nơi hai bên cùng theo dõi một phiên bản sự thật duy nhất về tiến độ dự án. Base cập nhật trạng thái; Ban lãnh đạo và Ban tiên phong Komex theo dõi và bám sát công việc tại đây.</p>
+      </div>
+      <div class="stamp">
+        Cập nhật lần cuối
+        <b><input id="lastUpdate" readonly value="13/07/2026"></b>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi k-main"><div class="lab">Tiến độ tổng thể</div><div class="val" id="kProg">0<small>%</small></div><div class="hint" id="kProgHint">— / — đầu việc hoàn thành</div></div>
+      <div class="kpi k-done"><div class="lab">Đã hoàn thành</div><div class="val" id="kDone">0</div><div class="hint">đầu việc</div></div>
+      <div class="kpi k-doing"><div class="lab">Đang thực hiện</div><div class="val" id="kDoing">0</div><div class="hint">đầu việc</div></div>
+      <div class="kpi k-late"><div class="lab">Quá hạn</div><div class="val" id="kLate">0</div><div class="hint" id="kLateHint">cần xử lý ngay</div></div>
+      <div class="kpi k-next"><div class="lab">Cột mốc kế tiếp</div><div class="val" id="kNext">—</div><div class="hint" id="kNextHint"></div></div>
+    </div>
+
+    <div class="rail">
+      <div class="rail-top">
+        <h3>Đường ray triển khai</h3>
+        <div class="rail-legend">
+          <span><i style="background:var(--base)"></i>Đang chạy</span>
+          <span><i style="background:var(--done)"></i>Hoàn thành</span>
+          <span><i style="background:var(--line2)"></i>Chưa bắt đầu</span>
+          <span><i style="background:var(--komex)"></i>Cột mốc</span>
+        </div>
+      </div>
+      <div class="track" id="track"></div>
+    </div>
+  </section>
+
+  <div class="controls">
+    <div class="search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Tìm công việc, đầu mối…" aria-label="Tìm công việc">
+    </div>
+    <div class="chips" id="fOwner"></div>
+    <div class="chips" id="fStatus"></div>
+    <span class="filler"></span>
+    <span class="count" id="count"></span>
+  </div>
+
+  <main id="main"></main>
+
+  <footer>
+    <div class="legend">
+      <span><span class="st st-idle">Chưa bắt đầu</span></span>
+      <span><span class="st st-doing">Đang làm</span></span>
+      <span><span class="st st-done">Hoàn thành</span></span>
+      <span><span class="st st-hold">Tạm hoãn</span></span>
+      <span><span class="st st-block">Đang vướng</span></span>
+    </div>
+    <p style="margin:0">Công việc cha có việc con sẽ tự động lấy tiến độ trung bình của các việc con — chỉ cần cập nhật ở cấp việc con.
+      Nguồn dữ liệu gốc: Base Wework · <span class="mono">du-an-base-x-komex</span>.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STATUS = {
+    idle:  {label:"Chưa bắt đầu", cls:"st-idle",  rank:0},
+    doing: {label:"Đang làm",     cls:"st-doing", rank:1},
+    block: {label:"Đang vướng",   cls:"st-block", rank:1},
+    hold:  {label:"Tạm hoãn",     cls:"st-hold",  rank:0},
+    done:  {label:"Hoàn thành",   cls:"st-done",  rank:2}
+  };
+  var ORDER = ["idle","doing","block","hold","done"];
+  var TODAY = new Date(); TODAY.setHours(0,0,0,0);
+
+  var data = JSON.parse(document.getElementById("plan-data").textContent);
+  var filters = {q:"", owner:"all", status:"all"};
+  var open = {};   // taskKey -> bool
+
+  // ---------- helpers ----------
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+  function fmt(iso){
+    if(!iso) return "";
+    var p = iso.split("-");
+    if(p.length!==3) return iso;
+    return p[2]+"/"+p[1]+"/"+p[0];
+  }
+  function overdue(item){
+    if(!item.due || item.status==="done") return false;
+    var d = new Date(item.due+"T00:00:00");
+    return d < TODAY;
+  }
+  function ownerCls(o){
+    if(o==="Base") return "o-base";
+    if(o==="Komex") return "o-komex";
+    if(o==="Base & Komex") return "o-both";
+    return "o-none";
+  }
+  // tiến độ & trạng thái cuộn lên của task cha
+  function taskProgress(t){
+    if(t.subs && t.subs.length){
+      var s=0; t.subs.forEach(function(x){ s += (x.status==="done"?100:(+x.progress||0)); });
+      return Math.round(s/t.subs.length);
+    }
+    return t.status==="done" ? 100 : (+t.progress||0);
+  }
+  function taskStatus(t){
+    if(!t.subs || !t.subs.length) return t.status;
+    var all=t.subs.every(function(x){return x.status==="done";});
+    if(all) return "done";
+    if(t.subs.some(function(x){return x.status==="block";})) return "block";
+    if(t.subs.some(function(x){return x.status==="doing"||(+x.progress||0)>0;})) return "doing";
+    if(t.subs.every(function(x){return x.status==="hold";})) return "hold";
+    return "idle";
+  }
+  function phaseProgress(p){
+    if(!p.tasks.length) return 0;
+    var s=0; p.tasks.forEach(function(t){ s+=taskProgress(t); });
+    return Math.round(s/p.tasks.length);
+  }
+  function allTasks(){ var a=[]; data.phases.forEach(function(p){ p.tasks.forEach(function(t){ a.push(t); }); }); return a; }
+  function allItems(){
+    var a=[]; data.phases.forEach(function(p){ p.tasks.forEach(function(t){
+      a.push(t); (t.subs||[]).forEach(function(s){ a.push(s); });
+    });}); return a;
+  }
+  function match(item){
+    if(filters.q){
+      var q=filters.q.toLowerCase();
+      if((item.name||"").toLowerCase().indexOf(q)<0 && (item.note||"").toLowerCase().indexOf(q)<0) return false;
+    }
+    if(filters.owner!=="all" && item.owner!==filters.owner) return false;
+    if(filters.status!=="all"){
+      var st = item.subs ? taskStatus(item) : item.status;
+      if(filters.status==="late"){ if(!overdue(item)) return false; }
+      else if(st!==filters.status) return false;
+    }
+    return true;
+  }
+
+  // ---------- KPI ----------
+  function renderKpi(){
+    var tasks=allTasks();
+    var total=0,sum=0,done=0,doing=0,late=0;
+    tasks.forEach(function(t){
+      total++; sum+=taskProgress(t);
+      var st=taskStatus(t);
+      if(st==="done") done++;
+      else if(st==="doing"||st==="block") doing++;
+    });
+    allItems().forEach(function(i){ if(overdue(i)) late++; });
+    var pct = total? Math.round(sum/total) : 0;
+    document.getElementById("kProg").innerHTML = pct+'<small>%</small>';
+    document.getElementById("kProgHint").textContent = done+" / "+total+" đầu việc hoàn thành";
+    document.getElementById("kDone").textContent = done;
+    document.getElementById("kDoing").textContent = doing;
+    document.getElementById("kLate").textContent = late;
+    document.getElementById("kLateHint").textContent = late? "cần xử lý ngay" : "không có việc trễ hạn";
+
+    // cột mốc kế tiếp
+    var ms=null;
+    data.phases.forEach(function(p){ p.tasks.forEach(function(t){
+      if(t.milestone && taskStatus(t)!=="done" && !ms) ms=t;
+    });});
+    var next = ms;
+    if(!next){
+      var cands = allTasks().filter(function(t){ return t.due && taskStatus(t)!=="done"; })
+        .sort(function(a,b){ return a.due<b.due?-1:1; });
+      next = cands[0];
+    }
+    if(next){
+      document.getElementById("kNext").textContent = next.milestone ? (next.milestone.charAt(0)+next.milestone.slice(1).toLowerCase()+" — "+next.name.replace(/^Kick-off /,"")) : next.name;
+      var d = next.due? new Date(next.due+"T00:00:00") : null;
+      var days = d? Math.round((d-TODAY)/86400000) : null;
+      document.getElementById("kNextHint").textContent = d
+        ? fmt(next.due) + (days>=0? " · còn "+days+" ngày" : " · trễ "+Math.abs(days)+" ngày")
+        : "chưa đặt thời hạn";
+    } else {
+      document.getElementById("kNext").textContent="Hoàn tất";
+      document.getElementById("kNextHint").textContent="Không còn cột mốc nào";
+    }
+  }
+
+  // ---------- RAIL ----------
+  function renderRail(){
+    var track=document.getElementById("track");
+    track.innerHTML="";
+    var activeFound=false;
+    data.phases.forEach(function(p,i){
+      var pct=phaseProgress(p);
+      var isDone = pct>=100;
+      var isActive = !isDone && !activeFound && p.tasks.some(function(t){return taskStatus(t)!=="idle";});
+      if(!isDone && !activeFound && !isActive){
+        // phase đầu tiên chưa xong mà chưa có phase nào active -> vẫn chưa chạy
+      }
+      if(isActive) activeFound=true;
+      var ms = p.tasks.filter(function(t){return t.milestone;}).map(function(t){return t.milestone;})[0];
+
+      var b=document.createElement("button");
+      b.className="seg"+(isDone?" complete":"")+(isActive?" active":"");
+      b.type="button";
+      b.setAttribute("aria-label","Xem "+p.no+": "+p.name);
+      b.innerHTML =
+        (ms? '<span class="flag">▼ '+esc(ms)+'</span>':'') +
+        '<span class="bar"><span class="fill'+(isDone?' full':'')+'"></span></span>' +
+        '<span class="knob">'+(isDone?'✓':(i))+'</span>' +
+        '<span class="pname">'+esc(p.name)+'</span>' +
+        '<span class="pwin">'+esc(p.window)+'</span>' +
+        '<span class="ppct">'+pct+'%</span>';
+      b.addEventListener("click", function(){
+        var el=document.getElementById(p.id);
+        if(el) el.scrollIntoView({block:"start"});
+      });
+      track.appendChild(b);
+      // animate fill
+      var fill=b.querySelector(".fill");
+      requestAnimationFrame(function(){
+        setTimeout(function(){
+          fill.style.width = pct+"%";
+          fill.style.setProperty("--h", pct+"%");
+        }, 60*i);
+      });
+    });
+  }
+
+  // ---------- FILTER CHIPS ----------
+  function renderChips(){
+    var owners=["all","Base","Komex","Base & Komex"];
+    var oLab={all:"Tất cả đầu mối", "Base":"Base", "Komex":"Komex", "Base & Komex":"Base & Komex"};
+    var counts={};
+    allItems().forEach(function(i){ counts[i.owner]=(counts[i.owner]||0)+1; });
+
+    var o=document.getElementById("fOwner"); o.innerHTML="";
+    owners.forEach(function(v){
+      var b=document.createElement("button");
+      b.type="button"; b.className="chip"+(filters.owner===v?" sel":"");
+      b.innerHTML=esc(oLab[v])+(v!=="all"?' <span class="n">'+(counts[v]||0)+'</span>':'');
+      b.addEventListener("click",function(){ filters.owner=v; renderChips(); renderList(); });
+      o.appendChild(b);
+    });
+
+    var sts=[["all","Mọi trạng thái"],["doing","Đang làm"],["idle","Chưa bắt đầu"],["done","Hoàn thành"],["block","Đang vướng"],["late","Quá hạn"]];
+    var s=document.getElementById("fStatus"); s.innerHTML="";
+    sts.forEach(function(pair){
+      var b=document.createElement("button");
+      b.type="button"; b.className="chip"+(filters.status===pair[0]?" sel":"");
+      b.textContent=pair[1];
+      if(pair[0]==="late"){ b.style.color = filters.status==="late" ? "#fff" : "var(--komex)"; }
+      b.addEventListener("click",function(){ filters.status=pair[0]; renderChips(); renderList(); });
+      s.appendChild(b);
+    });
+  }
+
+  // ---------- ROWS ----------
+  function statusCell(item, key){
+    var st = item.subs && item.subs.length ? taskStatus(item) : item.status;
+    var ro = '<span class="st ro '+STATUS[st].cls+'">'+STATUS[st].label+'</span>';
+    if(item.subs && item.subs.length){
+      return ro + '<span class="ed rollup" style="display:none">tự động từ việc con</span>';
+    }
+    var sel = '<select class="ed" data-k="'+key+'" data-f="status">';
+    ORDER.forEach(function(s){
+      sel += '<option value="'+s+'"'+(s===st?" selected":"")+'>'+STATUS[s].label+'</option>';
+    });
+    sel += '</select>';
+    return ro + sel;
+  }
+  function progCell(item, key){
+    var pct = item.subs && item.subs.length ? taskProgress(item) : (item.status==="done"?100:(+item.progress||0));
+    var full = pct>=100 ? " full":"";
+    var ro = '<span class="pbar ro"><span class="rail2"><i class="'+full.trim()+'" style="width:'+pct+'%"></i></span><b>'+pct+'%</b></span>';
+    if(item.subs && item.subs.length) return ro;
+    return ro + '<input class="ed pct-in" type="number" min="0" max="100" step="5" value="'+pct+'" data-k="'+key+'" data-f="progress">';
+  }
+  function dateCell(item, key, field){
+    var v=item[field]||"";
+    var od = field==="due" && overdue(item);
+    var ro = '<span class="ro date'+(v?"":" empty")+(od?" od":"")+'">'+(v?fmt(v):"—")+'</span>';
+    var inp = '<input class="ed date-in" type="date" value="'+esc(v)+'" data-k="'+key+'" data-f="'+field+'">';
+    return ro+inp;
+  }
+  function noteCell(item, key){
+    return '<span class="ro note">'+esc(item.note||"")+'</span>'+
+           '<input class="ed note-in" type="text" value="'+esc(item.note||"")+'" placeholder="Ghi chú…" data-k="'+key+'" data-f="note">';
+  }
+  function ownerCell(item, key){
+    var o=item.owner||"";
+    var ro = o? '<span class="ro owner '+ownerCls(o)+'">'+esc(o)+'</span>' : '<span class="ro owner o-none">—</span>';
+    var sel='<select class="ed" data-k="'+key+'" data-f="owner">';
+    ["","Base","Komex","Base & Komex"].forEach(function(v){
+      sel+='<option value="'+esc(v)+'"'+(v===o?" selected":"")+'>'+(v||"—")+'</option>';
+    });
+    sel+='</select>';
+    return ro+sel;
+  }
+
+  function renderList(){
+    var main=document.getElementById("main");
+    main.innerHTML="";
+    var shown=0, totalItems=allItems().length;
+
+    data.phases.forEach(function(p, pi){
+      // lọc
+      var rows=[];
+      p.tasks.forEach(function(t, ti){
+        var tKey=pi+"."+ti;
+        var subsMatch=(t.subs||[]).map(function(s,si){ return {s:s, key:tKey+"."+si, ok:match(s)}; });
+        var anySub=subsMatch.some(function(x){return x.ok;});
+        var tOk=match(t);
+        if(tOk||anySub) rows.push({t:t,key:tKey,subs:subsMatch,tOk:tOk,anySub:anySub});
+      });
+      if(!rows.length) return;
+
+      var pct=phaseProgress(p);
+      var sec=document.createElement("section");
+      sec.className="phase"; sec.id=p.id;
+      var html =
+        '<div class="phase-head">'+
+          '<span class="phase-no">'+esc(p.no)+'</span>'+
+          '<h3>'+esc(p.name)+'</h3>'+
+          '<span class="phase-win">'+esc(p.window)+'</span>'+
+          '<span class="phase-prog"><span class="mini"><i class="'+(pct>=100?"full":"")+'" style="width:'+pct+'%"></i></span><b>'+pct+'%</b></span>'+
+        '</div>'+
+        '<div class="card"><table><thead><tr>'+
+          '<th style="width:38%">Công việc</th>'+
+          '<th class="col-owner" style="width:110px">Đầu mối</th>'+
+          '<th class="col-start" style="width:110px">Bắt đầu</th>'+
+          '<th style="width:110px">Thời hạn</th>'+
+          '<th style="width:130px">Trạng thái</th>'+
+          '<th class="col-prog" style="width:130px">Tiến độ</th>'+
+          '<th class="col-note">Ghi chú</th>'+
+        '</tr></thead><tbody>';
+
+      rows.forEach(function(r){
+        var t=r.t, k=r.key;
+        var hasSubs = t.subs && t.subs.length;
+        var isOpen = open[k] !== undefined ? open[k] : (filters.q||filters.status!=="all"||filters.owner!=="all" ? true : false);
+        shown++;
+        html +=
+          '<tr class="task'+(overdue(t)?" late":"")+'" data-k="'+k+'">'+
+            '<td><span class="tw">'+
+              (hasSubs
+                ? '<button class="caret'+(isOpen?" open":"")+'" data-toggle="'+k+'" aria-label="Mở/đóng việc con"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>'
+                : '<span class="caret ghost"></span>')+
+              '<span class="tname">'+esc(t.name)+
+                (t.milestone? '<span class="pill-ms">'+esc(t.milestone)+'</span>':'')+
+                (t.link? ' <a class="linkico" href="'+esc(t.link)+'" target="_blank" rel="noopener" title="Mở trên Base" aria-label="Mở trên Base">↗</a>':'')+
+              '</span>'+
+            '</span></td>'+
+            '<td class="col-owner">'+ownerCell(t,k)+'</td>'+
+            '<td class="col-start">'+dateCell(t,k,"start")+'</td>'+
+            '<td>'+dateCell(t,k,"due")+'</td>'+
+            '<td>'+statusCell(t,k)+'</td>'+
+            '<td class="col-prog">'+progCell(t,k)+'</td>'+
+            '<td class="col-note">'+noteCell(t,k)+'</td>'+
+          '</tr>';
+
+        r.subs.forEach(function(x){
+          if(!r.tOk && !x.ok) return;
+          shown++;
+          html +=
+            '<tr class="sub'+(isOpen?"":" hidden")+(overdue(x.s)?" late":"")+'" data-parent="'+k+'">'+
+              '<td><span class="sname">'+esc(x.s.name)+'</span></td>'+
+              '<td class="col-owner">'+ownerCell(x.s,x.key)+'</td>'+
+              '<td class="col-start">'+dateCell(x.s,x.key,"start")+'</td>'+
+              '<td>'+dateCell(x.s,x.key,"due")+'</td>'+
+              '<td>'+statusCell(x.s,x.key)+'</td>'+
+              '<td class="col-prog">'+progCell(x.s,x.key)+'</td>'+
+              '<td class="col-note">'+noteCell(x.s,x.key)+'</td>'+
+            '</tr>';
+        });
+      });
+
+      html += '</tbody></table></div>';
+      sec.innerHTML=html;
+      main.appendChild(sec);
+    });
+
+    if(!main.children.length){
+      main.innerHTML='<div class="card"><div class="empty-state">Không có công việc nào khớp bộ lọc. Thử xoá từ khoá hoặc chọn lại đầu mối / trạng thái.</div></div>';
+    }
+    document.getElementById("count").textContent = shown+" / "+totalItems+" đầu việc";
+    bindRows();
+  }
+
+  // ---------- INTERACTIONS ----------
+  function itemByKey(k){
+    var p=k.split(".");
+    var t=data.phases[+p[0]].tasks[+p[1]];
+    return p.length===3 ? t.subs[+p[2]] : t;
+  }
+  function bindRows(){
+    document.querySelectorAll("[data-toggle]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var k=btn.getAttribute("data-toggle");
+        var nowOpen = !btn.classList.contains("open");
+        open[k]=nowOpen;
+        btn.classList.toggle("open", nowOpen);
+        document.querySelectorAll('tr.sub[data-parent="'+k+'"]').forEach(function(tr){
+          tr.classList.toggle("hidden", !nowOpen);
+        });
+      });
+    });
+    document.querySelectorAll(".ed[data-k]").forEach(function(el){
+      el.addEventListener("change", function(){
+        var item=itemByKey(el.getAttribute("data-k"));
+        var f=el.getAttribute("data-f");
+        var v=el.value;
+        if(f==="progress"){
+          v=Math.max(0,Math.min(100,parseInt(v||"0",10)));
+          item.progress=v;
+          if(v>=100 && item.status!=="done") item.status="done";
+          if(v<100 && item.status==="done") item.status="doing";
+        } else if(f==="status"){
+          item.status=v;
+          if(v==="done") item.progress=100;
+          if(v==="idle") item.progress=0;
+        } else {
+          item[f]=v;
+        }
+        refresh(true);
+      });
+    });
+  }
+
+  function refresh(keepScroll){
+    var y = keepScroll ? window.scrollY : 0;
+    renderKpi(); renderRail(); renderChips(); renderList();
+    if(keepScroll) window.scrollTo(0,y);
+  }
+
+  // edit mode
+  var editing=false;
+  function setEdit(on){
+    editing=on;
+    document.body.classList.toggle("editing", on);
+    document.getElementById("btnEdit").classList.toggle("on", on);
+    document.getElementById("btnEdit").innerHTML = on
+      ? '<span class="dot"></span>Đang cập nhật'
+      : '<span class="dot"></span>Chế độ cập nhật';
+    var lu=document.getElementById("lastUpdate");
+    lu.readOnly = !on;
+  }
+  document.getElementById("btnEdit").addEventListener("click", function(){ setEdit(!editing); });
+  document.getElementById("btnExit").addEventListener("click", function(){ setEdit(false); });
+  document.getElementById("lastUpdate").addEventListener("change", function(e){ data.lastUpdate=e.target.value; });
+
+  document.getElementById("btnPrint").addEventListener("click", function(){ window.print(); });
+
+  // xuất CSV
+  document.getElementById("btnCsv").addEventListener("click", function(){
+    var rows=[["Phase","Loại","Công việc","Đầu mối","Bắt đầu","Thời hạn","Trạng thái","Tiến độ (%)","Ghi chú"]];
+    data.phases.forEach(function(p){
+      p.tasks.forEach(function(t){
+        rows.push([p.no+": "+p.name,"Task",t.name,t.owner,fmt(t.start),fmt(t.due),STATUS[taskStatus(t)].label,taskProgress(t),t.note||""]);
+        (t.subs||[]).forEach(function(s){
+          rows.push([p.no+": "+p.name,"Subtask",s.name,s.owner,fmt(s.start),fmt(s.due),STATUS[s.status].label,(s.status==="done"?100:(+s.progress||0)),s.note||""]);
+        });
+      });
+    });
+    var csv="\ufeff"+rows.map(function(r){
+      return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(",");
+    }).join("\n");
+    dl(new Blob([csv],{type:"text/csv;charset=utf-8"}), "Komex_Base_MasterPlan_"+stampName()+".csv");
+  });
+
+  // tải lại file HTML đã cập nhật
+  document.getElementById("btnSave").addEventListener("click", function(){
+    document.getElementById("plan-data").textContent = JSON.stringify(data, null, 2);
+    var wasEditing = editing;
+    setEdit(false);
+    var lu=document.getElementById("lastUpdate");
+    lu.setAttribute("value", data.lastUpdate||lu.value);
+    var html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+    dl(new Blob([html],{type:"text/html;charset=utf-8"}), "Komex_x_Base_Master_Plan_"+stampName()+".html");
+    if(wasEditing) setEdit(true);
+  });
+
+  function stampName(){
+    var d=new Date(), p=function(n){return (n<10?"0":"")+n;};
+    return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate());
+  }
+  function dl(blob, name){
+    var a=document.createElement("a");
+    a.href=URL.createObjectURL(blob); a.download=name;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+
+  // search
+  var qEl=document.getElementById("q"), qt;
+  qEl.addEventListener("input", function(){
+    clearTimeout(qt);
+    qt=setTimeout(function(){ filters.q=qEl.value.trim(); renderList(); }, 140);
+  });
+
+  // init
+  document.getElementById("lastUpdate").value = data.lastUpdate || "";
+  refresh(false);
+})();
+</script>
+</body>
+</html>
