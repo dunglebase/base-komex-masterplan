@@ -77,13 +77,14 @@ body{
 body.editing #lastUpdate{border-bottom:1px dashed var(--base);cursor:text}
 
 /* KPI */
-.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:24px}
 .kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden}
 .kpi:before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--line)}
 .kpi.k-main:before{background:var(--base)}
 .kpi.k-done:before{background:var(--done)}
 .kpi.k-doing:before{background:var(--doing)}
 .kpi.k-late:before{background:var(--komex)}
+.kpi.k-issue:before{background:var(--hold)}
 .kpi.k-next:before{background:var(--ink)}
 .kpi .lab{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
 .kpi .val{font-size:27px;font-weight:800;letter-spacing:-.03em;margin-top:4px;line-height:1.1}
@@ -91,12 +92,12 @@ body.editing #lastUpdate{border-bottom:1px dashed var(--base);cursor:text}
 .kpi .hint{font-size:11.5px;color:var(--muted);margin-top:2px}
 .kpi.k-next .val{font-size:15px;font-weight:700;letter-spacing:0;line-height:1.35;margin-top:6px}
 
-/* ---------- PHASE RAIL (signature) ---------- */
+/* ---------- PHASE RAIL ---------- */
 .rail{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px 26px 20px;box-shadow:var(--shadow)}
 .rail-top{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:30px;flex-wrap:wrap}
 .rail-top h3{margin:0;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
 .rail-legend{display:flex;gap:14px;font-size:11px;color:var(--muted);flex-wrap:wrap}
-.rail-legend i{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:5px;vertical-align:0}
+.rail-legend i{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:5px}
 
 .track{display:flex;align-items:flex-start}
 .seg{
@@ -121,23 +122,17 @@ body.editing #lastUpdate{border-bottom:1px dashed var(--base);cursor:text}
 }
 .seg.active .knob{border-color:var(--base);color:var(--base);box-shadow:0 0 0 4px var(--base-soft)}
 .seg.complete .knob{background:var(--done);border-color:var(--done);color:#fff}
-
-/* nhãn: block-level, không dính nhau */
 .seg .pinfo{display:block;padding-right:8px}
 .seg .pname{display:block;font-size:12.5px;font-weight:700;letter-spacing:-.01em;line-height:1.35;color:var(--ink)}
 .seg .pmeta{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;margin-top:5px}
 .seg .pwin{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);white-space:nowrap}
 .seg .ppct{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700;color:var(--base)}
 .seg.complete .ppct{color:var(--done)}
-.seg .now{
-  font-size:8.5px;font-weight:800;letter-spacing:.08em;color:var(--base);
-  background:var(--base-soft);padding:2px 6px;border-radius:4px;white-space:nowrap;
-}
+.seg .now{font-size:8.5px;font-weight:800;letter-spacing:.08em;color:var(--base);background:var(--base-soft);padding:2px 6px;border-radius:4px;white-space:nowrap}
 .seg:hover .pname{color:var(--base)}
 .seg .flag{
   position:absolute;top:-12px;left:-2px;font-family:'JetBrains Mono',monospace;
-  font-size:9px;font-weight:700;letter-spacing:.06em;color:var(--komex);white-space:nowrap;
-  display:block;line-height:1;
+  font-size:9px;font-weight:700;letter-spacing:.06em;color:var(--komex);white-space:nowrap;display:block;line-height:1;
 }
 
 /* ---------- CONTROLS ---------- */
@@ -210,8 +205,18 @@ td[data-label]:before{display:none}
 .sname{font-size:13px;font-weight:400;color:var(--ink2);padding-left:25px;position:relative;display:block;line-height:1.45}
 .sname:before{content:'';position:absolute;left:9px;top:10px;width:8px;height:1px;background:var(--line)}
 .pill-ms{font-size:9px;font-weight:800;letter-spacing:.07em;color:#fff;background:var(--komex);padding:2px 6px;border-radius:4px;margin-left:7px;vertical-align:1.5px;white-space:nowrap}
-.linkico{color:var(--base);margin-left:6px;opacity:.7;text-decoration:none}
-.linkico:hover{opacity:1}
+.linkico{color:var(--base);margin-left:6px;opacity:.72;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:5px;vertical-align:-5px}
+.linkico:hover{opacity:1;background:var(--base-soft)}
+.row-edit-btn{
+  border:0;background:transparent;color:var(--muted);cursor:pointer;width:26px;height:26px;border-radius:6px;
+  display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;opacity:0;transform:translateX(-2px);transition:.15s;
+}
+.row-edit-btn:hover{color:var(--base);background:var(--base-soft)}
+.row-edit-btn:focus-visible{outline:2px solid var(--base);outline-offset:1px;opacity:1}
+tr[data-edit-key]:hover .row-edit-btn,tr[data-edit-key]:focus-within .row-edit-btn{opacity:1;transform:none}
+body:not(.editing) tr[data-edit-key]{cursor:pointer}
+body:not(.editing) tr[data-edit-key]:hover{background:#F7FAFF}
+body.editing .row-edit-btn{display:none}
 
 .owner{font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px;white-space:nowrap;display:inline-block}
 .o-base{background:var(--base-soft);color:var(--base-deep)}
@@ -231,12 +236,7 @@ td[data-label]:before{display:none}
 .st-hold{background:var(--hold-soft);color:var(--hold)}
 .st-block{background:var(--komex-soft);color:var(--komex)}
 
-.pbar{display:flex;align-items:center;gap:8px;min-width:98px}
-.pbar .rail2{flex:1;height:5px;background:var(--line2);border-radius:99px;overflow:hidden;min-width:44px}
-.pbar .rail2 i{display:block;height:100%;background:var(--base);border-radius:99px;transition:width .4s}
-.pbar .rail2 i.full{background:var(--done)}
-.pbar b{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;width:32px;text-align:right;color:var(--ink2)}
-.note{font-size:12px;color:var(--muted);max-width:280px;display:inline-block;line-height:1.45}
+.note{font-size:12px;color:var(--muted);max-width:320px;display:inline-block;line-height:1.45}
 .note:empty:before{content:'—';color:#C8D2DE}
 
 /* editable */
@@ -244,13 +244,16 @@ td[data-label]:before{display:none}
 body.editing .ed{display:inline-flex}
 body.editing .ro{display:none}
 select.ed, input.ed{
-  font:inherit;font-size:12px;padding:6px 7px;border:1px solid var(--line);border-radius:6px;
+  font:inherit;font-size:12px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;
   background:var(--surface);color:var(--ink);max-width:100%;
 }
 select.ed:focus,input.ed:focus{outline:none;border-color:var(--base);box-shadow:0 0 0 3px var(--base-soft)}
-input.ed.date-in{width:138px;font-family:'JetBrains Mono',monospace}
+input.date-in{
+  width:112px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.02em;text-align:center;
+}
+input.date-in::placeholder{color:#C3CDDA;letter-spacing:0}
+input.date-in.bad{border-color:var(--komex);background:var(--komex-soft);box-shadow:0 0 0 3px rgba(224,31,38,.08)}
 input.ed.note-in{width:100%;min-width:150px}
-input.ed.pct-in{width:66px;font-family:'JetBrains Mono',monospace}
 .rollup{font-size:10.5px;color:var(--muted);font-style:italic}
 
 .editbar{
@@ -268,11 +271,125 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
 .legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .empty-state{padding:44px 20px;text-align:center;color:var(--muted);font-size:13px}
 
+
+/* ---------- VIEW TABS ---------- */
+.view-nav{background:var(--canvas);border-bottom:1px solid transparent}
+.view-tabs{display:flex;align-items:center;gap:6px;padding-top:16px}
+.view-tab{
+  border:1px solid var(--line);background:rgba(255,255,255,.74);color:var(--ink2);
+  font:inherit;font-size:12.5px;font-weight:700;padding:9px 14px;border-radius:9px;
+  cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:7px;
+}
+.view-tab:hover{border-color:var(--base);color:var(--base);background:var(--surface)}
+.view-tab.active{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:var(--shadow)}
+.view-tab:focus-visible{outline:2px solid var(--base);outline-offset:2px}
+.view-tab .tab-dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.75}
+.view-panel[hidden]{display:none!important}
+
+/* ---------- EXECUTIVE REPORT ---------- */
+.exec-headline{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.exec-badge{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--base);background:var(--base-soft);padding:4px 8px;border-radius:5px}
+.exec-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}
+.exec-grid-main{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}
+.exec-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:var(--shadow);min-width:0}
+.exec-card.wide{grid-column:1/-1}
+.exec-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.exec-card-head h3{margin:0;font-size:13px;font-weight:800;letter-spacing:.02em;color:var(--ink)}
+.exec-card-head p{margin:4px 0 0;color:var(--muted);font-size:11.5px}
+.exec-count{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--base);background:var(--base-soft);padding:4px 7px;border-radius:5px;white-space:nowrap}
+.health-line{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.health-pill{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;padding:6px 10px;border-radius:99px}
+.health-pill:before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor}
+.health-good{color:var(--done);background:var(--done-soft)}
+.health-watch{color:var(--doing);background:var(--doing-soft)}
+.health-risk{color:var(--komex);background:var(--komex-soft)}
+.exec-phase{font-size:18px;font-weight:800;letter-spacing:-.02em;line-height:1.3;margin:0 0 5px}
+.exec-narrative{margin:0;color:var(--ink2);font-size:12.5px;line-height:1.65}
+.exec-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.exec-mini{border:1px solid var(--line2);background:#FAFCFE;border-radius:9px;padding:10px}
+.exec-mini span{display:block;font-size:9.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700}
+.exec-mini b{display:block;margin-top:3px;font-size:17px;letter-spacing:-.02em}
+.exec-list{display:flex;flex-direction:column;gap:8px}
+.exec-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:start;padding:10px 11px;border:1px solid var(--line2);border-radius:9px;background:#FCFDFF}
+.exec-row-main{min-width:0}
+.exec-row-title{font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.45}
+.exec-row-meta{display:flex;gap:6px 10px;flex-wrap:wrap;margin-top:4px;color:var(--muted);font-size:10.5px}
+.exec-row-note{grid-column:1/-1;color:var(--ink2);font-size:11.5px;line-height:1.5;padding-top:2px}
+.exec-row .date{font-size:10.5px}
+.exec-empty{border:1px dashed var(--line);border-radius:10px;padding:22px;text-align:center;color:var(--muted);font-size:12px;background:#FBFCFE}
+.issue-table{width:100%;border-collapse:separate;border-spacing:0}
+.issue-table th{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:left;padding:0 10px 8px;border:0;background:transparent}
+.issue-table td{font-size:11.5px;padding:10px;border-top:1px solid var(--line2);vertical-align:top}
+.issue-table tbody tr:first-child td{border-top:1px solid var(--line)}
+.issue-name{font-weight:700;color:var(--ink);line-height:1.4}
+.issue-desc{color:var(--komex);font-weight:600;line-height:1.45}
+.issue-status{font-size:10px;font-weight:800;color:var(--komex);background:var(--komex-soft);padding:4px 7px;border-radius:99px;white-space:nowrap}
+.phase-summary{display:flex;flex-direction:column;gap:10px}
+.phase-sum-row{display:grid;grid-template-columns:minmax(120px,1fr) 120px 42px;gap:10px;align-items:center}
+.phase-sum-name{font-size:11.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.phase-sum-bar{height:6px;background:var(--line2);border-radius:99px;overflow:hidden}
+.phase-sum-bar i{display:block;height:100%;background:var(--base);border-radius:99px}
+.phase-sum-row.done .phase-sum-bar i{background:var(--done)}
+.phase-sum-pct{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;text-align:right;color:var(--muted)}
+
+/* issues in detailed plan */
+.issue-text{font-size:11.5px;color:var(--ink2);line-height:1.45;max-width:260px;display:inline-block}
+.issue-text.open{color:var(--komex);font-weight:600}
+.issue-empty{color:#C8D2DE}
+.issue-state{font-size:10.5px;font-weight:800;padding:4px 7px;border-radius:99px;white-space:nowrap}
+.issue-state.open{color:var(--komex);background:var(--komex-soft)}
+.issue-state.done{color:var(--done);background:var(--done-soft)}
+.issue-state.na{color:var(--muted);background:var(--idle-soft);font-weight:600}
+input.ed.issue-in{width:100%;min-width:180px}
+.issue-check{align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--ink2);white-space:nowrap}
+.issue-check input{accent-color:var(--done);width:15px;height:15px}
+
+/* ---------- QUICK TASK EDITOR ---------- */
+.task-editor-backdrop{position:fixed;inset:0;z-index:120;background:rgba(10,26,47,.42);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:18px}
+.task-editor-backdrop[hidden]{display:none!important}
+.task-editor{width:min(560px,100%);max-height:min(720px,calc(100vh - 36px));overflow:auto;background:var(--surface);border:1px solid rgba(255,255,255,.7);border-radius:16px;box-shadow:0 24px 70px rgba(10,26,47,.28)}
+.task-editor-head{display:flex;align-items:flex-start;gap:12px;padding:18px 18px 14px;border-bottom:1px solid var(--line)}
+.task-editor-head-main{min-width:0;flex:1}
+.task-editor-kicker{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--base);margin-bottom:5px}
+.task-editor-head h3{margin:0;font-size:16px;line-height:1.45;letter-spacing:-.015em}
+.task-editor-meta{margin-top:5px;font-size:11px;color:var(--muted)}
+.icon-close{border:0;background:var(--idle-soft);color:var(--ink2);cursor:pointer;width:30px;height:30px;border-radius:8px;font-size:19px;line-height:1;flex:0 0 auto}
+.icon-close:hover{background:var(--komex-soft);color:var(--komex)}
+.task-editor-body{padding:18px;display:flex;flex-direction:column;gap:16px}
+.quick-field label,.quick-field .quick-label{display:block;font-size:11px;font-weight:800;color:var(--ink2);margin-bottom:7px}
+.quick-input,.quick-textarea{width:100%;border:1px solid var(--line);border-radius:9px;background:#FCFDFF;color:var(--ink);font:inherit;font-size:13px;padding:10px 11px;transition:.15s}
+.quick-textarea{min-height:104px;resize:vertical;line-height:1.55}
+.quick-input:focus,.quick-textarea:focus{outline:none;border-color:var(--base);box-shadow:0 0 0 3px var(--base-soft);background:#fff}
+.quick-input.bad{border-color:var(--komex);box-shadow:0 0 0 3px rgba(224,31,38,.08)}
+.quick-help{font-size:10.5px;color:var(--muted);margin-top:6px;line-height:1.45}
+.quick-error{font-size:10.5px;color:var(--komex);font-weight:600;margin-top:6px;display:none}
+.quick-error.show{display:block}
+.quick-link-actions{display:flex;gap:8px;margin-top:8px}
+.quick-link-actions .btn{padding:7px 10px;font-size:11.5px}
+.quick-toggle{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#FAFCFE;cursor:pointer}
+.quick-toggle input{width:17px;height:17px;margin-top:1px;accent-color:var(--done);flex:0 0 auto}
+.quick-toggle b{display:block;font-size:12.5px}
+.quick-toggle span{display:block;font-size:10.5px;color:var(--muted);margin-top:2px;line-height:1.45}
+.quick-toggle.disabled{opacity:.55;cursor:not-allowed}
+.task-editor-foot{display:flex;justify-content:flex-end;gap:9px;padding:14px 18px 18px;border-top:1px solid var(--line)}
+.task-editor-foot .btn{padding:9px 14px}
+.task-editor-foot .btn-primary{background:var(--base);border-color:var(--base);color:#fff}
+.task-editor-foot .btn-primary:hover{background:var(--base-deep);border-color:var(--base-deep);color:#fff}
+body.modal-open{overflow:hidden}
+.quick-savebar{position:fixed;z-index:115;left:50%;bottom:18px;transform:translateX(-50%);width:min(720px,calc(100% - 28px));background:var(--ink);color:#fff;border-radius:12px;box-shadow:0 18px 48px rgba(10,26,47,.28);padding:10px 12px 10px 15px;display:flex;align-items:center;gap:12px}
+.quick-savebar[hidden]{display:none!important}
+.quick-savebar span{font-size:11.5px;line-height:1.45;flex:1}
+.quick-savebar button{font:inherit;font-size:11.5px;font-weight:800;background:#fff;color:var(--ink);border:0;border-radius:8px;padding:8px 11px;cursor:pointer;white-space:nowrap}
+.quick-savebar button:hover{background:var(--base-soft);color:var(--base-deep)}
+.quick-savebar .dismiss{width:28px;height:28px;padding:0;border-radius:7px;background:rgba(255,255,255,.12);color:#fff;font-size:17px}
+.quick-savebar .dismiss:hover{background:rgba(255,255,255,.2);color:#fff}
+
 /* ============ TABLET ============ */
 @media(max-width:1180px){
   .kpis{grid-template-columns:repeat(3,1fr)}
-  .kpi.k-next{grid-column:span 3}
+  .kpi.k-next{grid-column:span 2}
   th.col-note,td.col-note,th.col-start,td.col-start{display:none}
+  .exec-grid,.exec-grid-main{grid-template-columns:1fr}
 }
 @media(max-width:980px){
   .seg{padding-right:12px}
@@ -284,8 +401,10 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
   :root{--topH:56px}
   html{scroll-padding-top:120px}
   .wrap{padding:0 14px}
+  .view-tabs{padding-top:10px;overflow-x:auto;scrollbar-width:none}
+  .view-tabs::-webkit-scrollbar{display:none}
+  .view-tab{flex:0 0 auto;padding:8px 11px;font-size:11.5px}
 
-  /* thanh trên cùng */
   .topbar-in{padding:11px 14px;gap:10px}
   .topbar h1{display:none}
   .lockup b{font-size:13.5px}
@@ -294,41 +413,32 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
   .btn .lb-short{display:inline}
   #btnPrint{display:none}
 
-  /* hero */
   .hero{padding:20px 0 4px}
   .hero-head{margin-bottom:18px;gap:14px}
   .hero h2{font-size:22px}
   .hero .sub{font-size:12.5px}
   .stamp{text-align:left;border-right:0;border-left:2px solid var(--base);padding-right:0;padding-left:10px}
-  .stamp b{text-align:left}
-  #lastUpdate{text-align:left;width:100px}
+  #lastUpdate{text-align:left;width:104px}
 
-  /* KPI: cuộn ngang, không bóp méo */
   .kpis{
     display:flex;gap:10px;margin-bottom:18px;
     overflow-x:auto;-webkit-overflow-scrolling:touch;
-    scroll-snap-type:x mandatory;padding-bottom:4px;
-    scrollbar-width:none;
+    scroll-snap-type:x mandatory;padding-bottom:4px;scrollbar-width:none;
   }
   .kpis::-webkit-scrollbar{display:none}
   .kpi{flex:0 0 150px;scroll-snap-align:start;padding:13px 14px}
   .kpi.k-next{flex:0 0 210px}
+  .kpi.k-issue{flex:0 0 160px}
   .kpi .val{font-size:23px}
   .kpi.k-next .val{font-size:13.5px}
 
-  /* ĐƯỜNG RAY: dựng dọc */
   .rail{padding:18px 16px 6px;border-radius:12px}
   .rail-top{margin-bottom:18px;gap:8px}
   .rail-legend{font-size:10px;gap:10px}
   .track{flex-direction:column}
-  .seg{
-    width:100%;flex:none;padding:0 0 18px 30px;
-  }
+  .seg{width:100%;flex:none;padding:0 0 18px 30px}
   .seg:last-child{padding-bottom:4px}
-  .seg .bar{
-    top:20px;bottom:-2px;left:8px;right:auto;
-    width:3px;height:auto;
-  }
+  .seg .bar{top:20px;bottom:-2px;left:8px;right:auto;width:3px;height:auto}
   .seg:last-child .bar{display:none}
   .seg .fill{
     width:100%;height:var(--p,0%);top:0;bottom:auto;
@@ -340,13 +450,10 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
   .seg .flag{position:static;margin:0 0 4px 0}
   .seg .pinfo{padding-right:0}
   .seg .pname{font-size:13.5px}
-  .seg .pmeta{margin-top:4px}
 
-  /* điều khiển: gọn, chips cuộn ngang */
   .controls{
     position:sticky;top:var(--topH);
     gap:8px;padding:10px 0 8px;margin-top:16px;flex-wrap:nowrap;
-    overflow:visible;
   }
   body.editing .controls{top:calc(var(--topH) + 58px)}
   .search{flex:1 1 auto;min-width:0}
@@ -359,7 +466,16 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
   .chips{flex-wrap:nowrap}
   .mcount{display:block;font-size:11.5px;color:var(--muted);font-family:'JetBrains Mono',monospace;padding:0 2px 10px}
 
-  /* PHASE + BẢNG -> THẺ */
+  .exec-grid,.exec-grid-main{grid-template-columns:1fr;gap:10px}
+  .exec-card{padding:14px}
+  .exec-metrics{grid-template-columns:1fr 1fr 1fr}
+  .issue-table,.issue-table tbody,.issue-table tr,.issue-table td{display:block;width:100%}
+  .issue-table thead{display:none}
+  .issue-table tr{border:1px solid var(--line2);border-radius:9px;padding:10px;margin-bottom:8px;background:#FCFDFF}
+  .issue-table td{border:0!important;padding:2px 0}
+  .issue-table td:last-child{padding-top:7px}
+  .phase-sum-row{grid-template-columns:minmax(90px,1fr) 90px 38px}
+
   .phase{margin-bottom:20px;scroll-margin-top:120px}
   .phase-head{gap:8px;padding-bottom:8px}
   .phase-head h3{font-size:15px;flex:1 1 100%;order:2}
@@ -378,8 +494,9 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
   tbody td{display:block;padding:0;border:none;width:auto}
   td.col-name{flex:1 1 100%;margin-bottom:1px}
   td.col-owner,td.col-due,td.col-status{flex:0 0 auto}
-  td.col-prog{flex:1 1 100%;order:9}
   td.col-note{flex:1 1 100%;order:10;display:block}
+  td.col-issue{flex:1 1 100%;order:11;display:block}
+  td.col-resolved{flex:1 1 100%;order:12;display:block}
   td.col-start{display:none}
   .note{max-width:none;display:block}
   .note:empty{display:none}
@@ -392,20 +509,28 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
   .sname{padding-left:14px;font-size:12.5px}
   .sname:before{left:0;top:9px;width:7px}
   .tname{font-size:13px}
-  .pbar{width:100%}
-  .pbar .rail2{min-width:0}
-  tr.late td.col-name{box-shadow:none}
   tr.late{box-shadow:inset 3px 0 0 var(--komex)}
   tr.late td:first-child{box-shadow:none}
 
-  /* chế độ cập nhật trên mobile */
   body.editing tbody tr{gap:8px}
-  body.editing td.col-owner,body.editing td.col-due,body.editing td.col-status{flex:1 1 46%}
-  body.editing td.col-prog{flex:0 0 auto}
-  input.ed.date-in{width:100%}
+  body.editing td.col-owner,body.editing td.col-status{flex:1 1 46%}
+  body.editing td.col-issue{flex:1 1 100%}
+  body.editing td.col-resolved{flex:1 1 100%}
+  body.editing td.col-due{flex:0 0 auto}
+  input.date-in{width:118px}
   .editbar{padding:9px 14px;font-size:11.5px}
   .editbar > span:first-child{flex:1 1 100%}
   .editbar button{flex:1}
+  .row-edit-btn{opacity:.8;transform:none;width:28px;height:28px}
+  .task-editor-backdrop{padding:0;align-items:flex-end}
+  .task-editor{width:100%;max-height:88vh;border-radius:16px 16px 0 0}
+  .task-editor-head{padding:16px 14px 12px}
+  .task-editor-body{padding:14px;gap:14px}
+  .task-editor-foot{padding:12px 14px calc(14px + env(safe-area-inset-bottom));position:sticky;bottom:0;background:var(--surface)}
+  .task-editor-foot .btn{flex:1;justify-content:center}
+  .quick-savebar{bottom:10px;align-items:stretch;flex-wrap:wrap;padding:10px 10px 10px 12px}
+  .quick-savebar span{flex:1 1 calc(100% - 38px)}
+  .quick-savebar button:not(.dismiss){flex:1 1 100%}
 }
 @media(min-width:821px){ .mfilters{display:contents} .mcount{display:none} }
 
@@ -426,7 +551,8 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
 
 <!-- =============== DỮ LIỆU KẾ HOẠCH =============== -->
 <!-- Base cập nhật bằng nút "Chế độ cập nhật" trên giao diện,
-     sau đó bấm "Tải bản đã cập nhật" để lấy file HTML mới và thay thế link đang chia sẻ. -->
+     sau đó bấm "Tải bản đã cập nhật" để lấy file HTML mới và thay thế link đang chia sẻ.
+     Ngày lưu theo chuẩn yyyy-mm-dd; trên giao diện nhập theo dd/mm/yyyy. -->
 <script id="plan-data" type="application/json">
 {
   "project": "Dự án chuyển đổi số Komex Digital × Base.vn",
@@ -436,15 +562,15 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
       "id": "p0", "no": "PHASE 0", "name": "Công tác chuẩn bị",
       "window": "09/07 – 19/07/2026",
       "tasks": [
-        {"name":"Xác nhận phương án và kế hoạch triển khai Base","owner":"Komex","start":"","due":"","status":"doing","progress":60,"note":"Chốt phạm vi giải pháp & số lượng nhân sự sử dụng","link":"https://account.base.com.vn/company","subs":[]},
-        {"name":"Thủ tục hợp đồng - thanh toán","owner":"Base & Komex","start":"","due":"2026-07-18","status":"doing","progress":40,"note":"","link":"https://account.base.com.vn/company","subs":[]},
-        {"name":"Base mở hệ thống cho Komex","owner":"Base","start":"","due":"2026-07-19","status":"idle","progress":0,"note":"Phụ thuộc thủ tục hợp đồng - thanh toán","link":"","subs":[
-          {"name":"Tổng hợp thông tin tài khoản sử dụng Base","owner":"Base & Komex","start":"","due":"2026-07-18","status":"doing","progress":30,"note":"Komex gửi danh sách nhân sự theo mẫu"}
+        {"name":"Xác nhận phương án và kế hoạch triển khai Base","owner":"Komex","start":"","due":"","status":"doing","note":"Chốt phạm vi giải pháp & số lượng nhân sự sử dụng","link":"https://account.base.com.vn/company","subs":[]},
+        {"name":"Thủ tục hợp đồng - thanh toán","owner":"Base & Komex","start":"","due":"2026-07-18","status":"doing","note":"","link":"https://account.base.com.vn/company","subs":[]},
+        {"name":"Base mở hệ thống cho Komex","owner":"Base","start":"","due":"2026-07-19","status":"idle","note":"Phụ thuộc thủ tục hợp đồng - thanh toán","link":"","subs":[
+          {"name":"Tổng hợp thông tin tài khoản sử dụng Base","owner":"Base & Komex","start":"","due":"2026-07-18","status":"doing","note":"Komex gửi danh sách nhân sự theo mẫu"}
         ]},
-        {"name":"Kick-off khởi động dự án","owner":"Base & Komex","start":"2026-07-20","due":"2026-07-20","status":"idle","progress":0,"note":"Cột mốc hai bên chính thức khởi động dự án","link":"https://account.base.com.vn/company","milestone":"KICK-OFF","subs":[
-          {"name":"Khởi tạo tài khoản trên Base Account cho toàn bộ nhân sự","owner":"Base & Komex","start":"2026-07-20","due":"2026-07-20","status":"idle","progress":0,"note":""},
-          {"name":"Phân loại thành viên theo các nhóm","owner":"Base & Komex","start":"2026-07-20","due":"2026-07-20","status":"idle","progress":0,"note":""},
-          {"name":"Thiết lập vai trò quản lý với các thành viên","owner":"Base & Komex","start":"2026-07-20","due":"2026-07-20","status":"idle","progress":0,"note":""}
+        {"name":"Kick-off khởi động dự án","owner":"Base & Komex","start":"2026-07-20","due":"2026-07-20","status":"idle","note":"Cột mốc hai bên chính thức khởi động dự án","link":"https://account.base.com.vn/company","milestone":"KICK-OFF","subs":[
+          {"name":"Khởi tạo tài khoản trên Base Account cho toàn bộ nhân sự","owner":"Base & Komex","start":"2026-07-20","due":"2026-07-20","status":"idle","note":""},
+          {"name":"Phân loại thành viên theo các nhóm","owner":"Base & Komex","start":"2026-07-20","due":"2026-07-20","status":"idle","note":""},
+          {"name":"Thiết lập vai trò quản lý với các thành viên","owner":"Base & Komex","start":"2026-07-20","due":"2026-07-20","status":"idle","note":""}
         ]}
       ]
     },
@@ -452,74 +578,74 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
       "id":"p1","no":"PHASE 1","name":"Quy trình nội bộ, đề xuất - phê duyệt",
       "window":"20/07 – 02/08/2026",
       "tasks":[
-        {"name":"Quy trình khiếu nại trả hàng - hoàn tiền — Base Service","owner":"Base & Komex","start":"2026-07-20","due":"2026-08-02","status":"idle","progress":0,"note":"Ưu tiên số 1 của giai đoạn thiết lập","link":"","subs":[
-          {"name":"Thiết lập khung quy trình","owner":"Base & Komex","start":"","due":"2026-07-23","status":"idle","progress":0,"note":""},
-          {"name":"Thiết lập trường tuỳ chỉnh","owner":"Base & Komex","start":"","due":"2026-07-25","status":"idle","progress":0,"note":""},
-          {"name":"Kiểm tra & chạy thử luồng quy trình lần 1","owner":"Base & Komex","start":"","due":"2026-07-28","status":"idle","progress":0,"note":""},
-          {"name":"Đấu nối dữ liệu với Shopee thông qua API","owner":"Base","start":"","due":"2026-07-30","status":"idle","progress":0,"note":"Komex cấp quyền Shopee Open Platform"},
-          {"name":"Đấu nối dữ liệu với Tiktok thông qua API","owner":"Base","start":"","due":"2026-07-30","status":"idle","progress":0,"note":"Komex cấp quyền TikTok Shop Partner API"},
-          {"name":"Kiểm tra & chạy thử luồng quy trình lần 2","owner":"Base & Komex","start":"","due":"2026-08-02","status":"idle","progress":0,"note":""}
+        {"name":"Quy trình khiếu nại trả hàng - hoàn tiền — Base Service","owner":"Base & Komex","start":"2026-07-20","due":"2026-08-02","status":"idle","note":"Ưu tiên số 1 của giai đoạn thiết lập","link":"","subs":[
+          {"name":"Thiết lập khung quy trình","owner":"Base & Komex","start":"","due":"2026-07-23","status":"idle","note":""},
+          {"name":"Thiết lập trường tuỳ chỉnh","owner":"Base & Komex","start":"","due":"2026-07-25","status":"idle","note":""},
+          {"name":"Kiểm tra & chạy thử luồng quy trình lần 1","owner":"Base & Komex","start":"","due":"2026-07-28","status":"idle","note":""},
+          {"name":"Đấu nối dữ liệu với Shopee thông qua API","owner":"Base","start":"","due":"2026-07-30","status":"idle","note":"Komex cấp quyền Shopee Open Platform"},
+          {"name":"Đấu nối dữ liệu với Tiktok thông qua API","owner":"Base","start":"","due":"2026-07-30","status":"idle","note":"Komex cấp quyền TikTok Shop Partner API"},
+          {"name":"Kiểm tra & chạy thử luồng quy trình lần 2","owner":"Base & Komex","start":"","due":"2026-08-02","status":"idle","note":""}
         ]},
-        {"name":"Quy trình bảo hành sản phẩm — Base Service","owner":"Base & Komex","start":"2026-07-20","due":"2026-08-02","status":"idle","progress":0,"note":"","link":"","subs":[
-          {"name":"Thiết lập khung quy trình","owner":"Base & Komex","start":"","due":"2026-07-24","status":"idle","progress":0,"note":""},
-          {"name":"Thiết lập trường tuỳ chỉnh","owner":"Base & Komex","start":"","due":"2026-07-26","status":"idle","progress":0,"note":""},
-          {"name":"Chạy thử luồng quy trình","owner":"Base & Komex","start":"","due":"2026-07-29","status":"idle","progress":0,"note":""},
-          {"name":"Đấu nối dữ liệu với Shopee thông qua API","owner":"Base","start":"","due":"2026-07-30","status":"idle","progress":0,"note":""},
-          {"name":"Đấu nối dữ liệu với Tiktok thông qua API","owner":"Base","start":"","due":"2026-07-30","status":"idle","progress":0,"note":""},
-          {"name":"Kiểm tra & chạy thử luồng quy trình lần 2","owner":"Base & Komex","start":"","due":"2026-08-02","status":"idle","progress":0,"note":""}
+        {"name":"Quy trình bảo hành sản phẩm — Base Service","owner":"Base & Komex","start":"2026-07-20","due":"2026-08-02","status":"idle","note":"","link":"","subs":[
+          {"name":"Thiết lập khung quy trình","owner":"Base & Komex","start":"","due":"2026-07-24","status":"idle","note":""},
+          {"name":"Thiết lập trường tuỳ chỉnh","owner":"Base & Komex","start":"","due":"2026-07-26","status":"idle","note":""},
+          {"name":"Chạy thử luồng quy trình","owner":"Base & Komex","start":"","due":"2026-07-29","status":"idle","note":""},
+          {"name":"Đấu nối dữ liệu với Shopee thông qua API","owner":"Base","start":"","due":"2026-07-30","status":"idle","note":""},
+          {"name":"Đấu nối dữ liệu với Tiktok thông qua API","owner":"Base","start":"","due":"2026-07-30","status":"idle","note":""},
+          {"name":"Kiểm tra & chạy thử luồng quy trình lần 2","owner":"Base & Komex","start":"","due":"2026-08-02","status":"idle","note":""}
         ]},
-        {"name":"Xây dựng Dashboard khiếu nại — Data Service","owner":"Base & Komex","start":"2026-07-27","due":"2026-08-02","status":"idle","progress":0,"note":"Phụ thuộc dữ liệu đấu nối Shopee & TikTok","link":"","subs":[]},
-        {"name":"Quy trình mua hàng — Base Service","owner":"Base & Komex","start":"2026-07-27","due":"2026-08-02","status":"idle","progress":0,"note":"","link":"","subs":[
-          {"name":"Thiết lập khung quy trình","owner":"Base & Komex","start":"","due":"2026-07-29","status":"idle","progress":0,"note":""},
-          {"name":"Thiết lập trường tuỳ chỉnh","owner":"Base & Komex","start":"","due":"2026-07-31","status":"idle","progress":0,"note":""},
-          {"name":"Kiểm tra & chạy thử quy trình","owner":"Base & Komex","start":"","due":"2026-08-02","status":"idle","progress":0,"note":""}
+        {"name":"Xây dựng Dashboard khiếu nại — Data Service","owner":"Base & Komex","start":"2026-07-27","due":"2026-08-02","status":"idle","note":"Phụ thuộc dữ liệu đấu nối Shopee & TikTok","link":"","subs":[]},
+        {"name":"Quy trình mua hàng — Base Service","owner":"Base & Komex","start":"2026-07-27","due":"2026-08-02","status":"idle","note":"","link":"","subs":[
+          {"name":"Thiết lập khung quy trình","owner":"Base & Komex","start":"","due":"2026-07-29","status":"idle","note":""},
+          {"name":"Thiết lập trường tuỳ chỉnh","owner":"Base & Komex","start":"","due":"2026-07-31","status":"idle","note":""},
+          {"name":"Kiểm tra & chạy thử quy trình","owner":"Base & Komex","start":"","due":"2026-08-02","status":"idle","note":""}
         ]},
-        {"name":"Thiết lập các quy trình đề xuất trong nội bộ — Base Service","owner":"Base & Komex","start":"2026-07-27","due":"2026-08-02","status":"idle","progress":0,"note":"Tạm ứng - hoàn ứng, đề nghị thanh toán, đề xuất nội bộ khác","link":"","subs":[]}
+        {"name":"Thiết lập các quy trình đề xuất trong nội bộ — Base Service","owner":"Base & Komex","start":"2026-07-27","due":"2026-08-02","status":"idle","note":"Tạm ứng - hoàn ứng, đề nghị thanh toán, đề xuất nội bộ khác","link":"","subs":[]}
       ]
     },
     {
       "id":"p2","no":"PHASE 2","name":"Công việc hàng ngày & truyền thông nội bộ",
       "window":"03/08 – 09/08/2026",
       "tasks":[
-        {"name":"Base Wework — Giao việc Top-down","owner":"Base & Komex","start":"2026-08-03","due":"2026-08-09","status":"idle","progress":0,"note":"Bao gồm checklist vận hành phiên livestream","link":"","subs":[]},
-        {"name":"Base Office — Quy định, chính sách","owner":"Base & Komex","start":"2026-08-03","due":"2026-08-09","status":"idle","progress":0,"note":"","link":"","subs":[]},
-        {"name":"Base Square — Tri thức nội bộ","owner":"Base & Komex","start":"2026-08-03","due":"2026-08-09","status":"idle","progress":0,"note":"","link":"","subs":[]},
-        {"name":"Base Inside — Truyền thông nội bộ","owner":"Base & Komex","start":"2026-08-03","due":"2026-08-09","status":"idle","progress":0,"note":"","link":"","subs":[]}
+        {"name":"Base Wework — Giao việc Top-down","owner":"Base & Komex","start":"2026-08-03","due":"2026-08-09","status":"idle","note":"Bao gồm checklist vận hành phiên livestream","link":"","subs":[]},
+        {"name":"Base Office — Quy định, chính sách","owner":"Base & Komex","start":"2026-08-03","due":"2026-08-09","status":"idle","note":"","link":"","subs":[]},
+        {"name":"Base Square — Tri thức nội bộ","owner":"Base & Komex","start":"2026-08-03","due":"2026-08-09","status":"idle","note":"","link":"","subs":[]},
+        {"name":"Base Inside — Truyền thông nội bộ","owner":"Base & Komex","start":"2026-08-03","due":"2026-08-09","status":"idle","note":"","link":"","subs":[]}
       ]
     },
     {
       "id":"p3","no":"PHASE 3","name":"Base HRM+",
       "window":"10/08 – 16/08/2026",
       "tasks":[
-        {"name":"Base HRM — Thiết lập chính sách, hồ sơ nhân sự","owner":"Base & Komex","start":"2026-08-10","due":"2026-08-16","status":"idle","progress":0,"note":"Komex chuẩn bị file hồ sơ nhân sự theo mẫu","link":"","subs":[]},
-        {"name":"Base Checkin — Thiết lập chấm công","owner":"Base & Komex","start":"2026-08-10","due":"2026-08-16","status":"idle","progress":0,"note":"Cần IP máy chấm công đang sử dụng","link":"","subs":[]},
-        {"name":"Base Schedule — Thiết lập bảng công","owner":"Base & Komex","start":"2026-08-10","due":"2026-08-16","status":"idle","progress":0,"note":"Gồm ca đặc thù của ekip livestream","link":"","subs":[]},
-        {"name":"Base Timeoff — Thiết lập nghỉ phép","owner":"Base & Komex","start":"2026-08-10","due":"2026-08-16","status":"idle","progress":0,"note":"","link":"","subs":[]},
-        {"name":"Base Payroll — Thiết lập bảng lương","owner":"Base & Komex","start":"2026-08-10","due":"2026-08-16","status":"idle","progress":0,"note":"Đối chiếu với bảng lương thủ công tháng gần nhất","link":"","subs":[]}
+        {"name":"Base HRM — Thiết lập chính sách, hồ sơ nhân sự","owner":"Base & Komex","start":"2026-08-10","due":"2026-08-16","status":"idle","note":"Komex chuẩn bị file hồ sơ nhân sự theo mẫu","link":"","subs":[]},
+        {"name":"Base Checkin — Thiết lập chấm công","owner":"Base & Komex","start":"2026-08-10","due":"2026-08-16","status":"idle","note":"Cần IP máy chấm công đang sử dụng","link":"","subs":[]},
+        {"name":"Base Schedule — Thiết lập bảng công","owner":"Base & Komex","start":"2026-08-10","due":"2026-08-16","status":"idle","note":"Gồm ca đặc thù của ekip livestream","link":"","subs":[]},
+        {"name":"Base Timeoff — Thiết lập nghỉ phép","owner":"Base & Komex","start":"2026-08-10","due":"2026-08-16","status":"idle","note":"","link":"","subs":[]},
+        {"name":"Base Payroll — Thiết lập bảng lương","owner":"Base & Komex","start":"2026-08-10","due":"2026-08-16","status":"idle","note":"Đối chiếu với bảng lương thủ công tháng gần nhất","link":"","subs":[]}
       ]
     },
     {
       "id":"p4","no":"PHASE 4","name":"Đào tạo & Go-live",
       "window":"24/08 – 31/08/2026",
       "tasks":[
-        {"name":"Đào tạo toàn bộ nhân sự Komex (Buổi 1)","owner":"Base & Komex","start":"2026-08-24","due":"2026-08-26","status":"idle","progress":0,"note":"Trọng tâm: Base Service — khiếu nại, đề xuất - phê duyệt","link":"","subs":[
-          {"name":"Chỉnh sửa thông tin cá nhân trên Base Account","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""},
-          {"name":"Sử dụng Base Service để theo dõi - xử lý các khiếu nại trả hàng - hoàn tiền, khiếu nại bảo hành đa sàn","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""},
-          {"name":"Sử dụng Base Service để theo dõi các công việc đề xuất - phê duyệt nội bộ","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""},
-          {"name":"Sử dụng Base Service để theo dõi - xử lý các công việc phối hợp liên phòng ban","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""}
+        {"name":"Đào tạo toàn bộ nhân sự Komex (Buổi 1)","owner":"Base & Komex","start":"2026-08-24","due":"2026-08-26","status":"idle","note":"Trọng tâm: Base Service — khiếu nại, đề xuất - phê duyệt","link":"","subs":[
+          {"name":"Chỉnh sửa thông tin cá nhân trên Base Account","owner":"Base & Komex","start":"","due":"","status":"idle","note":""},
+          {"name":"Sử dụng Base Service để theo dõi - xử lý các khiếu nại trả hàng - hoàn tiền, khiếu nại bảo hành đa sàn","owner":"Base & Komex","start":"","due":"","status":"idle","note":""},
+          {"name":"Sử dụng Base Service để theo dõi các công việc đề xuất - phê duyệt nội bộ","owner":"Base & Komex","start":"","due":"","status":"idle","note":""},
+          {"name":"Sử dụng Base Service để theo dõi - xử lý các công việc phối hợp liên phòng ban","owner":"Base & Komex","start":"","due":"","status":"idle","note":""}
         ]},
-        {"name":"Đào tạo toàn bộ nhân sự Komex (Buổi 2)","owner":"Base & Komex","start":"2026-08-27","due":"2026-08-30","status":"idle","progress":0,"note":"Trọng tâm: Wework, Office, Square, Inside, HRM+","link":"","subs":[
-          {"name":"Theo dõi - xử lý công việc trên Base Wework","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""},
-          {"name":"Theo dõi, tìm kiếm quy định, chính sách trên Base Office","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""},
-          {"name":"Tìm kiếm - xử lý bài đăng tri thức trên Base Square","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""},
-          {"name":"Theo dõi - cập nhật tin tức nội bộ trên Base Inside","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""},
-          {"name":"Theo dõi - tạo mới các đơn nghỉ phép trên Base Timeoff","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""},
-          {"name":"Theo dõi - thao tác chấm công cá nhân","owner":"Base & Komex","start":"","due":"","status":"idle","progress":0,"note":""}
+        {"name":"Đào tạo toàn bộ nhân sự Komex (Buổi 2)","owner":"Base & Komex","start":"2026-08-27","due":"2026-08-30","status":"idle","note":"Trọng tâm: Wework, Office, Square, Inside, HRM+","link":"","subs":[
+          {"name":"Theo dõi - xử lý công việc trên Base Wework","owner":"Base & Komex","start":"","due":"","status":"idle","note":""},
+          {"name":"Theo dõi, tìm kiếm quy định, chính sách trên Base Office","owner":"Base & Komex","start":"","due":"","status":"idle","note":""},
+          {"name":"Tìm kiếm - xử lý bài đăng tri thức trên Base Square","owner":"Base & Komex","start":"","due":"","status":"idle","note":""},
+          {"name":"Theo dõi - cập nhật tin tức nội bộ trên Base Inside","owner":"Base & Komex","start":"","due":"","status":"idle","note":""},
+          {"name":"Theo dõi - tạo mới các đơn nghỉ phép trên Base Timeoff","owner":"Base & Komex","start":"","due":"","status":"idle","note":""},
+          {"name":"Theo dõi - thao tác chấm công cá nhân","owner":"Base & Komex","start":"","due":"","status":"idle","note":""}
         ]},
-        {"name":"Go-live dự án","owner":"Base & Komex","start":"2026-08-31","due":"2026-08-31","status":"idle","progress":0,"note":"Toàn bộ nhân sự Komex chính thức sử dụng Base hàng ngày","link":"","milestone":"GO-LIVE","subs":[
-          {"name":"Tổng kết các nội dung đã triển khai trong dự án","owner":"Base & Komex","start":"","due":"2026-08-31","status":"idle","progress":0,"note":""},
-          {"name":"Thông báo về việc chính thức chuyển đổi sử dụng công cụ làm việc hàng ngày","owner":"Komex","start":"","due":"2026-08-31","status":"idle","progress":0,"note":""},
-          {"name":"Xây dựng các chính sách, quy định, quy chế thưởng - phạt về việc sử dụng, và/hoặc phản hồi về các vấn đề trong quá trình sử dụng phần mềm Base","owner":"Komex","start":"","due":"2026-08-31","status":"idle","progress":0,"note":""}
+        {"name":"Go-live dự án","owner":"Base & Komex","start":"2026-08-31","due":"2026-08-31","status":"idle","note":"Toàn bộ nhân sự Komex chính thức sử dụng Base hàng ngày","link":"","milestone":"GO-LIVE","subs":[
+          {"name":"Tổng kết các nội dung đã triển khai trong dự án","owner":"Base & Komex","start":"","due":"2026-08-31","status":"idle","note":""},
+          {"name":"Thông báo về việc chính thức chuyển đổi sử dụng công cụ làm việc hàng ngày","owner":"Komex","start":"","due":"2026-08-31","status":"idle","note":""},
+          {"name":"Xây dựng các chính sách, quy định, quy chế thưởng - phạt về việc sử dụng, và/hoặc phản hồi về các vấn đề trong quá trình sử dụng phần mềm Base","owner":"Komex","start":"","due":"2026-08-31","status":"idle","note":""}
         ]}
       ]
     },
@@ -527,17 +653,17 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
       "id":"p5","no":"PHASE 5","name":"Hyper care",
       "window":"Từ 31/08/2026",
       "tasks":[
-        {"name":"Báo cáo tình hình sử dụng (tháng 9/2026)","owner":"Base","start":"","due":"2026-09-30","status":"idle","progress":0,"note":"","link":"","subs":[]},
-        {"name":"Báo cáo tình hình sử dụng (tháng 10/2026)","owner":"Base","start":"","due":"2026-10-31","status":"idle","progress":0,"note":"","link":"","subs":[]},
-        {"name":"Báo cáo tình hình sử dụng (tháng 11/2026) & trao đổi về phương án tái ký sớm nhận ưu đãi","owner":"Base & Komex","start":"","due":"2026-11-30","status":"idle","progress":0,"note":"","link":"","subs":[]},
-        {"name":"Báo cáo tình hình sử dụng (tháng 12/2026)","owner":"Base","start":"","due":"2026-12-31","status":"idle","progress":0,"note":"","link":"","subs":[]},
-        {"name":"Báo cáo tình hình sử dụng (tháng 1/2027)","owner":"Base","start":"","due":"2027-01-31","status":"idle","progress":0,"note":"","link":"","subs":[]},
-        {"name":"Báo cáo tình hình sử dụng (tháng 2/2027) & trao đổi về phương án nâng cấp/mở rộng hệ thống","owner":"Base & Komex","start":"","due":"2027-02-28","status":"idle","progress":0,"note":"","link":"","subs":[]},
-        {"name":"Báo cáo tình hình sử dụng (tháng 3/2027)","owner":"Base","start":"","due":"2027-03-31","status":"idle","progress":0,"note":"","link":"","subs":[]},
-        {"name":"Báo cáo tình hình sử dụng (tháng 4/2027)","owner":"Base","start":"","due":"2027-04-30","status":"idle","progress":0,"note":"","link":"","subs":[]},
-        {"name":"Báo cáo tình hình sử dụng (tháng 5/2027) & trao đổi về phương án xây dựng dashboard toàn diện","owner":"Base & Komex","start":"","due":"2027-05-31","status":"idle","progress":0,"note":"","link":"","subs":[]},
-        {"name":"Báo cáo tình hình sử dụng (tháng 6/2027)","owner":"Base","start":"","due":"2027-06-30","status":"idle","progress":0,"note":"","link":"","subs":[]},
-        {"name":"Báo cáo tình hình sử dụng (tháng 7/2027)","owner":"Base","start":"","due":"2027-07-31","status":"idle","progress":0,"note":"","link":"","subs":[]}
+        {"name":"Báo cáo tình hình sử dụng (tháng 9/2026)","owner":"Base","start":"","due":"2026-09-30","status":"idle","note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 10/2026)","owner":"Base","start":"","due":"2026-10-31","status":"idle","note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 11/2026) & trao đổi về phương án tái ký sớm nhận ưu đãi","owner":"Base & Komex","start":"","due":"2026-11-30","status":"idle","note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 12/2026)","owner":"Base","start":"","due":"2026-12-31","status":"idle","note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 1/2027)","owner":"Base","start":"","due":"2027-01-31","status":"idle","note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 2/2027) & trao đổi về phương án nâng cấp/mở rộng hệ thống","owner":"Base & Komex","start":"","due":"2027-02-28","status":"idle","note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 3/2027)","owner":"Base","start":"","due":"2027-03-31","status":"idle","note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 4/2027)","owner":"Base","start":"","due":"2027-04-30","status":"idle","note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 5/2027) & trao đổi về phương án xây dựng dashboard toàn diện","owner":"Base & Komex","start":"","due":"2027-05-31","status":"idle","note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 6/2027)","owner":"Base","start":"","due":"2027-06-30","status":"idle","note":"","link":"","subs":[]},
+        {"name":"Báo cáo tình hình sử dụng (tháng 7/2027)","owner":"Base","start":"","due":"2027-07-31","status":"idle","note":"","link":"","subs":[]}
       ]
     }
   ]
@@ -560,22 +686,32 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
 </header>
 
 <div class="editbar">
-  <span>⬤ Đang ở chế độ cập nhật — sửa trực tiếp trên bảng, sau đó tải bản mới về để thay thế link đang chia sẻ.</span>
+  <span>⬤ Đang ở chế độ cập nhật — sửa trực tiếp trên bảng (ngày nhập theo dd/mm/yyyy), sau đó tải bản mới về để thay thế link đang chia sẻ.</span>
   <span class="sp"></span>
   <button id="btnSave">Tải bản đã cập nhật (.html)</button>
   <button id="btnExit">Thoát</button>
 </div>
 
+<div class="view-nav">
+  <div class="wrap">
+    <nav class="view-tabs" aria-label="Chế độ xem dự án">
+      <button class="view-tab active" type="button" data-view="executive"><span class="tab-dot"></span>Báo cáo lãnh đạo</button>
+      <button class="view-tab" type="button" data-view="plan"><span class="tab-dot"></span>Kế hoạch chi tiết</button>
+    </nav>
+  </div>
+</div>
+
 <div class="wrap">
-  <section class="hero">
+  <section class="hero view-panel" id="viewExecutive">
     <div class="hero-head">
       <div>
-        <h2>Kế hoạch triển khai <em>Base</em> tại Komex Digital</h2>
-        <p class="sub">Một phiên bản sự thật duy nhất về tiến độ dự án. Base cập nhật trạng thái; Ban lãnh đạo và Ban tiên phong Komex theo dõi, bám sát công việc tại đây.</p>
+        <div class="exec-headline"><span class="exec-badge">Dành cho Ban lãnh đạo</span></div>
+        <h2>Báo cáo điều hành dự án <em>Base × Komex</em></h2>
+        <p class="sub">Tập trung vào tiến độ, rủi ro, vướng mắc chưa xử lý và các điểm cần can thiệp — không yêu cầu theo dõi từng đầu việc chi tiết.</p>
       </div>
       <div class="stamp">
         Cập nhật lần cuối
-        <b><input id="lastUpdate" readonly value="13/07/2026"></b>
+        <b><input id="lastUpdate" readonly value="13/07/2026" placeholder="dd/mm/yyyy"></b>
       </div>
     </div>
 
@@ -584,6 +720,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
       <div class="kpi k-done"><div class="lab">Đã hoàn thành</div><div class="val" id="kDone">0</div><div class="hint">đầu việc</div></div>
       <div class="kpi k-doing"><div class="lab">Đang thực hiện</div><div class="val" id="kDoing">0</div><div class="hint">đầu việc</div></div>
       <div class="kpi k-late"><div class="lab">Quá hạn</div><div class="val" id="kLate">0</div><div class="hint" id="kLateHint">cần xử lý ngay</div></div>
+      <div class="kpi k-issue"><div class="lab">Vướng mắc mở</div><div class="val" id="kIssues">0</div><div class="hint" id="kIssuesHint">chưa được xử lý</div></div>
       <div class="kpi k-next"><div class="lab">Cột mốc kế tiếp</div><div class="val" id="kNext">—</div><div class="hint" id="kNextHint"></div></div>
     </div>
 
@@ -599,8 +736,49 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
       </div>
       <div class="track" id="track"></div>
     </div>
+
+    <div class="exec-grid exec-grid-main">
+      <section class="exec-card">
+        <div class="exec-card-head">
+          <div><h3>Tình hình hiện tại của dự án</h3><p>Kết luận điều hành được tổng hợp tự động từ dữ liệu thực thi.</p></div>
+        </div>
+        <div id="execSummary"></div>
+      </section>
+      <section class="exec-card">
+        <div class="exec-card-head">
+          <div><h3>Trọng tâm đang thực hiện</h3><p>Các đầu việc cần theo dõi ở cấp điều hành.</p></div>
+          <span class="exec-count" id="focusCount">0 việc</span>
+        </div>
+        <div class="exec-list" id="focusList"></div>
+      </section>
+    </div>
+
+    <section class="exec-card" style="margin-top:14px">
+      <div class="exec-card-head">
+        <div><h3>Vướng mắc chưa được giải quyết</h3><p>Tự động tổng hợp từ cột “Vấn đề phát sinh” của từng công việc.</p></div>
+        <span class="exec-count" id="issueCount">0 vấn đề</span>
+      </div>
+      <div id="issueList"></div>
+    </section>
+
+    <div class="exec-grid">
+      <section class="exec-card">
+        <div class="exec-card-head">
+          <div><h3>Việc cần chú ý trong 7 ngày</h3><p>Ưu tiên việc quá hạn, sắp đến hạn hoặc đang vướng.</p></div>
+          <span class="exec-count" id="attentionCount">0 việc</span>
+        </div>
+        <div class="exec-list" id="attentionList"></div>
+      </section>
+      <section class="exec-card">
+        <div class="exec-card-head">
+          <div><h3>Tiến độ theo giai đoạn</h3><p>So sánh nhanh mức độ hoàn thành giữa các phase.</p></div>
+        </div>
+        <div class="phase-summary" id="phaseSummary"></div>
+      </section>
+    </div>
   </section>
 
+  <section class="view-panel" id="viewPlan" hidden>
   <div class="controls">
     <div class="search">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
@@ -616,6 +794,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
   <div class="mcount" id="mcount"></div>
 
   <main id="main"></main>
+  </section>
 
   <footer>
     <div class="legend">
@@ -625,9 +804,52 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
       <span class="st st-hold">Tạm hoãn</span>
       <span class="st st-block">Đang vướng</span>
     </div>
-    <p style="margin:0">Công việc cha có việc con sẽ tự lấy tiến độ trung bình của các việc con — chỉ cần cập nhật ở cấp việc con.
-      Nguồn dữ liệu gốc: Base Wework · <span class="mono">du-an-base-x-komex</span>.</p>
+    <p style="margin:0 0 4px">Phần trăm của mỗi giai đoạn được quy đổi từ trạng thái công việc: Hoàn thành 100% · Đang làm 50% · Đang vướng 25% · Chưa bắt đầu / Tạm hoãn 0%. Công việc cha có việc con sẽ tự lấy trạng thái từ các việc con.</p>
+    <p style="margin:0">Nguồn dữ liệu gốc: Base Wework · <span class="mono">du-an-base-x-komex</span>.</p>
   </footer>
+</div>
+
+<div class="task-editor-backdrop" id="taskEditorBackdrop" hidden>
+  <section class="task-editor" role="dialog" aria-modal="true" aria-labelledby="taskEditorTitle">
+    <header class="task-editor-head">
+      <div class="task-editor-head-main">
+        <div class="task-editor-kicker">Chỉnh sửa nhanh công việc</div>
+        <h3 id="taskEditorTitle">—</h3>
+        <div class="task-editor-meta" id="taskEditorMeta">—</div>
+      </div>
+      <button class="icon-close" id="taskEditorClose" type="button" aria-label="Đóng">×</button>
+    </header>
+    <div class="task-editor-body">
+      <div class="quick-field">
+        <label for="quickLink">Link đính kèm</label>
+        <input class="quick-input" id="quickLink" type="url" inputmode="url" placeholder="https://...">
+        <div class="quick-help">Mũi tên ↗ cạnh tên công việc sẽ luôn mở trực tiếp trang đích của link này.</div>
+        <div class="quick-error" id="quickLinkError">Link chưa hợp lệ. Vui lòng nhập địa chỉ bắt đầu bằng http:// hoặc https://.</div>
+        <div class="quick-link-actions">
+          <button class="btn" id="quickOpenLink" type="button">Mở link hiện tại ↗</button>
+          <button class="btn" id="quickClearLink" type="button">Xoá link</button>
+        </div>
+      </div>
+      <div class="quick-field">
+        <label for="quickIssue">Vấn đề phát sinh</label>
+        <textarea class="quick-textarea" id="quickIssue" placeholder="Ghi nhận vướng mắc, nguyên nhân hoặc nội dung cần phối hợp xử lý..."></textarea>
+      </div>
+      <label class="quick-toggle" id="quickResolvedWrap">
+        <input id="quickResolved" type="checkbox">
+        <span><b>Đã xử lý vấn đề</b><span>Chỉ bật khi vấn đề phát sinh đã được giải quyết xong.</span></span>
+      </label>
+    </div>
+    <footer class="task-editor-foot">
+      <button class="btn" id="taskEditorCancel" type="button">Huỷ</button>
+      <button class="btn btn-primary" id="taskEditorSave" type="button">Lưu thay đổi</button>
+    </footer>
+  </section>
+</div>
+
+<div class="quick-savebar" id="quickSavebar" hidden>
+  <span>Thay đổi đã được cập nhật trong phiên này. Tải file HTML mới để lưu vĩnh viễn và thay thế link đang chia sẻ.</span>
+  <button id="btnQuickDownload" type="button">Tải bản HTML đã cập nhật</button>
+  <button class="dismiss" id="quickSaveDismiss" type="button" aria-label="Ẩn thông báo">×</button>
 </div>
 
 <script>
@@ -635,11 +857,11 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
   "use strict";
 
   var STATUS = {
-    idle:  {label:"Chưa bắt đầu", cls:"st-idle"},
-    doing: {label:"Đang làm",     cls:"st-doing"},
-    block: {label:"Đang vướng",   cls:"st-block"},
-    hold:  {label:"Tạm hoãn",     cls:"st-hold"},
-    done:  {label:"Hoàn thành",   cls:"st-done"}
+    idle:  {label:"Chưa bắt đầu", cls:"st-idle",  w:0},
+    doing: {label:"Đang làm",     cls:"st-doing", w:50},
+    block: {label:"Đang vướng",   cls:"st-block", w:25},
+    hold:  {label:"Tạm hoãn",     cls:"st-hold",  w:0},
+    done:  {label:"Hoàn thành",   cls:"st-done",  w:100}
   };
   var ORDER = ["idle","doing","block","hold","done"];
   var TODAY = new Date(); TODAY.setHours(0,0,0,0);
@@ -650,13 +872,37 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
 
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){
     return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function pad(n){ return (n<10?"0":"")+n; }
+
+  /* ---- ngày: iso <-> dd/mm/yyyy ---- */
   function fmt(iso){
     if(!iso) return "";
-    var p=iso.split("-");
+    var p=String(iso).split("-");
     return p.length===3 ? p[2]+"/"+p[1]+"/"+p[0] : iso;
   }
+  function parseVN(s){
+    s=String(s||"").trim();
+    if(!s) return "";                                   // xoá ngày
+    var m=s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/);
+    if(!m) return null;                                 // sai định dạng
+    var d=+m[1], mo=+m[2], y=+m[3];
+    var dt=new Date(y, mo-1, d);
+    if(dt.getFullYear()!==y || dt.getMonth()!==mo-1 || dt.getDate()!==d) return null;
+    return y+"-"+pad(mo)+"-"+pad(d);
+  }
+  function autoSlash(el){
+    var caretAtEnd = el.selectionStart===el.value.length;
+    var v=el.value.replace(/\D/g,"").slice(0,8);
+    var out=v;
+    if(v.length>4)      out=v.slice(0,2)+"/"+v.slice(2,4)+"/"+v.slice(4);
+    else if(v.length>2) out=v.slice(0,2)+"/"+v.slice(2);
+    el.value=out;
+    if(caretAtEnd){ el.selectionStart=el.selectionEnd=out.length; }
+  }
+
   function overdue(i){
-    if(!i.due || i.status==="done") return false;
+    var st=(i.subs&&i.subs.length)?taskStatus(i):i.status;
+    if(!i.due || st==="done") return false;
     return new Date(i.due+"T00:00:00") < TODAY;
   }
   function ownerCls(o){
@@ -665,24 +911,24 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
     if(o==="Base & Komex") return "o-both";
     return "o-none";
   }
-  function taskProgress(t){
-    if(t.subs && t.subs.length){
-      var s=0; t.subs.forEach(function(x){ s += (x.status==="done"?100:(+x.progress||0)); });
-      return Math.round(s/t.subs.length);
-    }
-    return t.status==="done" ? 100 : (+t.progress||0);
-  }
   function taskStatus(t){
     if(!t.subs || !t.subs.length) return t.status;
     if(t.subs.every(function(x){return x.status==="done";})) return "done";
     if(t.subs.some(function(x){return x.status==="block";})) return "block";
-    if(t.subs.some(function(x){return x.status==="doing"||(+x.progress||0)>0;})) return "doing";
+    if(t.subs.some(function(x){return x.status==="doing";})) return "doing";
     if(t.subs.every(function(x){return x.status==="hold";})) return "hold";
     return "idle";
   }
+  function taskWeight(t){
+    if(t.subs && t.subs.length){
+      var s=0; t.subs.forEach(function(x){ s += STATUS[x.status].w; });
+      return Math.round(s/t.subs.length);
+    }
+    return STATUS[t.status].w;
+  }
   function phaseProgress(p){
     if(!p.tasks.length) return 0;
-    var s=0; p.tasks.forEach(function(t){ s+=taskProgress(t); });
+    var s=0; p.tasks.forEach(function(t){ s+=taskWeight(t); });
     return Math.round(s/p.tasks.length);
   }
   function allTasks(){ var a=[]; data.phases.forEach(function(p){ a=a.concat(p.tasks); }); return a; }
@@ -690,6 +936,41 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
     var a=[]; data.phases.forEach(function(p){ p.tasks.forEach(function(t){
       a.push(t); (t.subs||[]).forEach(function(s){ a.push(s); });
     });}); return a;
+  }
+  function flatItems(){
+    var a=[];
+    data.phases.forEach(function(p,pi){ p.tasks.forEach(function(t,ti){
+      a.push({item:t,key:pi+"."+ti,phase:p,parent:null,isSub:false});
+      (t.subs||[]).forEach(function(sub,si){
+        a.push({item:sub,key:pi+"."+ti+"."+si,phase:p,parent:t,isSub:true});
+      });
+    });});
+    return a;
+  }
+  function openIssues(){
+    return flatItems().filter(function(x){
+      return String(x.item.issue||"").trim() && !x.item.issueResolved;
+    }).sort(function(a,b){
+      var ao=overdue(a.item)?0:1, bo=overdue(b.item)?0:1;
+      if(ao!==bo) return ao-bo;
+      if((a.item.due||"9999")!==(b.item.due||"9999")) return (a.item.due||"9999")<(b.item.due||"9999")?-1:1;
+      return 0;
+    });
+  }
+  function currentPhase(){
+    var active=null;
+    data.phases.some(function(p){
+      if(phaseProgress(p)<100 && p.tasks.some(function(t){ return taskStatus(t)!=="idle"; })){
+        active=p; return true;
+      }
+      return false;
+    });
+    if(active) return active;
+    return data.phases.filter(function(p){return phaseProgress(p)<100;})[0] || data.phases[data.phases.length-1];
+  }
+  function daysTo(iso){
+    if(!iso) return null;
+    return Math.round((new Date(iso+"T00:00:00")-TODAY)/86400000);
   }
   function match(item){
     if(filters.q){
@@ -707,9 +988,9 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
 
   /* ---------- KPI ---------- */
   function renderKpi(){
-    var tasks=allTasks(), total=0,sum=0,done=0,doing=0,late=0;
-    tasks.forEach(function(t){
-      total++; sum+=taskProgress(t);
+    var total=0,sum=0,done=0,doing=0,late=0;
+    allTasks().forEach(function(t){
+      total++; sum+=taskWeight(t);
       var st=taskStatus(t);
       if(st==="done") done++;
       else if(st==="doing"||st==="block") doing++;
@@ -718,11 +999,14 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
     var pct = total? Math.round(sum/total):0;
 
     document.getElementById("kProg").innerHTML = pct+'<small>%</small>';
-    document.getElementById("kProgHint").textContent = done+" / "+total+" đầu việc";
+    document.getElementById("kProgHint").textContent = done+" / "+total+" đầu việc xong";
     document.getElementById("kDone").textContent = done;
     document.getElementById("kDoing").textContent = doing;
     document.getElementById("kLate").textContent = late;
     document.getElementById("kLateHint").textContent = late? "cần xử lý ngay":"không có việc trễ";
+    var issueN=openIssues().length;
+    document.getElementById("kIssues").textContent = issueN;
+    document.getElementById("kIssuesHint").textContent = issueN? "chưa được xử lý":"không có vướng mắc mở";
 
     var next=null;
     data.phases.forEach(function(p){ p.tasks.forEach(function(t){
@@ -734,10 +1018,9 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
     }
     var nEl=document.getElementById("kNext"), hEl=document.getElementById("kNextHint");
     if(next){
-      nEl.textContent = next.milestone ? next.name : next.name;
+      nEl.textContent = next.name;
       if(next.due){
-        var d=new Date(next.due+"T00:00:00");
-        var days=Math.round((d-TODAY)/86400000);
+        var days=Math.round((new Date(next.due+"T00:00:00")-TODAY)/86400000);
         hEl.textContent = fmt(next.due) + (days>=0 ? " · còn "+days+" ngày" : " · trễ "+Math.abs(days)+" ngày");
       } else hEl.textContent="chưa đặt thời hạn";
     } else { nEl.textContent="Hoàn tất"; hEl.textContent="Không còn cột mốc"; }
@@ -773,14 +1056,105 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
           '</span>' +
         '</span>';
       b.addEventListener("click", function(){
-        var el=document.getElementById(p.id);
-        if(el) el.scrollIntoView({block:"start"});
+        setView("plan",true);
+        setTimeout(function(){
+          var el=document.getElementById(p.id);
+          if(el) el.scrollIntoView({block:"start"});
+        },40);
       });
       track.appendChild(b);
 
       var fill=b.querySelector(".fill");
       setTimeout(function(){ fill.style.setProperty("--p", pct+"%"); }, 80+60*i);
     });
+  }
+
+
+  /* ---------- EXECUTIVE REPORT ---------- */
+  function renderExecutive(){
+    var issues=openIssues();
+    var items=flatItems();
+    var cp=currentPhase();
+    var total=allTasks().length;
+    var done=allTasks().filter(function(t){return taskStatus(t)==="done";}).length;
+    var late=items.filter(function(x){return overdue(x.item);}).length;
+    var blocked=items.filter(function(x){return (x.item.subs?taskStatus(x.item):x.item.status)==="block";}).length;
+    var openWork=allTasks().filter(function(t){return taskStatus(t)!=="done";}).length;
+
+    var healthClass="health-good", healthLabel="Đúng hướng";
+    if(issues.length || late) { healthClass="health-watch"; healthLabel="Cần chú ý"; }
+    if(blocked || late>=3 || issues.length>=3) { healthClass="health-risk"; healthLabel="Có rủi ro"; }
+
+    var summary=document.getElementById("execSummary");
+    if(summary){
+      summary.innerHTML=
+        '<div class="health-line"><span class="health-pill '+healthClass+'">'+healthLabel+'</span></div>'+ 
+        '<div class="exec-phase">'+esc(cp.no+" · "+cp.name)+'</div>'+ 
+        '<p class="exec-narrative">Dự án đang ở mức <b>'+phaseProgress(cp)+'%</b> trong giai đoạn hiện tại. '+
+          (issues.length? 'Có <b>'+issues.length+' vướng mắc</b> chưa được xử lý. ' : 'Không ghi nhận vướng mắc mở. ')+
+          (late? 'Có <b>'+late+' đầu việc quá hạn</b> cần can thiệp.' : 'Không có đầu việc quá hạn.')+
+        '</p>'+ 
+        '<div class="exec-metrics">'+
+          '<div class="exec-mini"><span>Đã hoàn thành</span><b>'+done+'/'+total+'</b></div>'+ 
+          '<div class="exec-mini"><span>Đang mở</span><b>'+openWork+'</b></div>'+ 
+          '<div class="exec-mini"><span>Đang vướng</span><b>'+blocked+'</b></div>'+ 
+        '</div>';
+    }
+
+    var focus=items.filter(function(x){
+      var st=x.item.subs?taskStatus(x.item):x.item.status;
+      return st==="doing" || st==="block";
+    }).sort(function(a,b){
+      var as=(a.item.status==="block"?0:1), bs=(b.item.status==="block"?0:1);
+      if(as!==bs) return as-bs;
+      return (a.item.due||"9999")<(b.item.due||"9999")?-1:1;
+    });
+    if(!focus.length){
+      focus=items.filter(function(x){ return (x.item.subs?taskStatus(x.item):x.item.status)!=="done"; })
+        .sort(function(a,b){return (a.item.due||"9999")<(b.item.due||"9999")?-1:1;});
+    }
+    var focusTop=focus.slice(0,5), focusEl=document.getElementById("focusList");
+    document.getElementById("focusCount").textContent=focus.length+" việc";
+    focusEl.innerHTML=focusTop.length?focusTop.map(function(x){
+      var st=x.item.subs?taskStatus(x.item):x.item.status;
+      return '<div class="exec-row"><div class="exec-row-main"><div class="exec-row-title">'+esc(x.item.name)+'</div>'+ 
+        '<div class="exec-row-meta"><span>'+esc(x.phase.no)+'</span><span>'+esc(x.item.owner||"Chưa phân công")+'</span><span class="st '+STATUS[st].cls+'">'+STATUS[st].label+'</span></div></div>'+ 
+        '<span class="date'+(overdue(x.item)?' od':'')+'">'+(x.item.due?fmt(x.item.due):'Chưa có hạn')+'</span>'+ 
+        (x.item.note?'<div class="exec-row-note">'+esc(x.item.note)+'</div>':'')+'</div>';
+    }).join(""):'<div class="exec-empty">Chưa có đầu việc nào cần theo dõi ở cấp điều hành.</div>';
+
+    var issueList=document.getElementById("issueList");
+    document.getElementById("issueCount").textContent=issues.length+" vấn đề";
+    if(!issues.length){
+      issueList.innerHTML='<div class="exec-empty">Không có vấn đề phát sinh nào đang ở trạng thái chưa được giải quyết.</div>';
+    } else {
+      issueList.innerHTML='<table class="issue-table"><thead><tr><th>Giai đoạn</th><th>Công việc</th><th>Vấn đề phát sinh</th><th>Đầu mối / Hạn</th><th>Trạng thái</th></tr></thead><tbody>'+issues.slice(0,8).map(function(x){
+        return '<tr><td>'+esc(x.phase.no)+'</td><td class="issue-name">'+esc(x.item.name)+'</td><td class="issue-desc">'+esc(x.item.issue)+'</td>'+ 
+          '<td>'+esc(x.item.owner||"—")+'<br><span class="date'+(overdue(x.item)?' od':'')+'">'+(x.item.due?fmt(x.item.due):'Chưa có hạn')+'</span></td>'+ 
+          '<td><span class="issue-status">Chưa xử lý</span></td></tr>';
+      }).join("")+'</tbody></table>'+(issues.length>8?'<div class="exec-row-note" style="margin-top:10px">Còn '+(issues.length-8)+' vấn đề khác trong kế hoạch chi tiết.</div>':'');
+    }
+
+    var attention=items.filter(function(x){
+      var st=x.item.subs?taskStatus(x.item):x.item.status;
+      if(st==="done") return false;
+      var d=daysTo(x.item.due);
+      return st==="block" || (d!==null && d<=7);
+    }).sort(function(a,b){
+      var ad=daysTo(a.item.due), bd=daysTo(b.item.due);
+      ad=ad===null?9999:ad; bd=bd===null?9999:bd;
+      return ad-bd;
+    });
+    document.getElementById("attentionCount").textContent=attention.length+" việc";
+    document.getElementById("attentionList").innerHTML=attention.length?attention.slice(0,6).map(function(x){
+      var d=daysTo(x.item.due), label=d===null?'Chưa có hạn':(d<0?'Trễ '+Math.abs(d)+' ngày':(d===0?'Đến hạn hôm nay':'Còn '+d+' ngày'));
+      return '<div class="exec-row"><div class="exec-row-main"><div class="exec-row-title">'+esc(x.item.name)+'</div><div class="exec-row-meta"><span>'+esc(x.phase.no)+'</span><span>'+esc(x.item.owner||"—")+'</span></div></div><span class="date'+(d!==null&&d<0?' od':'')+'">'+label+'</span></div>';
+    }).join(""):'<div class="exec-empty">Không có việc quá hạn hoặc đến hạn trong 7 ngày tới.</div>';
+
+    document.getElementById("phaseSummary").innerHTML=data.phases.map(function(p){
+      var pct=phaseProgress(p);
+      return '<div class="phase-sum-row'+(pct>=100?' done':'')+'"><span class="phase-sum-name">'+esc(p.no+' · '+p.name)+'</span><span class="phase-sum-bar"><i style="width:'+pct+'%"></i></span><span class="phase-sum-pct">'+pct+'%</span></div>';
+    }).join("");
   }
 
   /* ---------- CHIPS ---------- */
@@ -820,17 +1194,13 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
     ORDER.forEach(function(s){ sel+='<option value="'+s+'"'+(s===st?" selected":"")+'>'+STATUS[s].label+'</option>'; });
     return ro+sel+'</select>';
   }
-  function progCell(item,key){
-    var hasSubs=item.subs && item.subs.length;
-    var pct=hasSubs? taskProgress(item) : (item.status==="done"?100:(+item.progress||0));
-    var ro='<span class="pbar ro"><span class="rail2"><i class="'+(pct>=100?"full":"")+'" style="width:'+pct+'%"></i></span><b>'+pct+'%</b></span>';
-    if(hasSubs) return ro;
-    return ro+'<input class="ed pct-in" type="number" min="0" max="100" step="5" value="'+pct+'" data-k="'+key+'" data-f="progress" aria-label="Tiến độ %">';
-  }
   function dateCell(item,key,field){
     var v=item[field]||"", od=(field==="due" && overdue(item));
     return '<span class="ro date'+(v?"":" empty")+(od?" od":"")+'">'+(v?fmt(v):"—")+'</span>'+
-           '<input class="ed date-in" type="date" value="'+esc(v)+'" data-k="'+key+'" data-f="'+field+'" aria-label="'+(field==="due"?"Thời hạn":"Ngày bắt đầu")+'">';
+           '<input class="ed date-in" type="text" inputmode="numeric" maxlength="10" ' +
+             'value="'+esc(fmt(v))+'" placeholder="dd/mm/yyyy" ' +
+             'data-k="'+key+'" data-f="'+field+'" ' +
+             'aria-label="'+(field==="due"?"Thời hạn":"Ngày bắt đầu")+' (dd/mm/yyyy)">';
   }
   function noteCell(item,key){
     return '<span class="ro note">'+esc(item.note||"")+'</span>'+
@@ -838,12 +1208,32 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
   }
   function ownerCell(item,key){
     var o=item.owner||"";
-    var ro = '<span class="ro owner '+ownerCls(o)+'">'+(o?esc(o):"—")+'</span>';
+    var ro='<span class="ro owner '+ownerCls(o)+'">'+(o?esc(o):"—")+'</span>';
     var sel='<select class="ed" data-k="'+key+'" data-f="owner" aria-label="Đầu mối">';
     ["","Base","Komex","Base & Komex"].forEach(function(v){
       sel+='<option value="'+esc(v)+'"'+(v===o?" selected":"")+'>'+(v||"—")+'</option>';
     });
     return ro+sel+'</select>';
+  }
+
+
+  function rowEditButton(key){
+    return '<button class="row-edit-btn" type="button" data-row-edit="'+key+'" aria-label="Chỉnh sửa link và vấn đề phát sinh" title="Chỉnh sửa link và vấn đề phát sinh">'+
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4Z"/></svg>'+
+    '</button>';
+  }
+
+  function issueCell(item,key){
+    var txt=String(item.issue||"").trim();
+    var resolved=!!item.issueResolved;
+    var ro=txt?'<span class="ro issue-text '+(resolved?'':'open')+'">'+esc(txt)+'</span>':'<span class="ro issue-empty">—</span>';
+    return ro+'<input class="ed issue-in" type="text" value="'+esc(item.issue||"")+'" placeholder="Ghi nhận vấn đề phát sinh…" data-k="'+key+'" data-f="issue" aria-label="Vấn đề phát sinh">';
+  }
+  function issueResolvedCell(item,key){
+    var txt=String(item.issue||"").trim();
+    var resolved=!!item.issueResolved;
+    var ro=!txt?'<span class="ro issue-state na">Không phát sinh</span>':(resolved?'<span class="ro issue-state done">Đã xử lý</span>':'<span class="ro issue-state open">Chưa xử lý</span>');
+    return ro+'<label class="ed issue-check"><input type="checkbox" data-k="'+key+'" data-f="issueResolved" '+(resolved?'checked':'')+' '+(!txt?'disabled':'')+'><span>Đã xử lý</span></label>';
   }
 
   /* ---------- LIST ---------- */
@@ -875,47 +1265,50 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
           '<span class="phase-prog"><span class="mini"><i class="'+(pct>=100?"full":"")+'" style="width:'+pct+'%"></i></span><b>'+pct+'%</b></span>'+
         '</div>'+
         '<div class="card"><table><thead><tr>'+
-          '<th style="width:38%">Công việc</th>'+
-          '<th style="width:120px">Đầu mối</th>'+
-          '<th style="width:110px">Bắt đầu</th>'+
-          '<th style="width:110px">Thời hạn</th>'+
-          '<th style="width:135px">Trạng thái</th>'+
-          '<th style="width:130px">Tiến độ</th>'+
-          '<th>Ghi chú</th>'+
+          '<th style="width:28%">Công việc</th>'+
+          '<th style="width:115px">Đầu mối</th>'+
+          '<th class="col-start" style="width:105px">Bắt đầu</th>'+
+          '<th style="width:105px">Thời hạn</th>'+
+          '<th style="width:130px">Trạng thái</th>'+
+          '<th class="col-note">Kết quả / cập nhật</th>'+
+          '<th style="width:18%">Vấn đề phát sinh</th>'+
+          '<th style="width:110px">Đã xử lý</th>'+
         '</tr></thead><tbody>';
 
       rows.forEach(function(r){
         var t=r.t, k=r.key, hasSubs=t.subs && t.subs.length;
         var isOpen = open[k]!==undefined ? open[k] : !!filtering;
         shown++;
-        html+='<tr class="task'+(overdue(t)?" late":"")+'">'+
+        html+='<tr class="task'+(overdue(t)?" late":"")+'" data-edit-key="'+k+'" title="Nhấn để chỉnh sửa link và vấn đề phát sinh">'+
           '<td class="col-name"><span class="tw">'+
             (hasSubs
               ? '<button class="caret'+(isOpen?" open":"")+'" data-toggle="'+k+'" aria-label="Mở/đóng việc con"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>'
               : '<span class="caret ghost"></span>')+
             '<span class="tname">'+esc(t.name)+
               (t.milestone? '<span class="pill-ms">'+esc(t.milestone)+'</span>':'')+
-              (t.link? ' <a class="linkico" href="'+esc(t.link)+'" target="_blank" rel="noopener" aria-label="Mở trên Base">↗</a>':'')+
-            '</span></span></td>'+
+              (t.link? ' <a class="linkico" href="'+esc(t.link)+'" target="_blank" rel="noopener" aria-label="Mở link công việc" title="Mở link đính kèm">↗</a>':'')+
+            '</span>'+rowEditButton(k)+'</span></td>'+
           '<td class="col-owner">'+ownerCell(t,k)+'</td>'+
           '<td class="col-start">'+dateCell(t,k,"start")+'</td>'+
           '<td class="col-due" data-label="Hạn">'+dateCell(t,k,"due")+'</td>'+
           '<td class="col-status">'+statusCell(t,k)+'</td>'+
-          '<td class="col-prog">'+progCell(t,k)+'</td>'+
           '<td class="col-note">'+noteCell(t,k)+'</td>'+
+          '<td class="col-issue">'+issueCell(t,k)+'</td>'+
+          '<td class="col-resolved">'+issueResolvedCell(t,k)+'</td>'+
         '</tr>';
 
         r.subs.forEach(function(x){
           if(!r.tOk && !x.ok) return;
           shown++;
-          html+='<tr class="sub'+(isOpen?"":" hidden")+(overdue(x.s)?" late":"")+'" data-parent="'+k+'">'+
-            '<td class="col-name"><span class="sname">'+esc(x.s.name)+'</span></td>'+
+          html+='<tr class="sub'+(isOpen?"":" hidden")+(overdue(x.s)?" late":"")+'" data-parent="'+k+'" data-edit-key="'+x.key+'" title="Nhấn để chỉnh sửa link và vấn đề phát sinh">'+
+            '<td class="col-name"><span class="tw"><span class="sname">'+esc(x.s.name)+(x.s.link? ' <a class="linkico" href="'+esc(x.s.link)+'" target="_blank" rel="noopener" aria-label="Mở link công việc" title="Mở link đính kèm">↗</a>':'')+'</span>'+rowEditButton(x.key)+'</span></td>'+
             '<td class="col-owner">'+ownerCell(x.s,x.key)+'</td>'+
             '<td class="col-start">'+dateCell(x.s,x.key,"start")+'</td>'+
             '<td class="col-due" data-label="Hạn">'+dateCell(x.s,x.key,"due")+'</td>'+
             '<td class="col-status">'+statusCell(x.s,x.key)+'</td>'+
-            '<td class="col-prog">'+progCell(x.s,x.key)+'</td>'+
             '<td class="col-note">'+noteCell(x.s,x.key)+'</td>'+
+            '<td class="col-issue">'+issueCell(x.s,x.key)+'</td>'+
+            '<td class="col-resolved">'+issueResolvedCell(x.s,x.key)+'</td>'+
           '</tr>';
         });
       });
@@ -940,7 +1333,112 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
     var t=data.phases[+p[0]].tasks[+p[1]];
     return p.length===3 ? t.subs[+p[2]] : t;
   }
+  var quickEditKey=null;
+  var quickDirty=false;
+  var taskEditorBackdrop=document.getElementById("taskEditorBackdrop");
+  var quickLink=document.getElementById("quickLink");
+  var quickIssue=document.getElementById("quickIssue");
+  var quickResolved=document.getElementById("quickResolved");
+  var quickResolvedWrap=document.getElementById("quickResolvedWrap");
+  var quickLinkError=document.getElementById("quickLinkError");
+  var quickOpenLink=document.getElementById("quickOpenLink");
+  var quickSavebar=document.getElementById("quickSavebar");
+
+  function phaseByKey(k){
+    var p=String(k).split(".");
+    return data.phases[+p[0]];
+  }
+  function normalizeLink(v){
+    v=String(v||"").trim();
+    if(!v) return "";
+    if(!/^[a-zA-Z][a-zA-Z\d+.-]*:/.test(v)) v="https://"+v;
+    try{
+      var u=new URL(v);
+      if(u.protocol!=="http:" && u.protocol!=="https:") return null;
+      return u.href;
+    }catch(e){ return null; }
+  }
+  function syncQuickResolved(){
+    var hasIssue=!!String(quickIssue.value||"").trim();
+    quickResolved.disabled=!hasIssue;
+    if(!hasIssue) quickResolved.checked=false;
+    quickResolvedWrap.classList.toggle("disabled",!hasIssue);
+  }
+  function syncQuickLinkActions(){
+    var v=normalizeLink(quickLink.value);
+    quickOpenLink.disabled=!v;
+  }
+  function openTaskEditor(k){
+    var item=itemByKey(k), phase=phaseByKey(k);
+    if(!item) return;
+    quickEditKey=k;
+    document.getElementById("taskEditorTitle").textContent=item.name||"Công việc";
+    document.getElementById("taskEditorMeta").textContent=(phase?phase.no+" · ":"")+(item.owner||"Chưa phân công")+(item.due?" · Hạn "+fmt(item.due):"");
+    quickLink.value=item.link||"";
+    quickIssue.value=item.issue||"";
+    quickResolved.checked=!!item.issueResolved;
+    quickLink.classList.remove("bad");
+    quickLinkError.classList.remove("show");
+    syncQuickResolved();
+    syncQuickLinkActions();
+    taskEditorBackdrop.hidden=false;
+    document.body.classList.add("modal-open");
+    setTimeout(function(){ quickLink.focus(); quickLink.select(); },30);
+  }
+  function closeTaskEditor(){
+    taskEditorBackdrop.hidden=true;
+    document.body.classList.remove("modal-open");
+    quickEditKey=null;
+  }
+  function markQuickDirty(){
+    quickDirty=true;
+    quickSavebar.hidden=false;
+  }
+
+  document.getElementById("taskEditorClose").addEventListener("click",closeTaskEditor);
+  document.getElementById("taskEditorCancel").addEventListener("click",closeTaskEditor);
+  taskEditorBackdrop.addEventListener("click",function(e){ if(e.target===taskEditorBackdrop) closeTaskEditor(); });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !taskEditorBackdrop.hidden) closeTaskEditor(); });
+  quickIssue.addEventListener("input",syncQuickResolved);
+  quickLink.addEventListener("input",function(){ quickLink.classList.remove("bad"); quickLinkError.classList.remove("show"); syncQuickLinkActions(); });
+  quickOpenLink.addEventListener("click",function(){ var v=normalizeLink(quickLink.value); if(v) window.open(v,"_blank","noopener"); });
+  document.getElementById("quickClearLink").addEventListener("click",function(){ quickLink.value=""; syncQuickLinkActions(); quickLink.focus(); });
+  document.getElementById("taskEditorSave").addEventListener("click",function(){
+    if(!quickEditKey) return;
+    var normalized=normalizeLink(quickLink.value);
+    if(normalized===null){
+      quickLink.classList.add("bad");
+      quickLinkError.classList.add("show");
+      quickLink.focus();
+      return;
+    }
+    var item=itemByKey(quickEditKey);
+    item.link=normalized;
+    item.issue=String(quickIssue.value||"").trim();
+    item.issueResolved=item.issue?!!quickResolved.checked:false;
+    closeTaskEditor();
+    markQuickDirty();
+    refresh(true);
+  });
+  document.getElementById("quickSaveDismiss").addEventListener("click",function(){ quickSavebar.hidden=true; });
+
   function bindRows(){
+    document.querySelectorAll("[data-row-edit]").forEach(function(btn){
+      btn.addEventListener("click",function(e){
+        e.preventDefault(); e.stopPropagation();
+        openTaskEditor(btn.getAttribute("data-row-edit"));
+      });
+    });
+    document.querySelectorAll("tr[data-edit-key]").forEach(function(tr){
+      tr.addEventListener("click",function(e){
+        if(editing) return;
+        if(e.target.closest("a,button,input,select,textarea,label")) return;
+        openTaskEditor(tr.getAttribute("data-edit-key"));
+      });
+    });
+    document.querySelectorAll("a.linkico").forEach(function(a){
+      a.addEventListener("click",function(e){ e.stopPropagation(); });
+    });
     document.querySelectorAll("[data-toggle]").forEach(function(btn){
       btn.addEventListener("click", function(){
         var k=btn.getAttribute("data-toggle");
@@ -952,51 +1450,91 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
         });
       });
     });
-    document.querySelectorAll(".ed[data-k]").forEach(function(el){
+
+    // ô ngày: tự chèn dấu / khi gõ, chỉ ghi nhận khi rời ô
+    document.querySelectorAll("input.date-in").forEach(function(el){
+      el.addEventListener("input", function(){
+        autoSlash(el);
+        el.classList.remove("bad");
+      });
+      el.addEventListener("blur", function(){
+        var iso=parseVN(el.value);
+        if(iso===null){ el.classList.add("bad"); el.title="Ngày không hợp lệ — nhập theo dd/mm/yyyy, ví dụ 20/07/2026"; return; }
+        el.classList.remove("bad"); el.title="";
+        var item=itemByKey(el.getAttribute("data-k"));
+        var f=el.getAttribute("data-f");
+        if(item[f]===iso) return;
+        item[f]=iso;
+        refresh(true);
+      });
+      el.addEventListener("keydown", function(e){ if(e.key==="Enter") el.blur(); });
+    });
+
+    // ô chọn, kết quả cập nhật và vấn đề phát sinh
+    document.querySelectorAll("select.ed[data-k], input.note-in[data-k], input.issue-in[data-k]").forEach(function(el){
       el.addEventListener("change", function(){
         var item=itemByKey(el.getAttribute("data-k"));
-        var f=el.getAttribute("data-f"), v=el.value;
-        if(f==="progress"){
-          v=Math.max(0,Math.min(100,parseInt(v||"0",10)));
-          item.progress=v;
-          if(v>=100 && item.status!=="done") item.status="done";
-          if(v<100 && item.status==="done") item.status="doing";
-        } else if(f==="status"){
-          item.status=v;
-          if(v==="done") item.progress=100;
-          if(v==="idle") item.progress=0;
-        } else item[f]=v;
+        var f=el.getAttribute("data-f");
+        item[f] = el.value;
+        if(f==="issue" && !String(el.value||"").trim()) item.issueResolved=false;
+        refresh(true);
+      });
+    });
+    document.querySelectorAll('input[type="checkbox"][data-f="issueResolved"]').forEach(function(el){
+      el.addEventListener("change", function(){
+        var item=itemByKey(el.getAttribute("data-k"));
+        item.issueResolved=!!el.checked;
         refresh(true);
       });
     });
   }
   function refresh(keep){
     var y=keep? window.scrollY : 0;
-    renderKpi(); renderRail(); renderChips(); renderList();
+    renderKpi(); renderRail(); renderExecutive(); renderChips(); renderList();
     if(keep) window.scrollTo(0,y);
   }
+
+  var currentView="executive";
+  function setView(view,preserveScroll){
+    currentView=view==="plan"?"plan":"executive";
+    document.getElementById("viewExecutive").hidden=currentView!=="executive";
+    document.getElementById("viewPlan").hidden=currentView!=="plan";
+    document.querySelectorAll(".view-tab").forEach(function(b){
+      b.classList.toggle("active",b.getAttribute("data-view")===currentView);
+    });
+    if(currentView==="executive") renderExecutive();
+    if(!preserveScroll) window.scrollTo({top:0,behavior:"smooth"});
+  }
+  document.querySelectorAll(".view-tab").forEach(function(b){
+    b.addEventListener("click",function(){ setView(b.getAttribute("data-view")); });
+  });
 
   var editing=false;
   function setEdit(on){
     editing=on;
+    if(on) setView("plan");
     document.body.classList.toggle("editing", on);
     var b=document.getElementById("btnEdit");
     b.classList.toggle("on", on);
-    b.innerHTML = '<span class="dot"></span><span class="lb-full">'+(on?"Đang cập nhật":"Chế độ cập nhật")+'</span><span class="lb-short">'+(on?"Đang sửa":"Cập nhật")+'</span>';
-    document.getElementById("lastUpdate").readOnly = !on;
+    b.innerHTML='<span class="dot"></span><span class="lb-full">'+(on?"Đang cập nhật":"Chế độ cập nhật")+'</span><span class="lb-short">'+(on?"Đang sửa":"Cập nhật")+'</span>';
+    document.getElementById("lastUpdate").readOnly=!on;
   }
   document.getElementById("btnEdit").addEventListener("click", function(){ setEdit(!editing); });
   document.getElementById("btnExit").addEventListener("click", function(){ setEdit(false); });
-  document.getElementById("lastUpdate").addEventListener("change", function(e){ data.lastUpdate=e.target.value; });
+
+  var lu=document.getElementById("lastUpdate");
+  lu.addEventListener("input", function(){ autoSlash(lu); });
+  lu.addEventListener("blur", function(){ data.lastUpdate = lu.value; });
+
   document.getElementById("btnPrint").addEventListener("click", function(){ window.print(); });
 
   document.getElementById("btnCsv").addEventListener("click", function(){
-    var rows=[["Phase","Loại","Công việc","Đầu mối","Bắt đầu","Thời hạn","Trạng thái","Tiến độ (%)","Ghi chú"]];
+    var rows=[["Phase","Loại","Công việc","Đầu mối","Bắt đầu","Thời hạn","Trạng thái","Kết quả / cập nhật","Vấn đề phát sinh","Đã xử lý"]];
     data.phases.forEach(function(p){
       p.tasks.forEach(function(t){
-        rows.push([p.no+": "+p.name,"Task",t.name,t.owner,fmt(t.start),fmt(t.due),STATUS[taskStatus(t)].label,taskProgress(t),t.note||""]);
+        rows.push([p.no+": "+p.name,"Task",t.name,t.owner,fmt(t.start),fmt(t.due),STATUS[taskStatus(t)].label,t.note||"",t.issue||"",t.issue? (t.issueResolved?"Có":"Chưa") : ""]);
         (t.subs||[]).forEach(function(s){
-          rows.push([p.no+": "+p.name,"Subtask",s.name,s.owner,fmt(s.start),fmt(s.due),STATUS[s.status].label,(s.status==="done"?100:(+s.progress||0)),s.note||""]);
+          rows.push([p.no+": "+p.name,"Subtask",s.name,s.owner,fmt(s.start),fmt(s.due),STATUS[s.status].label,s.note||"",s.issue||"",s.issue? (s.issueResolved?"Có":"Chưa") : ""]);
         });
       });
     });
@@ -1006,20 +1544,27 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
     dl(new Blob([csv],{type:"text/csv;charset=utf-8"}), "Komex_Base_MasterPlan_"+stamp()+".csv");
   });
 
-  document.getElementById("btnSave").addEventListener("click", function(){
+  function downloadUpdatedHtml(){
     document.getElementById("plan-data").textContent = JSON.stringify(data, null, 2);
-    var was=editing;
+    var wasEditing=editing;
+    var wasEditorOpen=!taskEditorBackdrop.hidden;
+    var wasQuickBarVisible=!quickSavebar.hidden;
+    if(wasEditorOpen) closeTaskEditor();
     setEdit(false);
-    var lu=document.getElementById("lastUpdate");
+    quickSavebar.hidden=true;
     lu.setAttribute("value", data.lastUpdate || lu.value);
     var html="<!DOCTYPE html>\n"+document.documentElement.outerHTML;
     dl(new Blob([html],{type:"text/html;charset=utf-8"}), "Komex_x_Base_Master_Plan_"+stamp()+".html");
-    if(was) setEdit(true);
-  });
+    quickDirty=false;
+    if(wasEditing) setEdit(true);
+    if(wasQuickBarVisible && quickDirty) quickSavebar.hidden=false;
+  }
+  document.getElementById("btnSave").addEventListener("click", downloadUpdatedHtml);
+  document.getElementById("btnQuickDownload").addEventListener("click", downloadUpdatedHtml);
 
   function stamp(){
-    var d=new Date(), p=function(n){return (n<10?"0":"")+n;};
-    return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate());
+    var d=new Date();
+    return d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());
   }
   function dl(blob,name){
     var a=document.createElement("a");
@@ -1034,8 +1579,9 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
     qt=setTimeout(function(){ filters.q=qEl.value.trim(); renderList(); },140);
   });
 
-  document.getElementById("lastUpdate").value = data.lastUpdate || "";
+  lu.value = data.lastUpdate || "";
   refresh(false);
+  setView("executive");
 })();
 </script>
 </body>
