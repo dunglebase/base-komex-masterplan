@@ -954,27 +954,40 @@ body.modal-open{overflow:hidden}
 </div>
 
 <div class="quick-savebar" id="quickSavebar" hidden>
-  <span>Thay đổi đang được đồng bộ lên Firebase. File HTML tải xuống chỉ dùng làm bản sao dự phòng.</span>
+  <span>Thay đổi được tự động đồng bộ qua Firebase và cập nhật trên các thiết bị đang mở. File HTML tải xuống chỉ dùng làm bản sao dự phòng.</span>
   <button id="btnQuickDownload" type="button">Tải bản sao HTML</button>
   <button class="dismiss" id="quickSaveDismiss" type="button" aria-label="Ẩn thông báo">×</button>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-  import { getFirestore, doc, getDoc, onSnapshot, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+  import {
+    getDatabase,
+    ref,
+    get,
+    set,
+    onValue,
+    runTransaction
+  } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 
+  // Firebase Web App + Realtime Database của dự án Base × Komex.
+  // URL được lấy trực tiếp từ Firebase Console, không dò tự động và không fallback sang Firestore.
   const firebaseConfig = {
     apiKey: "AIzaSyAXS6jEKBYe9RnEsZ_cIHS-hVSTHVFqwk8",
     authDomain: "base-x-komex-master-plan.firebaseapp.com",
+    databaseURL: "https://base-x-komex-master-plan-default-rtdb.asia-southeast1.firebasedatabase.app/",
     projectId: "base-x-komex-master-plan",
     storageBucket: "base-x-komex-master-plan.firebasestorage.app",
     messagingSenderId: "531813739450",
     appId: "1:531813739450:web:23f3516c6b6c825c5ecb83"
   };
 
+  const RTDB_PATH = "sharedProjects/base-komex-masterplan";
   const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const planRef = doc(db, "masterPlans", "base-komex-masterplan");
+  const db = getDatabase(app);
+  const planRef = ref(db, RTDB_PATH);
+  const connectedRef = ref(db, ".info/connected");
+
   const deviceKey = "komex-masterplan-device-id";
   let deviceId = localStorage.getItem(deviceKey);
   if (!deviceId) {
@@ -988,56 +1001,105 @@ body.modal-open{overflow:hidden}
   function cleanPlan(plan) {
     return JSON.parse(JSON.stringify(plan));
   }
+  function makePayload(plan) {
+    return {
+      plan: cleanPlan(plan),
+      updatedAt: Date.now(),
+      updatedBy: deviceId,
+      source: location.hostname || "local-file",
+      schemaVersion: 4
+    };
+  }
 
   window.KOMEX_FIREBASE = {
+    engine: "realtime-database",
+    databaseURL: firebaseConfig.databaseURL,
+    path: RTDB_PATH,
     async savePlan(plan) {
-      emit("komex-sync-state", { state: "saving", text: "Đang đồng bộ" });
-      await setDoc(planRef, {
-        plan: cleanPlan(plan),
-        updatedAt: serverTimestamp(),
-        updatedBy: deviceId,
-        source: location.hostname || "local-file",
-        schemaVersion: 3
-      }, { merge: true });
-      emit("komex-sync-state", { state: "synced", text: "Đã đồng bộ" });
+      emit("komex-sync-state", {
+        state: "saving",
+        text: "Đang đồng bộ",
+        error: `Realtime Database · ${firebaseConfig.databaseURL}${RTDB_PATH}`
+      });
+      await set(planRef, makePayload(plan));
+      emit("komex-sync-state", {
+        state: "synced",
+        text: "Đã đồng bộ",
+        error: `Realtime Database · ${firebaseConfig.databaseURL}${RTDB_PATH}`
+      });
     },
     async seedIfEmpty(plan) {
-      const snap = await getDoc(planRef);
-      if (!snap.exists()) {
-        await this.savePlan(plan);
-      }
+      await runTransaction(planRef, current => {
+        if (current === null) return makePayload(plan);
+        return current;
+      }, { applyLocally: false });
+    },
+    async readLatest() {
+      const snapshot = await get(planRef);
+      return snapshot.exists() ? snapshot.val() : null;
     }
   };
 
-  emit("komex-sync-ready", { deviceId });
+  // Theo dõi trạng thái kết nối thực tế tới Realtime Database.
+  onValue(connectedRef, snapshot => {
+    const connected = snapshot.val() === true;
+    emit("komex-sync-state", {
+      state: connected ? "synced" : (navigator.onLine ? "connecting" : "offline"),
+      text: connected ? "Đã kết nối" : (navigator.onLine ? "Đang kết nối" : "Ngoại tuyến"),
+      error: `Realtime Database · ${firebaseConfig.databaseURL}${RTDB_PATH}`
+    });
+  });
 
-  onSnapshot(planRef, { includeMetadataChanges: true }, (snapshot) => {
+  // Listener real-time: mọi thiết bị đang mở trang sẽ nhận dữ liệu mới ngay khi một thiết bị lưu.
+  onValue(planRef, snapshot => {
     if (!snapshot.exists()) {
       emit("komex-sync-empty", {});
       return;
     }
-    const payload = snapshot.data();
+    const payload = snapshot.val();
     if (payload && payload.plan) {
       emit("komex-remote-plan", {
         plan: payload.plan,
-        fromCache: snapshot.metadata.fromCache,
-        hasPendingWrites: snapshot.metadata.hasPendingWrites,
-        updatedBy: payload.updatedBy || ""
+        updatedBy: payload.updatedBy || "",
+        updatedAt: payload.updatedAt || 0,
+        engine: "realtime-database"
       });
     }
-    if (!snapshot.metadata.hasPendingWrites) {
-      emit("komex-sync-state", {
-        state: navigator.onLine ? "synced" : "offline",
-        text: navigator.onLine ? "Đã đồng bộ" : "Ngoại tuyến"
-      });
-    }
-  }, (error) => {
-    console.error("Firebase sync error:", error);
-    emit("komex-sync-state", { state: "error", text: "Lỗi đồng bộ", error: error.message || String(error) });
+    emit("komex-sync-state", {
+      state: navigator.onLine ? "synced" : "offline",
+      text: navigator.onLine ? "Đã đồng bộ" : "Ngoại tuyến",
+      error: `Realtime Database · ${firebaseConfig.databaseURL}${RTDB_PATH}`
+    });
+  }, error => {
+    console.error("Realtime Database sync error:", error);
+    emit("komex-sync-state", {
+      state: "error",
+      text: "Lỗi đồng bộ",
+      error: (error && error.message ? error.message : String(error)) + ` · ${firebaseConfig.databaseURL}${RTDB_PATH}`
+    });
   });
 
-  window.addEventListener("online", () => emit("komex-sync-state", { state: "connecting", text: "Đang kết nối" }));
-  window.addEventListener("offline", () => emit("komex-sync-state", { state: "offline", text: "Ngoại tuyến" }));
+  window.KOMEX_FIREBASE_INFO = {
+    engine: "Realtime Database",
+    databaseURL: firebaseConfig.databaseURL,
+    path: RTDB_PATH,
+    deviceId
+  };
+
+  window.addEventListener("online", () => {
+    emit("komex-sync-state", { state: "connecting", text: "Đang kết nối lại" });
+  });
+  window.addEventListener("offline", () => {
+    emit("komex-sync-state", { state: "offline", text: "Ngoại tuyến" });
+  });
+
+  // Báo cho phần giao diện rằng adapter Firebase đã sẵn sàng.
+  emit("komex-sync-ready", {
+    deviceId,
+    engine: "realtime-database",
+    databaseURL: firebaseConfig.databaseURL,
+    path: RTDB_PATH
+  });
 </script>
 
 <script>
@@ -1770,11 +1832,11 @@ body.modal-open{overflow:hidden}
     pendingRemotePlan=null;
     applyRemotePlan(incoming);
   }
-  function closeTaskEditor(){
+  function closeTaskEditor(applyPending){
     taskEditorBackdrop.hidden=true;
     document.body.classList.remove("modal-open");
     quickEditKey=null;
-    setTimeout(applyPendingRemote,0);
+    if(applyPending!==false) setTimeout(applyPendingRemote,0);
   }
   function setSyncState(state,text,detail){
     if(!syncStatus) return;
@@ -1863,24 +1925,52 @@ body.modal-open{overflow:hidden}
   document.getElementById("quickClearLink").addEventListener("click",function(){ quickLink.value=""; syncQuickLinkActions(); quickLink.focus(); });
   document.getElementById("taskEditorSave").addEventListener("click",function(){
     if(!quickEditKey) return;
-    var item=itemByKey(quickEditKey);
-    if(quickEditMode==="link"){
-      var normalized=normalizeLink(quickLink.value);
+    var editKey=quickEditKey;
+    var mode=quickEditMode;
+    var normalized=null, issues=null, responses=null;
+
+    if(mode==="link"){
+      normalized=normalizeLink(quickLink.value);
       if(normalized===null){
         quickLink.classList.add("bad");
         quickLinkError.classList.add("show");
         quickLink.focus();
         return;
       }
-      item.link=normalized;
-    }else if(quickEditMode==="issues"){
-      var issues=collectQuickIssues();
+    }else if(mode==="issues"){
+      issues=collectQuickIssues();
       if(issues===null) return;
+    }else{
+      responses={};
+      quickResponsesList.querySelectorAll('.response-editor-card').forEach(function(card){
+        responses[card.getAttribute('data-issue-id')]=String(card.querySelector('[data-response-field]').value||'').trim();
+      });
+    }
+
+    // Nếu thiết bị khác vừa cập nhật, dùng bản mới nhất làm nền rồi chỉ ghi đè đúng cột đang sửa.
+    if(pendingRemotePlan && Array.isArray(pendingRemotePlan.phases)){
+      data=JSON.parse(JSON.stringify(pendingRemotePlan));
+      pendingRemotePlan=null;
+      normalizeIssueData();
+    }
+    var item=itemByKey(editKey);
+    if(!item){ closeTaskEditor(false); refresh(true); return; }
+
+    if(mode==="link"){
+      item.link=normalized;
+    }else if(mode==="issues"){
       item.issues=issues;
     }else{
-      item.issues=collectQuickResponses(item);
+      item.issues=itemIssues(item).map(function(issue){
+        return {
+          id:issue.id||issueId(),
+          author:issue.author||'',
+          content:issue.content||'',
+          response:Object.prototype.hasOwnProperty.call(responses,issue.id)?responses[issue.id]:(issue.response||'')
+        };
+      });
     }
-    closeTaskEditor();
+    closeTaskEditor(false);
     markQuickDirty();
     refresh(true);
   });
