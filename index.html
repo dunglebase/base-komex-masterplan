@@ -875,54 +875,55 @@ footer{border-color:#C9DDEE;color:#5D7288}
 
 
 
-/* ---------- QUẢN LÝ CẤU TRÚC CÔNG VIỆC ---------- */
-.phase-add-task{display:none;border:1px solid #BFD8EF;background:#F5FAFF;color:var(--base-deep);font:inherit;font-size:11px;font-weight:800;padding:6px 9px;border-radius:7px;cursor:pointer;align-items:center;gap:5px;white-space:nowrap}
-.phase-add-task:hover{border-color:var(--base);background:var(--base-soft);color:var(--base)}
-.phase-add-task:focus-visible{outline:2px solid var(--base);outline-offset:2px}
-body.editing .phase-add-task{display:inline-flex}
-th.col-actions,td.col-actions{display:none}
-body.editing th.col-actions{display:table-cell;width:132px;text-align:center}
-body.editing td.col-actions{display:table-cell}
-.task-ops{display:flex;align-items:center;justify-content:center;gap:4px;min-width:112px}
-.task-op-btn{width:27px;height:27px;border:1px solid transparent;border-radius:7px;background:transparent;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:.15s;padding:0}
-.task-op-btn:hover{background:var(--base-soft);border-color:#CFE4F7;color:var(--base-deep)}
-.task-op-btn.add-sub:hover{background:var(--done-soft);border-color:#C9EAD7;color:var(--done)}
-.task-op-btn.delete:hover{background:var(--komex-soft);border-color:#F2C6C9;color:var(--komex)}
-.task-op-btn:disabled{opacity:.25;cursor:not-allowed;background:transparent!important;border-color:transparent!important;color:var(--muted)!important}
-.task-op-btn:focus-visible{outline:2px solid var(--base);outline-offset:1px}
-.task-name-field{min-width:0;flex:1}
-.task-name-input{width:100%!important;min-width:180px;font-size:12.5px!important;font-weight:700!important}
-.sub .task-name-input{font-weight:500!important}
-.phase-empty-edit{padding:24px;text-align:center;color:var(--muted);font-size:12px;background:#FBFDFF}
-.phase-empty-edit b{display:block;color:var(--ink2);font-size:13px;margin-bottom:3px}
-
-.structure-form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.structure-form .wide{grid-column:1/-1}
-.structure-field label{display:block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.structure-field input,.structure-field select,.structure-field textarea{width:100%;border:1px solid var(--line);border-radius:9px;background:#FBFDFF;color:var(--ink);font:inherit;font-size:13px;padding:10px 11px;transition:.15s}
-.structure-field textarea{min-height:92px;resize:vertical;line-height:1.5}
-.structure-field input:focus,.structure-field select:focus,.structure-field textarea:focus{outline:none;border-color:var(--base);box-shadow:0 0 0 3px var(--base-soft);background:#fff}
-.structure-field input.invalid{border-color:var(--komex);box-shadow:0 0 0 3px rgba(217,31,38,.09)}
-.structure-context{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--line2);border-radius:10px;background:#F7FAFD;color:var(--ink2);font-size:11.5px;margin-bottom:14px}
-.structure-context b{color:var(--ink)}
-.structure-help{font-size:10.5px;color:var(--muted);line-height:1.45;margin-top:5px}
-.structure-error{display:none;color:var(--komex);font-size:10.5px;font-weight:700;margin-top:5px}
-.structure-error.show{display:block}
-.structure-status-auto{display:none;margin-top:6px;font-size:10.5px;color:var(--doing);font-weight:700}
-.structure-status-auto.show{display:block}
+/* ---------- QUẢN LÝ CÔNG VIỆC TRONG KẾ HOẠCH CHI TIẾT ---------- */
+.phase-add-btn{
+  display:none;margin-left:4px;border:1px solid #BFD6EB;background:#fff;color:var(--base-deep);
+  border-radius:8px;padding:7px 10px;font:inherit;font-size:11.5px;font-weight:800;cursor:pointer;
+  align-items:center;gap:6px;white-space:nowrap;transition:.15s
+}
+body.editing .phase-add-btn{display:inline-flex}
+.phase-add-btn:hover{border-color:var(--base);background:var(--base-soft);color:var(--base)}
+.phase-add-btn:focus-visible{outline:2px solid var(--base);outline-offset:2px}
+.task-name-line{display:flex;align-items:flex-start;gap:7px;min-width:0;flex:1}
+.task-name-line .tname,.task-name-line .sname{min-width:0;flex:1}
+.task-actions{display:none;align-items:center;gap:4px;flex:0 0 auto;margin-left:2px}
+body.editing .task-actions{display:inline-flex}
+.task-action-btn{
+  width:28px;height:28px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--muted);
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;padding:0
+}
+.task-action-btn:hover{border-color:var(--base);background:var(--base-soft);color:var(--base)}
+.task-action-btn.add-child:hover{border-color:var(--done);background:var(--done-soft);color:var(--done)}
+.task-action-btn.delete:hover{border-color:var(--komex);background:var(--komex-soft);color:var(--komex)}
+.task-action-btn:focus-visible{outline:2px solid var(--base);outline-offset:1px}
+.task-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.task-form-grid .wide{grid-column:1/-1}
+.task-form-type{
+  display:inline-flex;align-items:center;gap:6px;width:max-content;font-size:10px;font-weight:800;
+  text-transform:uppercase;letter-spacing:.07em;color:var(--base-deep);background:var(--base-soft);
+  border:1px solid #C7DFF3;padding:4px 7px;border-radius:5px;margin-bottom:2px
+}
+.task-form-status-help{display:none;margin-top:6px;font-size:10.5px;color:var(--muted)}
+.task-form-status-help.show{display:block}
+.task-form-actions-note{font-size:10.5px;color:var(--muted);line-height:1.5;padding:10px 11px;border:1px dashed var(--line);border-radius:9px;background:#FAFCFE}
+.quick-select{appearance:auto}
+.phase-empty-edit{padding:28px 20px;text-align:center;color:var(--muted);font-size:12px;background:#FBFDFF}
+.phase-empty-edit b{display:block;color:var(--ink2);font-size:13px;margin-bottom:4px}
+body.editing .col-name{min-width:300px}
 
 @media(max-width:820px){
-  body.editing .phase-add-task{order:3;margin-left:auto}
+  .phase-add-btn{order:3;margin-left:auto;padding:7px 9px}
   body.editing .phase-prog{order:4}
-  body.editing td.col-actions{display:block;flex:1 1 100%;order:13;border-top:1px dashed var(--line2);padding-top:8px;margin-top:2px}
-  .task-ops{justify-content:flex-end;min-width:0}
-  .task-op-btn{width:34px;height:32px;background:#F7FAFD;border-color:var(--line2)}
-  .structure-form{grid-template-columns:1fr}
-  .structure-form .wide{grid-column:auto}
-  .task-name-input{min-width:0}
+  .task-name-line{align-items:flex-start}
+  .task-actions{gap:3px}
+  .task-action-btn{width:30px;height:30px}
+  .task-form-grid{grid-template-columns:1fr}
+  .task-form-grid .wide{grid-column:auto}
+  body.editing .col-name{min-width:0}
 }
+
 @media print{
-  .phase-add-task,.col-actions{display:none!important}
+  .phase-add-btn,.task-actions{display:none!important}
 }
 
 </style>
@@ -1240,6 +1241,61 @@ body.editing td.col-actions{display:table-cell}
       <button class="icon-close" id="taskEditorClose" type="button" aria-label="Đóng">×</button>
     </header>
     <div class="task-editor-body">
+      <section id="quickTaskSection" hidden>
+        <div class="task-form-type" id="quickTaskType">Công việc</div>
+        <div class="task-form-grid">
+          <div class="quick-field wide">
+            <label for="quickTaskName">Tên công việc</label>
+            <input class="quick-input" id="quickTaskName" type="text" maxlength="240" autocomplete="off" placeholder="Nhập tên công việc">
+            <div class="quick-error" id="quickTaskNameError">Vui lòng nhập tên công việc.</div>
+          </div>
+          <div class="quick-field">
+            <label for="quickTaskOwner">Đầu mối</label>
+            <select class="quick-input quick-select" id="quickTaskOwner">
+              <option value="">— Chưa phân công —</option>
+              <option value="Base">Base</option>
+              <option value="Komex">Komex</option>
+              <option value="Base & Komex">Base &amp; Komex</option>
+            </select>
+          </div>
+          <div class="quick-field">
+            <label for="quickTaskStatus">Trạng thái</label>
+            <select class="quick-input quick-select" id="quickTaskStatus">
+              <option value="idle">Chưa bắt đầu</option>
+              <option value="doing">Đang làm</option>
+              <option value="block">Đang vướng</option>
+              <option value="hold">Tạm hoãn</option>
+              <option value="done">Hoàn thành</option>
+            </select>
+            <div class="task-form-status-help" id="quickTaskStatusHelp">Công việc này có việc con nên trạng thái được tự động tổng hợp từ các việc con.</div>
+          </div>
+          <div class="quick-field">
+            <label for="quickTaskStart">Ngày bắt đầu</label>
+            <input class="quick-input" id="quickTaskStart" type="text" inputmode="numeric" maxlength="10" placeholder="dd/mm/yyyy">
+            <div class="quick-error" id="quickTaskStartError">Ngày bắt đầu chưa hợp lệ.</div>
+          </div>
+          <div class="quick-field">
+            <label for="quickTaskDue">Thời hạn</label>
+            <input class="quick-input" id="quickTaskDue" type="text" inputmode="numeric" maxlength="10" placeholder="dd/mm/yyyy">
+            <div class="quick-error" id="quickTaskDueError">Thời hạn chưa hợp lệ hoặc đang sớm hơn ngày bắt đầu.</div>
+          </div>
+          <div class="quick-field wide">
+            <label for="quickTaskNote">Kết quả / cập nhật</label>
+            <textarea class="quick-textarea" id="quickTaskNote" maxlength="1200" placeholder="Ghi nhận kết quả đầu ra, cập nhật hoặc lưu ý cho công việc..."></textarea>
+          </div>
+          <div class="quick-field wide">
+            <label for="quickTaskLink">Link đính kèm</label>
+            <input class="quick-input" id="quickTaskLink" type="url" inputmode="url" placeholder="https://...">
+            <div class="quick-error" id="quickTaskLinkError">Link chưa hợp lệ. Vui lòng dùng địa chỉ http:// hoặc https://.</div>
+          </div>
+          <div class="quick-field" id="quickTaskMilestoneGroup">
+            <label for="quickTaskMilestone">Nhãn cột mốc</label>
+            <input class="quick-input" id="quickTaskMilestone" type="text" maxlength="40" placeholder="Ví dụ: KICK-OFF">
+          </div>
+          <div class="task-form-actions-note">Sau khi lưu, dữ liệu được cập nhật ngay trên báo cáo tổng quan và đồng bộ real-time tới các thiết bị khác.</div>
+        </div>
+      </section>
+
       <section id="quickLinkSection" hidden>
         <div class="quick-field">
           <label for="quickLink">Link đính kèm</label>
@@ -1278,75 +1334,6 @@ body.editing td.col-actions{display:table-cell}
       <button class="btn" id="taskEditorCancel" type="button">Huỷ</button>
       <button class="btn btn-primary" id="taskEditorSave" type="button">Lưu thay đổi</button>
     </footer>
-  </section>
-</div>
-
-
-
-<div class="task-editor-backdrop" id="structureEditorBackdrop" hidden>
-  <section class="task-editor" role="dialog" aria-modal="true" aria-labelledby="structureEditorTitle">
-    <header class="task-editor-head">
-      <div class="task-editor-head-main">
-        <div class="task-editor-kicker" id="structureEditorKicker">Quản lý công việc</div>
-        <h3 id="structureEditorTitle">—</h3>
-        <div class="task-editor-meta" id="structureEditorMeta">Chỉ chỉnh sửa thông tin công việc. Link, vấn đề/thắc mắc và hướng xử lý được cập nhật tại từng cột riêng.</div>
-      </div>
-      <button class="icon-close" id="structureEditorClose" type="button" aria-label="Đóng">×</button>
-    </header>
-    <form id="structureEditorForm">
-      <div class="task-editor-body">
-        <div class="structure-context" id="structureEditorContext"></div>
-        <div class="structure-form">
-          <div class="structure-field wide">
-            <label for="structureName">Tên công việc <span aria-hidden="true">*</span></label>
-            <input id="structureName" type="text" maxlength="240" autocomplete="off" placeholder="Nhập tên công việc..." required>
-            <div class="structure-error" id="structureNameError">Vui lòng nhập tên công việc.</div>
-          </div>
-          <div class="structure-field" id="structureMilestoneGroup">
-            <label for="structureMilestone">Nhãn cột mốc</label>
-            <input id="structureMilestone" type="text" maxlength="40" autocomplete="off" placeholder="Ví dụ: KICK-OFF">
-          </div>
-          <div class="structure-field">
-            <label for="structureOwner">Đầu mối</label>
-            <select id="structureOwner">
-              <option value="">Chưa phân công</option>
-              <option value="Base">Base</option>
-              <option value="Komex">Komex</option>
-              <option value="Base & Komex">Base &amp; Komex</option>
-            </select>
-          </div>
-          <div class="structure-field">
-            <label for="structureStart">Ngày bắt đầu</label>
-            <input id="structureStart" type="date">
-          </div>
-          <div class="structure-field">
-            <label for="structureDue">Thời hạn</label>
-            <input id="structureDue" type="date">
-            <div class="structure-error" id="structureDateError">Thời hạn không được sớm hơn ngày bắt đầu.</div>
-          </div>
-          <div class="structure-field">
-            <label for="structureStatus">Trạng thái</label>
-            <select id="structureStatus">
-              <option value="idle">Chưa bắt đầu</option>
-              <option value="doing">Đang làm</option>
-              <option value="block">Đang vướng</option>
-              <option value="hold">Tạm hoãn</option>
-              <option value="done">Hoàn thành</option>
-            </select>
-            <div class="structure-status-auto" id="structureStatusAuto">Trạng thái công việc cha đang được tự động tổng hợp từ các việc con.</div>
-          </div>
-          <div class="structure-field wide">
-            <label for="structureNote">Kết quả / cập nhật</label>
-            <textarea id="structureNote" maxlength="1000" placeholder="Ghi nhận kết quả, cập nhật hoặc lưu ý cần thiết..."></textarea>
-            <div class="structure-help">Link đính kèm, các vấn đề/thắc mắc và hướng xử lý vẫn được chỉnh sửa tại đúng cột tương ứng trên bảng.</div>
-          </div>
-        </div>
-      </div>
-      <footer class="task-editor-foot">
-        <button class="btn" id="structureEditorCancel" type="button">Huỷ</button>
-        <button class="btn btn-primary" id="structureEditorSave" type="submit">Lưu công việc</button>
-      </footer>
-    </form>
   </section>
 </div>
 
@@ -1514,6 +1501,17 @@ body.editing td.col-actions{display:table-cell}
   var TODAY = new Date(); TODAY.setHours(0,0,0,0);
 
   var data = JSON.parse(document.getElementById("plan-data").textContent);
+  function entityId(prefix){ return (prefix||"item")+"_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8); }
+  function ensureItemIds(){
+    (data.phases||[]).forEach(function(p){
+      if(!p.id) p.id=entityId("phase");
+      (p.tasks||[]).forEach(function(t){
+        if(!t.id) t.id=entityId("task");
+        (t.subs||[]).forEach(function(sub){ if(!sub.id) sub.id=entityId("sub"); });
+      });
+    });
+  }
+  ensureItemIds();
   var filters = {q:"", owner:"all", status:"all", dateMode:"all", dateField:"due", dateFrom:"", dateTo:""};
   var filterDraft = null;
   var open = {};
@@ -2066,30 +2064,14 @@ body.editing td.col-actions{display:table-cell}
     '</button>';
   }
 
-  function taskNameCell(item,key,isSub){
-    var label=(isSub?"Tên việc con":"Tên công việc");
-    var ro=isSub
-      ? '<span class="ro sname">'+esc(item.name||"Chưa đặt tên")+(item.link? ' <a class="linkico" href="'+esc(item.link)+'" target="_blank" rel="noopener" aria-label="Mở link công việc" title="Mở link đính kèm">↗</a>':'')+'</span>'
-      : '<span class="ro tname">'+esc(item.name||"Chưa đặt tên")+(item.milestone? '<span class="pill-ms">'+esc(item.milestone)+'</span>':'')+(item.link? ' <a class="linkico" href="'+esc(item.link)+'" target="_blank" rel="noopener" aria-label="Mở link công việc" title="Mở link đính kèm">↗</a>':'')+'</span>';
-    var ed='<input class="ed task-name-input" type="text" maxlength="240" value="'+esc(item.name||"")+'" placeholder="'+label+'" data-k="'+key+'" data-f="name" aria-label="'+label+'">';
-    return '<span class="task-name-field">'+ro+ed+'</span>';
-  }
-  function taskActionButtons(key,isSub,hasSubs,index,total){
-    var out='<div class="task-ops">'+
-      '<button class="task-op-btn" type="button" data-structure-action="edit" data-structure-key="'+key+'" title="Chỉnh sửa đầy đủ" aria-label="Chỉnh sửa đầy đủ">'+
-        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4Z"/></svg></button>';
-    if(!isSub){
-      out+='<button class="task-op-btn add-sub" type="button" data-structure-action="add-sub" data-structure-key="'+key+'" title="Thêm việc con" aria-label="Thêm việc con">'+
-        '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>';
-    }
-    out+='<button class="task-op-btn" type="button" data-structure-action="move-up" data-structure-key="'+key+'" '+(index<=0?'disabled':'')+' title="Đưa lên trên" aria-label="Đưa lên trên">'+
-      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></button>'+
-      '<button class="task-op-btn" type="button" data-structure-action="move-down" data-structure-key="'+key+'" '+(index>=total-1?'disabled':'')+' title="Đưa xuống dưới" aria-label="Đưa xuống dưới">'+
-      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>'+
-      '<button class="task-op-btn delete" type="button" data-structure-action="delete" data-structure-key="'+key+'" title="Xoá công việc" aria-label="Xoá công việc">'+
-      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v5M14 11v5"/></svg></button>'+
-      '</div>';
-    return out;
+  function taskActionButtons(key,isSub){
+    return '<span class="task-actions" aria-label="Quản lý công việc">'+
+      '<button class="task-action-btn edit-task" type="button" data-edit-task="'+key+'" title="Chỉnh sửa công việc" aria-label="Chỉnh sửa công việc">'+
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4Z"/></svg></button>'+
+      (!isSub?'<button class="task-action-btn add-child" type="button" data-add-subtask="'+key+'" title="Thêm công việc con" aria-label="Thêm công việc con">＋</button>':'')+
+      '<button class="task-action-btn delete" type="button" data-delete-task="'+key+'" title="Xoá công việc" aria-label="Xoá công việc">'+
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v5M14 11v5"/></svg></button>'+
+    '</span>';
   }
 
   function issueCell(item,key){
@@ -2126,12 +2108,12 @@ body.editing td.col-actions{display:table-cell}
 
     data.phases.forEach(function(p,pi){
       var rows=[];
-      p.tasks.forEach(function(t,ti){
+      (p.tasks||[]).forEach(function(t,ti){
         var k=pi+"."+ti;
-        var subs=(t.subs||[]).map(function(s,si){ return {s:s,key:k+"."+si,ok:match(s),si:si}; });
+        var subs=(t.subs||[]).map(function(s,si){ return {s:s,key:k+"."+si,ok:match(s)}; });
         var anySub=subs.some(function(x){return x.ok;});
         var tOk=match(t);
-        if(tOk||anySub) rows.push({t:t,key:k,subs:subs,tOk:tOk,ti:ti});
+        if(tOk||anySub) rows.push({t:t,key:k,subs:subs,tOk:tOk});
       });
       if(!rows.length && !editing) return;
 
@@ -2143,10 +2125,18 @@ body.editing td.col-actions{display:table-cell}
           '<span class="phase-no">'+esc(p.no)+'</span>'+
           '<h3>'+esc(p.name)+'</h3>'+
           '<span class="phase-win">'+esc(p.window)+'</span>'+
-          '<button class="phase-add-task" type="button" data-add-task="'+pi+'">+ Thêm công việc</button>'+
           '<span class="phase-prog"><span class="mini"><i class="'+(pct>=100?"full":"")+'" style="width:'+pct+'%"></i></span><b>'+pct+'%</b></span>'+
-        '</div>'+
-        '<div class="card"><table><thead><tr>'+
+          '<button class="phase-add-btn" type="button" data-add-task="'+pi+'" title="Thêm công việc vào giai đoạn này">＋ Thêm công việc</button>'+
+        '</div>';
+
+      if(!rows.length){
+        html+='<div class="card"><div class="phase-empty-edit"><b>Giai đoạn này chưa có công việc</b>Nhấn “+ Thêm công việc” để tạo đầu việc đầu tiên.</div></div>';
+        sec.innerHTML=html;
+        main.appendChild(sec);
+        return;
+      }
+
+      html+='<div class="card"><table><thead><tr>'+
           '<th style="width:28%">Công việc</th>'+
           '<th style="width:115px">Đầu mối</th>'+
           '<th class="col-start" style="width:105px">Bắt đầu</th>'+
@@ -2155,7 +2145,6 @@ body.editing td.col-actions{display:table-cell}
           '<th class="col-note">Kết quả / cập nhật</th>'+
           '<th style="width:20%">Các vấn đề / thắc mắc phát sinh</th>'+
           '<th style="width:18%">Hướng xử lý</th>'+
-          '<th class="col-actions">Thao tác</th>'+
         '</tr></thead><tbody>';
 
       rows.forEach(function(r){
@@ -2167,7 +2156,10 @@ body.editing td.col-actions{display:table-cell}
             (hasSubs
               ? '<button class="caret'+(isOpen?" open":"")+'" data-toggle="'+k+'" aria-label="Mở/đóng việc con"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>'
               : '<span class="caret ghost"></span>')+
-            taskNameCell(t,k,false)+cellEditButton(k,"link","Chỉnh sửa link đính kèm")+'</span></td>'+
+            '<span class="task-name-line"><span class="tname">'+esc(t.name||"Chưa đặt tên")+
+              (t.milestone? '<span class="pill-ms">'+esc(t.milestone)+'</span>':'')+
+              (t.link? ' <a class="linkico" href="'+esc(t.link)+'" target="_blank" rel="noopener" aria-label="Mở link công việc" title="Mở link đính kèm">↗</a>':'')+
+            '</span>'+taskActionButtons(k,false)+'</span>'+cellEditButton(k,"link","Chỉnh sửa link đính kèm")+'</span></td>'+
           '<td class="col-owner">'+ownerCell(t,k)+'</td>'+
           '<td class="col-start">'+dateCell(t,k,"start")+'</td>'+
           '<td class="col-due" data-label="Hạn">'+dateCell(t,k,"due")+'</td>'+
@@ -2175,14 +2167,15 @@ body.editing td.col-actions{display:table-cell}
           '<td class="col-note">'+noteCell(t,k)+'</td>'+
           '<td class="col-issue cell-editable">'+issueCell(t,k)+'</td>'+
           '<td class="col-resolved cell-editable">'+issueResponseCell(t,k)+'</td>'+
-          '<td class="col-actions">'+taskActionButtons(k,false,hasSubs,r.ti,p.tasks.length)+'</td>'+
         '</tr>';
 
         r.subs.forEach(function(x){
           if(!r.tOk && !x.ok) return;
           shown++;
           html+='<tr class="sub'+(isOpen?"":" hidden")+(overdue(x.s)?" late":"")+'" data-parent="'+k+'" data-edit-key="'+x.key+'">'+
-            '<td class="col-name"><span class="tw">'+taskNameCell(x.s,x.key,true)+cellEditButton(x.key,"link","Chỉnh sửa link đính kèm")+'</span></td>'+
+            '<td class="col-name"><span class="tw"><span class="task-name-line"><span class="sname">'+esc(x.s.name||"Chưa đặt tên")+
+              (x.s.link? ' <a class="linkico" href="'+esc(x.s.link)+'" target="_blank" rel="noopener" aria-label="Mở link công việc" title="Mở link đính kèm">↗</a>':'')+
+            '</span>'+taskActionButtons(x.key,true)+'</span>'+cellEditButton(x.key,"link","Chỉnh sửa link đính kèm")+'</span></td>'+
             '<td class="col-owner">'+ownerCell(x.s,x.key)+'</td>'+
             '<td class="col-start">'+dateCell(x.s,x.key,"start")+'</td>'+
             '<td class="col-due" data-label="Hạn">'+dateCell(x.s,x.key,"due")+'</td>'+
@@ -2190,14 +2183,10 @@ body.editing td.col-actions{display:table-cell}
             '<td class="col-note">'+noteCell(x.s,x.key)+'</td>'+
             '<td class="col-issue cell-editable">'+issueCell(x.s,x.key)+'</td>'+
             '<td class="col-resolved cell-editable">'+issueResponseCell(x.s,x.key)+'</td>'+
-            '<td class="col-actions">'+taskActionButtons(x.key,true,false,x.si,(t.subs||[]).length)+'</td>'+
           '</tr>';
         });
       });
 
-      if(!rows.length && editing){
-        html+='<tr><td colspan="9"><div class="phase-empty-edit"><b>Giai đoạn này chưa có công việc phù hợp</b>Bấm “+ Thêm công việc” để tạo đầu việc mới hoặc điều chỉnh bộ lọc để xem các công việc đang bị ẩn.</div></td></tr>';
-      }
       html+='</tbody></table></div>';
       sec.innerHTML=html;
       main.appendChild(sec);
@@ -2214,17 +2203,50 @@ body.editing td.col-actions{display:table-cell}
 
   /* ---------- INTERACTIONS ---------- */
   function itemByKey(k){
-    var p=k.split(".");
-    var t=data.phases[+p[0]].tasks[+p[1]];
-    return p.length===3 ? t.subs[+p[2]] : t;
+    var p=String(k||"").split(".");
+    var phase=data.phases && data.phases[+p[0]];
+    var t=phase && phase.tasks && phase.tasks[+p[1]];
+    if(!t) return null;
+    return p.length===3 ? ((t.subs||[])[+p[2]]||null) : t;
+  }
+  function itemLocationById(id){
+    if(!id) return null;
+    for(var pi=0;pi<(data.phases||[]).length;pi++){
+      var phase=data.phases[pi];
+      for(var ti=0;ti<(phase.tasks||[]).length;ti++){
+        var task=phase.tasks[ti];
+        if(task.id===id) return {item:task,phase:phase,pi:pi,ti:ti,parent:null,si:null,key:pi+"."+ti};
+        for(var si=0;si<(task.subs||[]).length;si++){
+          if(task.subs[si].id===id) return {item:task.subs[si],phase:phase,pi:pi,ti:ti,parent:task,si:si,key:pi+"."+ti+"."+si};
+        }
+      }
+    }
+    return null;
+  }
+  function blankTask(kind){
+    return {id:entityId(kind==="sub"?"sub":"task"),name:"",owner:"Base & Komex",start:"",due:"",status:"idle",note:"",link:"",milestone:"",issues:[],subs:kind==="sub"?undefined:[]};
   }
   var quickEditKey=null;
+  var quickEditItemId=null;
+  var quickCreateContext=null;
   var quickEditMode="link";
   var quickDirty=false;
   var pendingRemotePlan=null;
   var lastPlanFingerprint=JSON.stringify(data);
   var syncTimer=null;
   var taskEditorBackdrop=document.getElementById("taskEditorBackdrop");
+  var quickTaskSection=document.getElementById("quickTaskSection");
+  var quickTaskType=document.getElementById("quickTaskType");
+  var quickTaskName=document.getElementById("quickTaskName");
+  var quickTaskOwner=document.getElementById("quickTaskOwner");
+  var quickTaskStatus=document.getElementById("quickTaskStatus");
+  var quickTaskStatusHelp=document.getElementById("quickTaskStatusHelp");
+  var quickTaskStart=document.getElementById("quickTaskStart");
+  var quickTaskDue=document.getElementById("quickTaskDue");
+  var quickTaskNote=document.getElementById("quickTaskNote");
+  var quickTaskLink=document.getElementById("quickTaskLink");
+  var quickTaskMilestone=document.getElementById("quickTaskMilestone");
+  var quickTaskMilestoneGroup=document.getElementById("quickTaskMilestoneGroup");
   var quickLink=document.getElementById("quickLink");
   var quickLinkSection=document.getElementById("quickLinkSection");
   var quickIssuesSection=document.getElementById("quickIssuesSection");
@@ -2239,9 +2261,10 @@ body.editing td.col-actions{display:table-cell}
   var syncStatus=document.getElementById("syncStatus");
 
   function phaseByKey(k){
-    var p=String(k).split(".");
-    return data.phases[+p[0]];
+    var p=String(k||"").split(".");
+    return (data.phases||[])[+p[0]]||null;
   }
+  function anyEditorOpen(){ return !taskEditorBackdrop.hidden; }
   function normalizeLink(v){
     v=String(v||"").trim();
     if(!v) return "";
@@ -2259,56 +2282,47 @@ body.editing td.col-actions{display:table-cell}
     card.className="quick-issue-card";
     card.setAttribute("data-issue-id",issue.id||issueId());
     card.setAttribute("data-existing-response",issue.response||"");
-    card.innerHTML='<div class="quick-issue-card-head"><span class="quick-issue-number">#'+(quickIssuesList.children.length+1)+'</span><span class="quick-issue-title">Vấn đề / thắc mắc</span><button type="button" class="quick-remove-issue" aria-label="Xoá nội dung này">×</button></div>'+ 
-      '<div class="quick-issue-grid"><div><label class="quick-mini-label">Người để lại</label><input class="quick-input" data-issue-field="author" type="text" value="'+esc(issue.author||"")+'" placeholder="Ví dụ: Mr. Hào"></div>'+ 
+    card.innerHTML='<div class="quick-issue-card-head"><span class="quick-issue-number">#'+(quickIssuesList.children.length+1)+'</span><span class="quick-issue-title">Vấn đề / thắc mắc</span><button type="button" class="quick-remove-issue" aria-label="Xoá nội dung này">×</button></div>'+
+      '<div class="quick-issue-grid"><div><label class="quick-mini-label">Người để lại</label><input class="quick-input" data-issue-field="author" type="text" value="'+esc(issue.author||"")+'" placeholder="Ví dụ: Mr. Hào"></div>'+
       '<div><label class="quick-mini-label">Nội dung vấn đề / thắc mắc</label><textarea class="quick-textarea" data-issue-field="content" placeholder="Mô tả rõ nội dung cần team Base phản hồi...">'+esc(issue.content||"")+'</textarea></div></div>';
     quickIssuesList.appendChild(card);
     renumberQuickIssues();
     syncQuickIssuesEmpty();
   }
   function renumberQuickIssues(){
-    quickIssuesList.querySelectorAll('.quick-issue-card').forEach(function(card,idx){ card.querySelector('.quick-issue-number').textContent='#'+(idx+1); });
+    quickIssuesList.querySelectorAll(".quick-issue-card").forEach(function(card,idx){ card.querySelector(".quick-issue-number").textContent="#"+(idx+1); });
   }
   function renderQuickIssues(item){
-    quickIssuesList.innerHTML='';
+    quickIssuesList.innerHTML="";
     itemIssues(item).forEach(function(issue){ addQuickIssue(issue); });
     syncQuickIssuesEmpty();
   }
   function collectQuickIssues(){
     var result=[], invalid=null;
-    quickIssuesList.querySelectorAll('.quick-issue-card').forEach(function(card){
-      card.classList.remove('invalid');
-      var content=String(card.querySelector('[data-issue-field="content"]').value||'').trim();
-      var author=String(card.querySelector('[data-issue-field="author"]').value||'').trim();
-      var response=String(card.getAttribute('data-existing-response')||'').trim();
+    quickIssuesList.querySelectorAll(".quick-issue-card").forEach(function(card){
+      card.classList.remove("invalid");
+      var content=String(card.querySelector('[data-issue-field="content"]').value||"").trim();
+      var author=String(card.querySelector('[data-issue-field="author"]').value||"").trim();
+      var response=String(card.getAttribute("data-existing-response")||"").trim();
       if(!content && !author) return;
-      if(!content && !invalid){ invalid=card; card.classList.add('invalid'); return; }
-      result.push({id:card.getAttribute('data-issue-id')||issueId(),author:author,content:content,response:response});
+      if(!content && !invalid){ invalid=card; card.classList.add("invalid"); return; }
+      result.push({id:card.getAttribute("data-issue-id")||issueId(),author:author,content:content,response:response});
     });
     if(invalid){ invalid.querySelector('[data-issue-field="content"]').focus(); return null; }
     return result;
   }
   function renderQuickResponses(item){
-    quickResponsesList.innerHTML='';
+    quickResponsesList.innerHTML="";
     var issues=itemIssues(item);
     quickResponsesEmpty.hidden=issues.length>0;
     issues.forEach(function(issue,idx){
-      var card=document.createElement('article');
-      card.className='response-editor-card';
-      card.setAttribute('data-issue-id',issue.id||issueId());
-      card.innerHTML='<div class="response-editor-head"><span class="issue-index">#'+(idx+1)+'</span><span class="issue-author">'+esc(issue.author||'Chưa ghi tên')+'</span></div>'+ 
-        '<div class="response-editor-context"><b>Vấn đề / thắc mắc:</b> '+esc(issue.content||'—')+'</div>'+ 
-        '<label class="quick-mini-label">Hướng xử lý / phản hồi</label><textarea class="quick-textarea" data-response-field placeholder="Ghi nhận phương án, câu trả lời hoặc bước xử lý tiếp theo...">'+esc(issue.response||'')+'</textarea>';
+      var card=document.createElement("article");
+      card.className="response-editor-card";
+      card.setAttribute("data-issue-id",issue.id||issueId());
+      card.innerHTML='<div class="response-editor-head"><span class="issue-index">#'+(idx+1)+'</span><span class="issue-author">'+esc(issue.author||"Chưa ghi tên")+'</span></div>'+
+        '<div class="response-editor-context"><b>Vấn đề / thắc mắc:</b> '+esc(issue.content||"—")+'</div>'+
+        '<label class="quick-mini-label">Hướng xử lý / phản hồi</label><textarea class="quick-textarea" data-response-field placeholder="Ghi nhận phương án, câu trả lời hoặc bước xử lý tiếp theo...">'+esc(issue.response||"")+'</textarea>';
       quickResponsesList.appendChild(card);
-    });
-  }
-  function collectQuickResponses(item){
-    var responses={};
-    quickResponsesList.querySelectorAll('.response-editor-card').forEach(function(card){
-      responses[card.getAttribute('data-issue-id')]=String(card.querySelector('[data-response-field]').value||'').trim();
-    });
-    return itemIssues(item).map(function(issue){
-      return {id:issue.id||issueId(),author:issue.author||'',content:issue.content||'',response:Object.prototype.hasOwnProperty.call(responses,issue.id)?responses[issue.id]:(issue.response||'')};
     });
   }
   function syncQuickLinkActions(){
@@ -2316,24 +2330,92 @@ body.editing td.col-actions{display:table-cell}
     quickOpenLink.disabled=!v;
   }
   function editorLabels(mode){
+    if(mode==="task") return {kicker:"Chỉnh sửa công việc",save:"Lưu công việc"};
+    if(mode==="new-task") return {kicker:"Thêm công việc",save:"Tạo công việc"};
+    if(mode==="new-subtask") return {kicker:"Thêm công việc con",save:"Tạo công việc con"};
     if(mode==="issues") return {kicker:"Các vấn đề / thắc mắc phát sinh",save:"Lưu vấn đề / thắc mắc"};
     if(mode==="responses") return {kicker:"Hướng xử lý",save:"Lưu hướng xử lý"};
     return {kicker:"Link đính kèm",save:"Lưu link"};
   }
-  function openTaskEditor(k,mode){
-    var item=itemByKey(k), phase=phaseByKey(k);
-    if(!item) return;
-    quickEditKey=k;
+  function resetTaskFormErrors(){
+    ["quickTaskNameError","quickTaskStartError","quickTaskDueError","quickTaskLinkError"].forEach(function(id){ document.getElementById(id).classList.remove("show"); });
+    [quickTaskName,quickTaskStart,quickTaskDue,quickTaskLink].forEach(function(el){ el.classList.remove("bad"); });
+  }
+  function fillTaskForm(item,isSub){
+    resetTaskFormErrors();
+    quickTaskType.textContent=isSub?"Công việc con":"Công việc chính";
+    quickTaskName.value=item.name||"";
+    quickTaskOwner.value=item.owner||"";
+    quickTaskStatus.value=item.status||"idle";
+    quickTaskStart.value=fmt(item.start||"");
+    quickTaskDue.value=fmt(item.due||"");
+    quickTaskNote.value=item.note||"";
+    quickTaskLink.value=item.link||"";
+    quickTaskMilestone.value=isSub?"":(item.milestone||"");
+    quickTaskMilestoneGroup.hidden=!!isSub;
+    var rollup=!isSub && item.subs && item.subs.length>0;
+    quickTaskStatus.disabled=!!rollup;
+    quickTaskStatusHelp.classList.toggle("show",!!rollup);
+  }
+  function collectTaskForm(isSub){
+    resetTaskFormErrors();
+    var name=String(quickTaskName.value||"").trim();
+    var start=parseVN(quickTaskStart.value), due=parseVN(quickTaskDue.value);
+    var link=normalizeLink(quickTaskLink.value);
+    var invalid=false;
+    if(!name){ quickTaskName.classList.add("bad"); document.getElementById("quickTaskNameError").classList.add("show"); invalid=true; }
+    if(start===null){ quickTaskStart.classList.add("bad"); document.getElementById("quickTaskStartError").classList.add("show"); invalid=true; }
+    if(due===null || (start && due && due<start)){ quickTaskDue.classList.add("bad"); document.getElementById("quickTaskDueError").classList.add("show"); invalid=true; }
+    if(link===null){ quickTaskLink.classList.add("bad"); document.getElementById("quickTaskLinkError").classList.add("show"); invalid=true; }
+    if(invalid){
+      var first=document.querySelector("#quickTaskSection .bad"); if(first) first.focus();
+      return null;
+    }
+    return {
+      name:name,owner:quickTaskOwner.value||"",status:quickTaskStatus.value||"idle",
+      start:start,due:due,note:String(quickTaskNote.value||"").trim(),link:link||"",
+      milestone:isSub?"":String(quickTaskMilestone.value||"").trim()
+    };
+  }
+  function openTaskEditor(k,mode,context){
+    var item=null,phase=null,isCreate=mode==="new-task"||mode==="new-subtask",isSub=false;
+    quickCreateContext=null;
+    if(isCreate){
+      quickCreateContext=context||{};
+      phase=(data.phases||[])[quickCreateContext.pi]||null;
+      isSub=mode==="new-subtask";
+      item=blankTask(isSub?"sub":"task");
+      if(isSub && quickCreateContext.parentId){
+        var parentLoc=itemLocationById(quickCreateContext.parentId);
+        if(parentLoc && parentLoc.item){
+          item.owner=parentLoc.item.owner||item.owner;
+          item.start=parentLoc.item.start||"";
+          item.due=parentLoc.item.due||"";
+          phase=parentLoc.phase;
+        }
+      }
+      quickEditItemId=item.id;
+      quickEditKey=null;
+    }else{
+      item=itemByKey(k); phase=phaseByKey(k);
+      if(!item) return;
+      quickEditKey=k;
+      quickEditItemId=item.id||null;
+      isSub=String(k).split(".").length===3;
+    }
     quickEditMode=mode||"link";
     var labels=editorLabels(quickEditMode);
     document.getElementById("taskEditorKicker").textContent=labels.kicker;
     document.getElementById("taskEditorSave").textContent=labels.save;
-    document.getElementById("taskEditorTitle").textContent=item.name||"Công việc";
-    document.getElementById("taskEditorMeta").textContent=(phase?phase.no+" · ":"")+(item.owner||"Chưa phân công")+(item.due?" · Hạn "+fmt(item.due):"");
+    document.getElementById("taskEditorTitle").textContent=isCreate?(isSub?"Công việc con mới":"Công việc mới"):(item.name||"Công việc");
+    document.getElementById("taskEditorMeta").textContent=(phase?phase.no+" · ":"")+(isSub?"Công việc con":"Công việc chính")+(item.owner?" · "+item.owner:"")+(item.due?" · Hạn "+fmt(item.due):"");
+    quickTaskSection.hidden=!["task","new-task","new-subtask"].includes(quickEditMode);
     quickLinkSection.hidden=quickEditMode!=="link";
     quickIssuesSection.hidden=quickEditMode!=="issues";
     quickResponsesSection.hidden=quickEditMode!=="responses";
-    if(quickEditMode==="link"){
+    if(!quickTaskSection.hidden){
+      fillTaskForm(item,isSub);
+    }else if(quickEditMode==="link"){
       quickLink.value=item.link||"";
       quickLink.classList.remove("bad");
       quickLinkError.classList.remove("show");
@@ -2346,9 +2428,33 @@ body.editing td.col-actions{display:table-cell}
     taskEditorBackdrop.hidden=false;
     document.body.classList.add("modal-open");
     setTimeout(function(){
-      var focusEl=quickEditMode==="link"?quickLink:(quickEditMode==="issues"?quickIssuesList.querySelector('input,textarea'):quickResponsesList.querySelector('textarea'));
-      if(focusEl){ focusEl.focus(); if(focusEl===quickLink) focusEl.select(); }
+      var focusEl=!quickTaskSection.hidden?quickTaskName:(quickEditMode==="link"?quickLink:(quickEditMode==="issues"?quickIssuesList.querySelector("input,textarea"):quickResponsesList.querySelector("textarea")));
+      if(focusEl){ focusEl.focus(); if(focusEl===quickLink||focusEl===quickTaskName) focusEl.select(); }
     },30);
+  }
+  function removeItemByKey(k){
+    var parts=String(k||"").split("."),pi=+parts[0],ti=+parts[1];
+    var phase=(data.phases||[])[pi];
+    if(!phase || !phase.tasks || !phase.tasks[ti]) return false;
+    if(parts.length===3){
+      var task=phase.tasks[ti],si=+parts[2];
+      if(!task.subs || !task.subs[si]) return false;
+      task.subs.splice(si,1);
+    }else phase.tasks.splice(ti,1);
+    return true;
+  }
+  function deleteTask(k){
+    var item=itemByKey(k); if(!item) return;
+    var childCount=(item.subs||[]).length;
+    var msg='Xoá công việc “'+(item.name||"Chưa đặt tên")+'”?';
+    if(childCount) msg+='\n\nCông việc này có '+childCount+' công việc con và tất cả cũng sẽ bị xoá.';
+    msg+='\n\nThao tác này sẽ được đồng bộ tới tất cả thiết bị.';
+    if(!window.confirm(msg)) return;
+    if(removeItemByKey(k)){
+      open={};
+      markQuickDirty();
+      refresh(true);
+    }
   }
   function applyPendingRemote(){
     if(!pendingRemotePlan) return;
@@ -2360,6 +2466,8 @@ body.editing td.col-actions{display:table-cell}
     taskEditorBackdrop.hidden=true;
     document.body.classList.remove("modal-open");
     quickEditKey=null;
+    quickEditItemId=null;
+    quickCreateContext=null;
     if(applyPending!==false) setTimeout(applyPendingRemote,0);
   }
   function setSyncState(state,text,detail){
@@ -2389,6 +2497,7 @@ body.editing td.col-actions{display:table-cell}
   function markQuickDirty(){
     quickDirty=true;
     quickSavebar.hidden=false;
+    document.getElementById("plan-data").textContent=JSON.stringify(data,null,2);
     requestRealtimeSave();
   }
   function applyRemotePlan(incoming){
@@ -2396,6 +2505,7 @@ body.editing td.col-actions{display:table-cell}
     var fingerprint=JSON.stringify(incoming);
     if(fingerprint===lastPlanFingerprint) return;
     data=JSON.parse(fingerprint);
+    ensureItemIds();
     normalizeIssueData();
     lastPlanFingerprint=JSON.stringify(data);
     lu.value=data.lastUpdate||"";
@@ -2435,68 +2545,101 @@ body.editing td.col-actions{display:table-cell}
   document.getElementById("taskEditorClose").addEventListener("click",closeTaskEditor);
   document.getElementById("taskEditorCancel").addEventListener("click",closeTaskEditor);
   taskEditorBackdrop.addEventListener("click",function(e){ if(e.target===taskEditorBackdrop) closeTaskEditor(); });
-  document.addEventListener("keydown",function(e){
-    if(e.key!=="Escape") return;
-    if(!structureEditorBackdrop.hidden) closeStructureEditor();
-    else if(!taskEditorBackdrop.hidden) closeTaskEditor();
-  });
-  document.getElementById("quickAddIssue").addEventListener("click",function(){ addQuickIssue(); var cards=quickIssuesList.querySelectorAll('.quick-issue-card'); if(cards.length) cards[cards.length-1].querySelector('[data-issue-field="author"]').focus(); });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !taskEditorBackdrop.hidden) closeTaskEditor(); });
+  document.getElementById("quickAddIssue").addEventListener("click",function(){ addQuickIssue(); var cards=quickIssuesList.querySelectorAll(".quick-issue-card"); if(cards.length) cards[cards.length-1].querySelector('[data-issue-field="author"]').focus(); });
   quickIssuesList.addEventListener("click",function(e){
-    var remove=e.target.closest('.quick-remove-issue');
+    var remove=e.target.closest(".quick-remove-issue");
     if(!remove) return;
-    remove.closest('.quick-issue-card').remove();
+    remove.closest(".quick-issue-card").remove();
     renumberQuickIssues();
     syncQuickIssuesEmpty();
   });
   quickLink.addEventListener("input",function(){ quickLink.classList.remove("bad"); quickLinkError.classList.remove("show"); syncQuickLinkActions(); });
+  [quickTaskStart,quickTaskDue].forEach(function(el){
+    el.addEventListener("input",function(){
+      autoSlash(el);
+      el.classList.remove("bad");
+      document.getElementById(el===quickTaskStart?"quickTaskStartError":"quickTaskDueError").classList.remove("show");
+    });
+  });
+  quickTaskName.addEventListener("input",function(){ quickTaskName.classList.remove("bad"); document.getElementById("quickTaskNameError").classList.remove("show"); });
+  quickTaskLink.addEventListener("input",function(){ quickTaskLink.classList.remove("bad"); document.getElementById("quickTaskLinkError").classList.remove("show"); });
   quickOpenLink.addEventListener("click",function(){ var v=normalizeLink(quickLink.value); if(v) window.open(v,"_blank","noopener"); });
   document.getElementById("quickClearLink").addEventListener("click",function(){ quickLink.value=""; syncQuickLinkActions(); quickLink.focus(); });
   document.getElementById("taskEditorSave").addEventListener("click",function(){
-    if(!quickEditKey) return;
-    var editKey=quickEditKey;
     var mode=quickEditMode;
-    var normalized=null, issues=null, responses=null;
+    var editKey=quickEditKey;
+    var taskValues=null,normalized=null,issues=null,responses=null;
+    var isSubMode=mode==="new-subtask" || (mode==="task" && editKey && String(editKey).split(".").length===3);
 
-    if(mode==="link"){
+    if(["task","new-task","new-subtask"].includes(mode)){
+      taskValues=collectTaskForm(isSubMode);
+      if(!taskValues) return;
+    }else if(mode==="link"){
+      if(!editKey) return;
       normalized=normalizeLink(quickLink.value);
       if(normalized===null){
-        quickLink.classList.add("bad");
-        quickLinkError.classList.add("show");
-        quickLink.focus();
-        return;
+        quickLink.classList.add("bad"); quickLinkError.classList.add("show"); quickLink.focus(); return;
       }
     }else if(mode==="issues"){
-      issues=collectQuickIssues();
-      if(issues===null) return;
+      if(!editKey) return;
+      issues=collectQuickIssues(); if(issues===null) return;
     }else{
+      if(!editKey) return;
       responses={};
-      quickResponsesList.querySelectorAll('.response-editor-card').forEach(function(card){
-        responses[card.getAttribute('data-issue-id')]=String(card.querySelector('[data-response-field]').value||'').trim();
+      quickResponsesList.querySelectorAll(".response-editor-card").forEach(function(card){
+        responses[card.getAttribute("data-issue-id")]=String(card.querySelector("[data-response-field]").value||"").trim();
       });
     }
 
-    // Nếu thiết bị khác vừa cập nhật, dùng bản mới nhất làm nền rồi chỉ ghi đè đúng cột đang sửa.
     if(pendingRemotePlan && Array.isArray(pendingRemotePlan.phases)){
       data=JSON.parse(JSON.stringify(pendingRemotePlan));
       pendingRemotePlan=null;
+      ensureItemIds();
       normalizeIssueData();
     }
-    var item=itemByKey(editKey);
-    if(!item){ closeTaskEditor(false); refresh(true); return; }
 
-    if(mode==="link"){
-      item.link=normalized;
-    }else if(mode==="issues"){
-      item.issues=issues;
+    if(mode==="new-task"){
+      var phase=(data.phases||[])[quickCreateContext && quickCreateContext.pi];
+      if(!phase){ closeTaskEditor(false); refresh(true); return; }
+      var task=blankTask("task");
+      Object.assign(task,taskValues);
+      task.subs=[];
+      task.issues=[];
+      phase.tasks=phase.tasks||[];
+      phase.tasks.push(task);
+      open[(quickCreateContext.pi)+"."+(phase.tasks.length-1)]=true;
+    }else if(mode==="new-subtask"){
+      var parentLoc=itemLocationById(quickCreateContext && quickCreateContext.parentId);
+      if(!parentLoc || !parentLoc.item){ closeTaskEditor(false); refresh(true); return; }
+      var sub=blankTask("sub");
+      Object.assign(sub,taskValues);
+      delete sub.subs;
+      delete sub.milestone;
+      sub.issues=[];
+      parentLoc.item.subs=parentLoc.item.subs||[];
+      parentLoc.item.subs.push(sub);
+      open[parentLoc.pi+"."+parentLoc.ti]=true;
     }else{
-      item.issues=itemIssues(item).map(function(issue){
-        return {
-          id:issue.id||issueId(),
-          author:issue.author||'',
-          content:issue.content||'',
-          response:Object.prototype.hasOwnProperty.call(responses,issue.id)?responses[issue.id]:(issue.response||'')
-        };
-      });
+      var loc=itemLocationById(quickEditItemId);
+      var item=loc?loc.item:itemByKey(editKey);
+      if(!item){ closeTaskEditor(false); refresh(true); return; }
+      if(mode==="task"){
+        var keepId=item.id,keepSubs=item.subs,keepIssues=item.issues;
+        Object.assign(item,taskValues);
+        item.id=keepId;
+        if(keepSubs!==undefined) item.subs=keepSubs;
+        if(keepIssues!==undefined) item.issues=keepIssues;
+        if(isSubMode) delete item.milestone;
+      }else if(mode==="link"){
+        item.link=normalized;
+      }else if(mode==="issues"){
+        item.issues=issues;
+      }else{
+        item.issues=itemIssues(item).map(function(issue){
+          return {id:issue.id||issueId(),author:issue.author||"",content:issue.content||"",response:Object.prototype.hasOwnProperty.call(responses,issue.id)?responses[issue.id]:(issue.response||"")};
+        });
+      }
     }
     closeTaskEditor(false);
     markQuickDirty();
@@ -2504,220 +2647,22 @@ body.editing td.col-actions{display:table-cell}
   });
   document.getElementById("quickSaveDismiss").addEventListener("click",function(){ quickSavebar.hidden=true; });
 
-  var structureEditorBackdrop=document.getElementById("structureEditorBackdrop");
-  var structureEditorState={mode:"",key:"",phaseIndex:-1,parentKey:"",originalName:""};
-  var structureName=document.getElementById("structureName");
-  var structureMilestone=document.getElementById("structureMilestone");
-  var structureMilestoneGroup=document.getElementById("structureMilestoneGroup");
-  var structureOwner=document.getElementById("structureOwner");
-  var structureStart=document.getElementById("structureStart");
-  var structureDue=document.getElementById("structureDue");
-  var structureStatus=document.getElementById("structureStatus");
-  var structureNote=document.getElementById("structureNote");
-  var structureNameError=document.getElementById("structureNameError");
-  var structureDateError=document.getElementById("structureDateError");
-  var structureStatusAuto=document.getElementById("structureStatusAuto");
-
-  function anyEditorOpen(){
-    return !taskEditorBackdrop.hidden || !structureEditorBackdrop.hidden;
-  }
-  function defaultItem(seed){
-    seed=seed||{};
-    return {
-      name:"",
-      owner:seed.owner||"Base & Komex",
-      start:seed.start||"",
-      due:seed.due||"",
-      status:"idle",
-      note:"",
-      link:"",
-      issues:[]
-    };
-  }
-  function setStructureForm(item,isSub,hasSubs){
-    structureName.value=item.name||"";
-    structureMilestone.value=isSub?"":(item.milestone||"");
-    structureMilestoneGroup.hidden=!!isSub;
-    structureOwner.value=item.owner||"";
-    structureStart.value=item.start||"";
-    structureDue.value=item.due||"";
-    structureStatus.value=(hasSubs?taskStatus(item):(item.status||"idle"));
-    structureStatus.disabled=!!hasSubs;
-    structureStatusAuto.classList.toggle("show",!!hasSubs);
-    structureNote.value=item.note||"";
-    structureName.classList.remove("invalid");
-    structureNameError.classList.remove("show");
-    structureDateError.classList.remove("show");
-  }
-  function openStructureEditor(mode,target){
-    structureEditorState={mode:mode,key:"",phaseIndex:-1,parentKey:"",originalName:""};
-    var item=null, phase=null, isSub=false, hasSubs=false, title="", kicker="Quản lý công việc", context="";
-    if(mode==="add-task"){
-      var pi=+target;
-      phase=data.phases[pi];
-      if(!phase) return;
-      structureEditorState.phaseIndex=pi;
-      item=defaultItem();
-      title="Thêm công việc mới";
-      kicker="Thêm công việc";
-      context='<b>'+esc(phase.no)+' · '+esc(phase.name)+'</b><span>Đầu việc mới sẽ được thêm vào cuối giai đoạn.</span>';
-    }else if(mode==="add-sub"){
-      var parent=itemByKey(target);
-      phase=phaseByKey(target);
-      if(!parent || !phase) return;
-      structureEditorState.parentKey=target;
-      structureEditorState.key=target;
-      isSub=true;
-      item=defaultItem({owner:parent.owner,start:parent.start,due:parent.due});
-      title="Thêm việc con";
-      kicker="Thêm việc con";
-      context='<b>'+esc(parent.name||"Công việc cha")+'</b><span>'+esc(phase.no)+' · '+esc(phase.name)+'</span>';
-    }else{
-      item=itemByKey(target);
-      phase=phaseByKey(target);
-      if(!item || !phase) return;
-      structureEditorState.key=target;
-      structureEditorState.originalName=item.name||"";
-      isSub=String(target).split(".").length===3;
-      hasSubs=!isSub && !!(item.subs&&item.subs.length);
-      title=isSub?"Chỉnh sửa việc con":"Chỉnh sửa công việc";
-      kicker="Cập nhật thông tin";
-      context='<b>'+esc(phase.no)+' · '+esc(phase.name)+'</b><span>'+(isSub?'Việc con':'Công việc chính')+'</span>';
-    }
-    setStructureForm(item,isSub,hasSubs);
-    document.getElementById("structureEditorKicker").textContent=kicker;
-    document.getElementById("structureEditorTitle").textContent=title;
-    document.getElementById("structureEditorContext").innerHTML=context;
-    document.getElementById("structureEditorSave").textContent=mode==="edit"?"Lưu thay đổi":"Thêm công việc";
-    structureEditorBackdrop.hidden=false;
-    document.body.classList.add("modal-open");
-    setTimeout(function(){ structureName.focus(); if(mode==="edit") structureName.select(); },30);
-  }
-  function closeStructureEditor(applyPending){
-    structureEditorBackdrop.hidden=true;
-    document.body.classList.remove("modal-open");
-    structureEditorState={mode:"",key:"",phaseIndex:-1,parentKey:"",originalName:""};
-    if(applyPending!==false) setTimeout(applyPendingRemote,0);
-  }
-  function structureItemFromForm(existing,isSub){
-    var out=existing||defaultItem();
-    out.name=String(structureName.value||"").trim();
-    out.owner=structureOwner.value||"";
-    out.start=structureStart.value||"";
-    out.due=structureDue.value||"";
-    if(!structureStatus.disabled) out.status=structureStatus.value||"idle";
-    out.note=String(structureNote.value||"").trim();
-    if(!isSub){
-      var ms=String(structureMilestone.value||"").trim();
-      if(ms) out.milestone=ms; else delete out.milestone;
-      if(!Array.isArray(out.subs)) out.subs=[];
-    }else{
-      delete out.subs;
-      delete out.milestone;
-    }
-    if(!Object.prototype.hasOwnProperty.call(out,"link")) out.link="";
-    if(!Array.isArray(out.issues)) out.issues=[];
-    return out;
-  }
-  function validateStructureForm(){
-    var ok=true;
-    var name=String(structureName.value||"").trim();
-    structureName.classList.toggle("invalid",!name);
-    structureNameError.classList.toggle("show",!name);
-    if(!name) ok=false;
-    var badDate=!!(structureStart.value && structureDue.value && structureDue.value<structureStart.value);
-    structureDateError.classList.toggle("show",badDate);
-    if(badDate) ok=false;
-    return ok;
-  }
-  function deleteStructureItem(key){
-    var parts=String(key).split("."), item=itemByKey(key);
-    if(!item) return;
-    var childCount=item.subs&&item.subs.length?item.subs.length:0;
-    var msg='Xoá “'+(item.name||'Công việc này')+'”?';
-    if(childCount) msg+='\n\nThao tác này sẽ xoá luôn '+childCount+' việc con.';
-    msg+='\n\nDữ liệu sẽ được đồng bộ tới tất cả thiết bị và không thể hoàn tác.';
-    if(!window.confirm(msg)) return;
-    if(parts.length===3){
-      var parent=data.phases[+parts[0]].tasks[+parts[1]];
-      parent.subs.splice(+parts[2],1);
-    }else{
-      data.phases[+parts[0]].tasks.splice(+parts[1],1);
-    }
-    open={};
-    markQuickDirty();
-    refresh(true);
-  }
-  function moveStructureItem(key,delta){
-    var parts=String(key).split("."), list=null, index=0;
-    if(parts.length===3){
-      list=data.phases[+parts[0]].tasks[+parts[1]].subs||[];
-      index=+parts[2];
-    }else{
-      list=data.phases[+parts[0]].tasks;
-      index=+parts[1];
-    }
-    var next=index+delta;
-    if(!list || next<0 || next>=list.length) return;
-    var moved=list.splice(index,1)[0];
-    list.splice(next,0,moved);
-    open={};
-    markQuickDirty();
-    refresh(true);
-  }
-
-  document.getElementById("structureEditorClose").addEventListener("click",closeStructureEditor);
-  document.getElementById("structureEditorCancel").addEventListener("click",closeStructureEditor);
-  structureEditorBackdrop.addEventListener("click",function(e){ if(e.target===structureEditorBackdrop) closeStructureEditor(); });
-  document.getElementById("structureEditorForm").addEventListener("submit",function(e){
-    e.preventDefault();
-    if(!validateStructureForm()) return;
-    if(pendingRemotePlan && Array.isArray(pendingRemotePlan.phases)){
-      data=JSON.parse(JSON.stringify(pendingRemotePlan));
-      pendingRemotePlan=null;
-      normalizeIssueData();
-    }
-    var st=structureEditorState, mode=st.mode;
-    if(mode==="add-task"){
-      var phase=data.phases[st.phaseIndex];
-      if(!phase) return closeStructureEditor(false);
-      var task=structureItemFromForm(defaultItem(),false);
-      task.subs=[];
-      phase.tasks.push(task);
-      open[st.phaseIndex+"."+(phase.tasks.length-1)]=true;
-    }else if(mode==="add-sub"){
-      var parent=itemByKey(st.parentKey);
-      if(!parent) return closeStructureEditor(false);
-      if(!Array.isArray(parent.subs)) parent.subs=[];
-      parent.subs.push(structureItemFromForm(defaultItem(),true));
-      open[st.parentKey]=true;
-    }else{
-      var current=itemByKey(st.key);
-      if(!current) return closeStructureEditor(false);
-      var isSub=String(st.key).split(".").length===3;
-      structureItemFromForm(current,isSub);
-      if(!isSub && current.subs&&current.subs.length) open[st.key]=true;
-    }
-    closeStructureEditor(false);
-    markQuickDirty();
-    refresh(true);
-  });
-
   function bindRows(){
     document.querySelectorAll("[data-add-task]").forEach(function(btn){
-      btn.addEventListener("click",function(e){ e.preventDefault(); e.stopPropagation(); openStructureEditor("add-task",btn.getAttribute("data-add-task")); });
+      btn.addEventListener("click",function(e){ e.preventDefault(); e.stopPropagation(); openTaskEditor(null,"new-task",{pi:+btn.getAttribute("data-add-task")}); });
     });
-    document.querySelectorAll("[data-structure-action]").forEach(function(btn){
+    document.querySelectorAll("[data-edit-task]").forEach(function(btn){
+      btn.addEventListener("click",function(e){ e.preventDefault(); e.stopPropagation(); openTaskEditor(btn.getAttribute("data-edit-task"),"task"); });
+    });
+    document.querySelectorAll("[data-add-subtask]").forEach(function(btn){
       btn.addEventListener("click",function(e){
         e.preventDefault(); e.stopPropagation();
-        if(btn.disabled) return;
-        var action=btn.getAttribute("data-structure-action"), key=btn.getAttribute("data-structure-key");
-        if(action==="edit") openStructureEditor("edit",key);
-        else if(action==="add-sub") openStructureEditor("add-sub",key);
-        else if(action==="move-up") moveStructureItem(key,-1);
-        else if(action==="move-down") moveStructureItem(key,1);
-        else if(action==="delete") deleteStructureItem(key);
+        var key=btn.getAttribute("data-add-subtask"),parent=itemByKey(key);
+        if(parent) openTaskEditor(null,"new-subtask",{pi:+key.split(".")[0],parentId:parent.id});
       });
+    });
+    document.querySelectorAll("[data-delete-task]").forEach(function(btn){
+      btn.addEventListener("click",function(e){ e.preventDefault(); e.stopPropagation(); deleteTask(btn.getAttribute("data-delete-task")); });
     });
     document.querySelectorAll("[data-cell-edit]").forEach(function(btn){
       btn.addEventListener("click",function(e){
@@ -2740,7 +2685,6 @@ body.editing td.col-actions{display:table-cell}
       });
     });
 
-    // ô ngày: tự chèn dấu / khi gõ, chỉ ghi nhận khi rời ô
     document.querySelectorAll("input.date-in").forEach(function(el){
       el.addEventListener("input", function(){
         autoSlash(el);
@@ -2751,7 +2695,13 @@ body.editing td.col-actions{display:table-cell}
         if(iso===null){ el.classList.add("bad"); el.title="Ngày không hợp lệ — nhập theo dd/mm/yyyy, ví dụ 20/07/2026"; return; }
         el.classList.remove("bad"); el.title="";
         var item=itemByKey(el.getAttribute("data-k"));
+        if(!item) return;
         var f=el.getAttribute("data-f");
+        if(f==="due" && item.start && iso && iso<item.start){
+          el.classList.add("bad");
+          el.title="Thời hạn không được sớm hơn ngày bắt đầu";
+          return;
+        }
         if(item[f]===iso) return;
         item[f]=iso;
         markQuickDirty();
@@ -2760,15 +2710,13 @@ body.editing td.col-actions{display:table-cell}
       el.addEventListener("keydown", function(e){ if(e.key==="Enter") el.blur(); });
     });
 
-    // ô chọn và kết quả cập nhật
-    document.querySelectorAll("select.ed[data-k], input.note-in[data-k], input.task-name-input[data-k]").forEach(function(el){
+    document.querySelectorAll("select.ed[data-k], input.note-in[data-k]").forEach(function(el){
       el.addEventListener("change", function(){
         var item=itemByKey(el.getAttribute("data-k"));
+        if(!item) return;
         var f=el.getAttribute("data-f");
-        var value=f==="name"?String(el.value||"").trim():el.value;
-        if(f==="name" && !value){ el.value=item.name||""; return; }
-        if(item[f]===value) return;
-        item[f] = value;
+        if(item[f]===el.value) return;
+        item[f]=el.value;
         markQuickDirty();
         refresh(true);
       });
@@ -2804,6 +2752,7 @@ body.editing td.col-actions{display:table-cell}
     b.classList.toggle("on", on);
     b.innerHTML='<span class="dot"></span><span class="lb-full">'+(on?"Đang cập nhật":"Chế độ cập nhật")+'</span><span class="lb-short">'+(on?"Đang sửa":"Cập nhật")+'</span>';
     document.getElementById("lastUpdate").readOnly=!on;
+    if(!on && !taskEditorBackdrop.hidden) closeTaskEditor();
     renderList();
   }
   document.getElementById("btnEdit").addEventListener("click", function(){ setEdit(!editing); });
@@ -2838,10 +2787,8 @@ body.editing td.col-actions{display:table-cell}
     document.getElementById("plan-data").textContent = JSON.stringify(data, null, 2);
     var wasEditing=editing;
     var wasEditorOpen=!taskEditorBackdrop.hidden;
-    var wasStructureEditorOpen=!structureEditorBackdrop.hidden;
     var wasQuickBarVisible=!quickSavebar.hidden;
     if(wasEditorOpen) closeTaskEditor();
-    if(wasStructureEditorOpen) closeStructureEditor();
     setEdit(false);
     quickSavebar.hidden=true;
     lu.setAttribute("value", data.lastUpdate || lu.value);
